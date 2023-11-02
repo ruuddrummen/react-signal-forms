@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "planbcoding.vscode-react-refactor",
+    "wix.vscode-import-cost",
+    "dbaeumer.vscode-eslint"
+  ]
+}
