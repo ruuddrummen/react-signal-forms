@@ -9,7 +9,8 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const formContext = useFormContext();
   const fieldContext = formContext.fields[field.name];
 
-  if (fieldContext == null || !fieldContext.value.isApplicable) {
+  // if (fieldContext == null || !fieldContext.value.isApplicable) {
+  if (fieldContext == null || !fieldContext.value.isApplicableSignal.value) {
     return null;
   }
 

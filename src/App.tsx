@@ -4,6 +4,7 @@ import "./App.css";
 import { Form } from "./Form/Form";
 import { FormInput } from "./Form/FormInput";
 import { FieldCollection } from "./Form/types";
+import { computed } from "@preact/signals-react";
 
 const fields: FieldCollection = {
   field1: { name: "field1", label: "Field 1 (try typing TEST)" },
@@ -11,6 +12,8 @@ const fields: FieldCollection = {
     name: "field2",
     label: "Field 2",
     applicableIf: (context) => context.fields.field1.value.value === "TEST",
+    createApplicabilitySignal: (fields) =>
+      computed(() => fields.field1.value.value === "TEST"),
   },
 };
 
