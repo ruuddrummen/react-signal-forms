@@ -3,7 +3,7 @@ import { Field, FieldContext, useFormContext } from "./types";
 import { FormControl, TextField } from "@mui/material";
 import { Signal, useSignalEffect } from "@preact/signals-react";
 import { patch } from "../signals";
-import { ensureNotNull, useRenderCount } from "../utils";
+import { useRenderCount } from "../utils";
 
 interface FormInputProps {
   field: Field;
@@ -41,7 +41,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
 
 const useFieldContext = (field: Field): Signal<FieldContext> => {
   const formContext = useFormContext();
-  const fieldContext = formContext.value.fields[field.name];
+  const fieldContext = formContext.fields[field.name];
 
   return fieldContext;
 };
@@ -51,12 +51,6 @@ const useFieldApplicability = (
   fieldContext: Signal<FieldContext>
 ) => {
   useSignalEffect(() => {
-    if (fieldContext == null) {
-      return;
-    }
-
-    ensureNotNull("isApplicableSignal", fieldContext.value.isApplicableSignal);
-
     if (!fieldContext.value.isApplicableSignal!.value) {
       console.log(`(${field.name}) Clearing field value`);
 
@@ -64,20 +58,12 @@ const useFieldApplicability = (
     }
   });
 
-  if (fieldContext == null) {
-    return false;
-  }
-
   return fieldContext.value.isApplicableSignal!.value;
 };
 
 const useFieldValidation = (
-  field: Field,
+  _field: Field,
   fieldContext: Signal<FieldContext>
 ) => {
-  if (fieldContext == null) {
-    return true;
-  }
-
   return fieldContext.value.isValidSignal!.value;
 };

@@ -1,12 +1,7 @@
 import { Signal, signal } from "@preact/signals-react";
 import React, { useContext } from "react";
 
-const ReactFormContext = React.createContext<Signal<FormContext>>(
-  signal({
-    id: 0,
-    fields: {},
-  })
-);
+const ReactFormContext = React.createContext<FormContext>({ fields: {} });
 
 export const FormContextProvider = ReactFormContext.Provider;
 
