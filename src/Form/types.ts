@@ -1,23 +1,4 @@
-import { Signal, signal } from "@preact/signals-react";
-import React, { useContext } from "react";
-
-const ReactFormContext = React.createContext<FormContext>({ fields: {} });
-
-export const FormContextProvider = ReactFormContext.Provider;
-
-export const useFormContext = () => useContext(ReactFormContext);
-
-export interface FormContext {
-  fields: { [name: string]: Signal<FieldContext> };
-}
-
-export interface FieldContext {
-  value: any;
-  isValidSignal?: Signal<boolean>;
-  isApplicableSignal?: Signal<boolean>;
-}
-
-export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
+import { Signal } from "@preact/signals-react";
 
 export interface Field {
   name: string;
@@ -29,5 +10,32 @@ export interface Field {
 }
 
 export type FieldCollection = { [name: string]: Field };
+
+export interface FormContext {
+  fields: { [name: string]: Signal<FieldContext> };
+}
+
+/**
+ * Base field context.
+ */
+export interface FieldContext {
+  value: any;
+}
+
+/**
+ * Field context for validation rules.
+ */
+export interface FieldContext {
+  isValidSignal?: Signal<boolean>;
+}
+
+/**
+ * Field context for applicability rules.
+ */
+export interface FieldContext {
+  isApplicableSignal?: Signal<boolean>;
+}
+
+export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
 
 export type FormState = Array<Field & FieldContext>;

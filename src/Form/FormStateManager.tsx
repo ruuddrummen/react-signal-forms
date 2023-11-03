@@ -1,11 +1,7 @@
 import React from "react";
-import { Signal, useComputed, useSignalEffect } from "@preact/signals-react";
-import {
-  FieldCollection,
-  FormContext,
-  FormState,
-  useFormContext,
-} from "./types";
+import { useComputed, useSignalEffect } from "@preact/signals-react";
+import { FieldCollection, FormContext, FormState } from "./types";
+import { useFormContext } from "./formContext";
 
 export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
   fields,
