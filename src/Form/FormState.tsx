@@ -17,7 +17,7 @@ export const FormState: React.FC<{ fields: FieldCollection }> = ({
       };
     });
 
-    console.log("Form state", formState);
+    console.log("(FormState) Got new state:", formState);
 
     return formState;
   });

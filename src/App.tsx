@@ -13,7 +13,10 @@ const fields: FieldCollection = {
     label: "Secret field",
     applicableIf: (context) => context.fields.field1.value.value === "SECRET",
     createApplicabilitySignal: (fields) =>
-      computed(() => fields.field1.value.value === "SECRET"),
+      computed(() => {
+        console.log("(field2) Checking applicability rule");
+        return fields.field1.value.value === "SECRET";
+      }),
   },
   field3: { name: "field3", label: "Field 3" },
 };

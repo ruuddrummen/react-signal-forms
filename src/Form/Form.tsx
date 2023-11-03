@@ -35,7 +35,7 @@ const useFormContextProvider = (fields: FieldCollection) => {
 };
 
 const initFormContext = (fields: FieldCollection) => {
-  console.log("Initializing form context...");
+  console.log("(Form) Initializing form context...");
 
   const formContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(

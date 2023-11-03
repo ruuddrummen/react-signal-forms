@@ -10,19 +10,19 @@ interface FormInputProps {
 
 export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
-  const isApplicable = useFieldApplicability(fieldContext);
+  const isApplicable = useFieldApplicability(field, fieldContext);
 
   if (!isApplicable) {
     return null;
   }
 
   function onChange(event: ChangeEvent<HTMLInputElement>): void {
-    console.log("Setting value to:", event.currentTarget.value);
+    console.log(`(${field.name}) Setting value to:`, event.currentTarget.value);
 
     patch(fieldContext, { value: event.currentTarget.value });
   }
 
-  console.log("Rendering input", field.name);
+  console.log(`(${field.name}) Rendering input`);
 
   return (
     <FormControl fullWidth margin="normal">
@@ -42,20 +42,17 @@ const useFieldContext = (field: Field): Signal<FieldContext> => {
   return fieldContext;
 };
 
-const useFieldApplicability = (fieldContext: Signal<FieldContext>) => {
+const useFieldApplicability = (
+  field: Field,
+  fieldContext: Signal<FieldContext>
+) => {
   useSignalEffect(() => {
     if (!fieldContext.value.isApplicableSignal.value) {
-      console.log("Clearing field value");
+      console.log(`(${field.name}) Clearing field value`);
 
       patch(fieldContext, { value: null });
     }
   });
-
-  if (fieldContext == null) {
-    console.log("Field context is null");
-
-    return false;
-  }
 
   return fieldContext.value.isApplicableSignal.value;
 };
