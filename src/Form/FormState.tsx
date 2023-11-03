@@ -1,26 +1,17 @@
 import React from "react";
-import { useComputed, useSignalEffect } from "@preact/signals-react";
-import { FieldCollection, FormState, useFormContext } from "./types";
+import { Signal, useComputed, useSignalEffect } from "@preact/signals-react";
+import {
+  FieldCollection,
+  FormContext,
+  FormState,
+  useFormContext,
+} from "./types";
 
 export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
   fields,
 }) => {
   const formContext = useFormContext();
-
-  const formState = useComputed<FormState>(() => {
-    const formState = Object.keys(fields).map((key) => {
-      const fieldContext = formContext.fields[key];
-
-      return {
-        ...fields[key],
-        ...fieldContext.value,
-      };
-    });
-
-    console.log("(FormState) Got new state:", formState);
-
-    return formState;
-  });
+  const formState = useFormState(fields, formContext);
 
   useSignalEffect(() => {
     localStorage.setItem("FormState", JSON.stringify(formState.value));
@@ -28,7 +19,27 @@ export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
 
   return (
     <div style={{ textAlign: "left" }}>
-      <pre>{JSON.stringify(formState, null, 2)}</pre>
+      <pre>{JSON.stringify(formState.value, null, 2)}</pre>
     </div>
   );
 };
+
+function useFormState(
+  fields: FieldCollection,
+  formContext: Signal<FormContext>
+) {
+  return useComputed<FormState | null>(() => {
+    const formState = Object.keys(fields).map((key) => {
+      const fieldContext = formContext.value.fields[key]?.value;
+
+      return {
+        ...fields[key],
+        ...fieldContext,
+      };
+    });
+
+    console.log("(FormState) Got new state:", formState);
+
+    return formState;
+  });
+}

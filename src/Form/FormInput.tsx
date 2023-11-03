@@ -12,7 +12,7 @@ interface FormInputProps {
 export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
   const isApplicable = useFieldApplicability(field, fieldContext);
-  const isValid = useValidation(field, fieldContext);
+  const isValid = useFieldValidation(field, fieldContext);
   const renderCount = useRenderCount();
 
   if (!isApplicable) {
@@ -41,7 +41,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
 
 const useFieldContext = (field: Field): Signal<FieldContext> => {
   const formContext = useFormContext();
-  const fieldContext = formContext.fields[field.name];
+  const fieldContext = formContext.value.fields[field.name];
 
   return fieldContext;
 };
@@ -51,6 +51,10 @@ const useFieldApplicability = (
   fieldContext: Signal<FieldContext>
 ) => {
   useSignalEffect(() => {
+    if (fieldContext == null) {
+      return;
+    }
+
     ensureNotNull("isApplicableSignal", fieldContext.value.isApplicableSignal);
 
     if (!fieldContext.value.isApplicableSignal!.value) {
@@ -60,9 +64,20 @@ const useFieldApplicability = (
     }
   });
 
+  if (fieldContext == null) {
+    return false;
+  }
+
   return fieldContext.value.isApplicableSignal!.value;
 };
 
-const useValidation = (field: Field, fieldContext: Signal<FieldContext>) => {
+const useFieldValidation = (
+  field: Field,
+  fieldContext: Signal<FieldContext>
+) => {
+  if (fieldContext == null) {
+    return true;
+  }
+
   return fieldContext.value.isValidSignal!.value;
 };

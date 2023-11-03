@@ -1,4 +1,10 @@
-import { Signal, computed, signal, useSignal } from "@preact/signals-react";
+import {
+  Signal,
+  computed,
+  signal,
+  useSignal,
+  useSignalEffect,
+} from "@preact/signals-react";
 import React, {
   MutableRefObject,
   Ref,
@@ -15,6 +21,7 @@ import {
 } from "./types";
 import { FormStateManager } from "./FormState";
 import { CircularProgress } from "@mui/material";
+import { patch } from "../signals";
 
 interface FormProps {
   fields: FieldCollection;
@@ -29,7 +36,7 @@ export const Form: React.FC<FormProps> = (props) => {
   }
 
   return (
-    <FormContextProvider value={formContext.current}>
+    <FormContextProvider value={formContext}>
       <form>{props.children}</form>
       <FormStateManager fields={props.fields} />
     </FormContextProvider>
@@ -37,33 +44,32 @@ export const Form: React.FC<FormProps> = (props) => {
 };
 
 const useFormContextProvider = (fields: FieldCollection) => {
-  const formContext = useRef<FormContext>({
+  const formContext = useSignal<FormContext>({
     fields: {},
   });
 
-  const [isInitialized, setInitialized] = useState(false);
+  const isInitialized = computed(
+    () => Object.keys(formContext.value.fields).length > 0
+  );
 
   useFields(fields, formContext);
   useValidation(fields, formContext);
   useApplicabilityRules(fields, formContext);
 
-  useEffect(() => {
-    setInitialized(true);
-  }, []);
-
   return {
     formContext,
-    isInitialized,
+    isInitialized: isInitialized.value,
   };
 };
 
-function useFields(
-  fields: FieldCollection,
-  formContext: MutableRefObject<FormContext>
-) {
-  useEffect(() => {
-    formContext.current = initFieldSignals(fields);
-  }, [formContext, fields]);
+function useFields(fields: FieldCollection, formContext: Signal<FormContext>) {
+  useSignalEffect(() => {
+    if (Object.keys(formContext.value.fields).length > 0) {
+      return;
+    }
+
+    patch(formContext, initFieldSignals(fields));
+  });
 }
 
 function initFieldSignals(fields: FieldCollection) {
@@ -96,28 +102,28 @@ const alwaysTrueSignal = signal(true);
 
 function useApplicabilityRules(
   fields: FieldCollection,
-  formContext: MutableRefObject<FormContext>
+  formContext: Signal<FormContext>
 ) {
-  useEffect(() => {
+  useSignalEffect(() => {
     console.log("(Form) Initializing applicability rules");
 
     Object.keys(fields).forEach((key) => {
-      formContext.current.fields[key].value.isApplicableSignal =
-        fields[key].createApplicabilitySignal?.(formContext.current.fields) ??
+      formContext.value.fields[key].value.isApplicableSignal =
+        fields[key].createApplicabilitySignal?.(formContext.value.fields) ??
         alwaysTrueSignal;
     });
-  }, [fields, formContext]);
+  });
 }
 
 function useValidation(
   fields: FieldCollection,
-  formContext: React.MutableRefObject<FormContext>
+  formContext: Signal<FormContext>
 ) {
-  useEffect(() => {
+  useSignalEffect(() => {
     console.log("(Form) Initializing validation rules");
 
     Object.keys(fields).forEach((key) => {
-      const fieldContext = formContext.current.fields[key];
+      const fieldContext = formContext.value.fields[key];
 
       fieldContext.value.isValidSignal =
         fields[key].isValid != null
