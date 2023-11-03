@@ -35,7 +35,7 @@ export const App: React.FC = () => {
   return (
     <Container className="App">
       <h2>
-        React Signals Form <Button onClick={refresh}>Refresh</Button>{" "}
+        React Signals Form <Button onClick={refresh}>Refresh</Button>
         <Button onClick={reset}>Reset</Button>
       </h2>
       <Form fields={fields} key={formKey.value}>

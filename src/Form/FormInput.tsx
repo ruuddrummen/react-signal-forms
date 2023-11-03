@@ -3,6 +3,7 @@ import { Field, FieldContext, useFormContext } from "./types";
 import { FormControl, TextField } from "@mui/material";
 import { Signal, useSignalEffect } from "@preact/signals-react";
 import { patch } from "../signals";
+import { ensureNotNull, useRenderCount } from "../utils";
 
 interface FormInputProps {
   field: Field;
@@ -11,6 +12,8 @@ interface FormInputProps {
 export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
   const isApplicable = useFieldApplicability(field, fieldContext);
+
+  const renderCount = useRenderCount();
 
   if (!isApplicable) {
     return null;
@@ -27,7 +30,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   return (
     <FormControl fullWidth margin="normal">
       <TextField
-        label={field.label}
+        label={`${field.label} (rendered ${renderCount.current} times)`}
         value={fieldContext.value.value ?? ""}
         onChange={onChange}
       />
@@ -58,14 +61,3 @@ const useFieldApplicability = (
 
   return fieldContext.value.isApplicableSignal!.value;
 };
-
-function ensureNotNull<T>(
-  name: string,
-  value: T
-): value is Exclude<T, null | undefined> {
-  if (value == null) {
-    throw new Error(`${name} should not be null.`);
-  }
-
-  return value != null;
-}

@@ -1,4 +1,5 @@
 import { Signal } from "@preact/signals-react";
+import { areEqualish, forAllKeysOf } from "../utils";
 
 export function patch<T extends {}>(signal: Signal<T>, update: Partial<T>) {
   if (typeof update === "object") {
@@ -14,19 +15,4 @@ export function patch<T extends {}>(signal: Signal<T>, update: Partial<T>) {
     ...signal.value,
     ...update,
   };
-}
-
-function forAllKeysOf<T extends {}>(
-  obj: T,
-  test: (key: keyof T) => boolean
-): boolean {
-  return Object.keys(obj).every((key) => test(key as any));
-}
-
-function areEqualish(val1: any, val2: any) {
-  if (val1 == null && val2 == null) {
-    return true;
-  }
-
-  return val1 === val2;
 }

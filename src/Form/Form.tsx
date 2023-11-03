@@ -15,8 +15,6 @@ interface FormProps {
   children: React.ReactNode;
 }
 
-const alwaysTrueSignal = signal(true);
-
 export const Form: React.FC<FormProps> = (props) => {
   const { formContext, isInitialized } = useFormContextProvider(props.fields);
 
@@ -84,6 +82,8 @@ const initFieldSignals = (fields: FieldCollection) => {
 
   return formContext;
 };
+
+const alwaysTrueSignal = signal(true);
 
 const useApplicabilityRules = (
   fields: FieldCollection,
