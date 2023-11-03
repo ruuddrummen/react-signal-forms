@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react";
 import { Field, FieldContext, useFormContext } from "./types";
 import { FormControl, TextField } from "@mui/material";
 import { Signal, useSignalEffect } from "@preact/signals-react";
-import { patch } from "../utils";
+import { patch } from "../signals";
 
 interface FormInputProps {
   field: Field;
@@ -44,10 +44,7 @@ const useFieldContext = (field: Field): Signal<FieldContext> => {
 
 const useFieldApplicability = (fieldContext: Signal<FieldContext>) => {
   useSignalEffect(() => {
-    if (
-      !fieldContext.value.isApplicableSignal.value &&
-      fieldContext.value.value != null
-    ) {
+    if (!fieldContext.value.isApplicableSignal.value) {
       console.log("Clearing field value");
 
       patch(fieldContext, { value: null });

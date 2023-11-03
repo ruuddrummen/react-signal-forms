@@ -1,17 +1,12 @@
-import {
-  signal,
-  useComputed,
-  useSignal,
-  useSignalEffect,
-} from "@preact/signals-react";
-import React, { useEffect, useRef, useState } from "react";
+import { signal, useSignal } from "@preact/signals-react";
+import React from "react";
 import {
   FieldCollection,
   FieldContextCollection,
   FormContext,
   FormContextProvider,
-  useFormContext,
 } from "./types";
+import { FormState } from "./FormState";
 
 interface FormProps {
   fields: FieldCollection;
@@ -29,6 +24,14 @@ export const Form: React.FC<FormProps> = (props) => {
       <FormState fields={props.fields} />
     </FormContextProvider>
   );
+};
+
+const useFormContextProvider = (fields: FieldCollection) => {
+  const formContext = useSignal<FormContext>(initFormContext(fields));
+
+  return {
+    formContext,
+  };
 };
 
 const initFormContext = (fields: FieldCollection) => {
@@ -56,37 +59,4 @@ const initFormContext = (fields: FieldCollection) => {
   });
 
   return formContext;
-};
-
-const useFormContextProvider = (fields: FieldCollection) => {
-  const formContext = useSignal<FormContext>(initFormContext(fields));
-
-  return {
-    formContext,
-  };
-};
-
-const FormState: React.FC<{ fields: FieldCollection }> = ({ fields }) => {
-  const formContext = useFormContext();
-
-  const formState = useComputed(() => {
-    const formState = Object.keys(fields).map((key) => {
-      const fieldContext = formContext.fields[key];
-
-      return {
-        ...fields[key],
-        ...fieldContext.value,
-      };
-    });
-
-    console.log("Form state", formState);
-
-    return formState;
-  });
-
-  return (
-    <div style={{ textAlign: "left" }}>
-      <pre>{JSON.stringify(formState, null, 2)}</pre>
-    </div>
-  );
 };
