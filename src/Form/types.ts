@@ -15,6 +15,7 @@ export interface FormContext {
 
 export interface FieldContext {
   value: any;
+  isValidSignal?: Signal<boolean>;
   isApplicableSignal?: Signal<boolean>;
 }
 

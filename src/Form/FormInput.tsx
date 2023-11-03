@@ -64,5 +64,5 @@ const useFieldApplicability = (
 };
 
 const useValidation = (field: Field, fieldContext: Signal<FieldContext>) => {
-  return field.isValid?.(fieldContext.value.value) ?? true;
+  return fieldContext.value.isValidSignal!.value;
 };
