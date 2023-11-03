@@ -15,7 +15,7 @@ export interface FormContext {
 
 export interface FieldContext {
   value: any;
-  isApplicableSignal: Signal<boolean>;
+  isApplicableSignal?: Signal<boolean>;
 }
 
 export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
@@ -23,10 +23,11 @@ export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
 export interface Field {
   name: string;
   label: string;
-  applicableIf?: (formContext: FormContext) => boolean;
   createApplicabilitySignal?: (
     fields: FieldContextCollection
   ) => Signal<boolean>;
 }
 
 export type FieldCollection = { [name: string]: Field };
+
+export type FormState = Array<Field & FieldContext>;

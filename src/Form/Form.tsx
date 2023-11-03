@@ -1,12 +1,14 @@
-import { signal, useSignal } from "@preact/signals-react";
-import React from "react";
+import { Signal, signal, useSignal } from "@preact/signals-react";
+import React, { useEffect, useState } from "react";
 import {
   FieldCollection,
   FieldContextCollection,
   FormContext,
   FormContextProvider,
+  FormState,
 } from "./types";
-import { FormState } from "./FormState";
+import { FormStateManager } from "./FormState";
+import { CircularProgress } from "@mui/material";
 
 interface FormProps {
   fields: FieldCollection;
@@ -16,33 +18,62 @@ interface FormProps {
 const alwaysTrueSignal = signal(true);
 
 export const Form: React.FC<FormProps> = (props) => {
-  const { formContext } = useFormContextProvider(props.fields);
+  const { formContext, isInitialized } = useFormContextProvider(props.fields);
+
+  if (!isInitialized) {
+    return <CircularProgress />;
+  }
 
   return (
     <FormContextProvider value={formContext.value}>
       <form>{props.children}</form>
-      <FormState fields={props.fields} />
+      <FormStateManager fields={props.fields} />
     </FormContextProvider>
   );
 };
 
 const useFormContextProvider = (fields: FieldCollection) => {
-  const formContext = useSignal<FormContext>(initFormContext(fields));
+  const formContext = useSignal<FormContext>({
+    fields: {},
+  });
+
+  const [isInitialized, setInitialized] = useState(false);
+
+  useFields(fields, formContext);
+  useApplicabilityRules(fields, formContext);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
 
   return {
     formContext,
+    isInitialized,
   };
 };
 
-const initFormContext = (fields: FieldCollection) => {
-  console.log("(Form) Initializing form context...");
+const useFields = (
+  fields: FieldCollection,
+  formContext: Signal<FormContext>
+) => {
+  useEffect(() => {
+    formContext.value = initFieldSignals(fields);
+  }, [formContext, fields]);
+};
+
+const initFieldSignals = (fields: FieldCollection) => {
+  console.log("(Form) Initializing field signals");
+
+  const formState = JSON.parse(
+    localStorage.getItem("FormState") ?? "[]"
+  ) as FormState;
 
   const formContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, current) => {
         prev[current] = signal({
-          value: null,
-          isApplicableSignal: alwaysTrueSignal,
+          value:
+            formState.find((field) => field.name === current)?.value ?? null,
         });
 
         return prev;
@@ -51,12 +82,20 @@ const initFormContext = (fields: FieldCollection) => {
     ),
   };
 
-  // Initialize applicability signals.
-  Object.keys(fields).forEach((key) => {
-    formContext.fields[key].value.isApplicableSignal =
-      fields[key].createApplicabilitySignal?.(formContext.fields) ??
-      alwaysTrueSignal;
-  });
-
   return formContext;
+};
+
+const useApplicabilityRules = (
+  fields: FieldCollection,
+  formContext: Signal<FormContext>
+) => {
+  useEffect(() => {
+    console.log("(Form) Initializing applicability rules");
+
+    Object.keys(fields).forEach((key) => {
+      formContext.value.fields[key].value.isApplicableSignal =
+        fields[key].createApplicabilitySignal?.(formContext.value.fields) ??
+        alwaysTrueSignal;
+    });
+  }, [fields, formContext]);
 };

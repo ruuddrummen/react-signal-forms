@@ -47,12 +47,25 @@ const useFieldApplicability = (
   fieldContext: Signal<FieldContext>
 ) => {
   useSignalEffect(() => {
-    if (!fieldContext.value.isApplicableSignal.value) {
+    ensureNotNull("isApplicableSignal", fieldContext.value.isApplicableSignal);
+
+    if (!fieldContext.value.isApplicableSignal!.value) {
       console.log(`(${field.name}) Clearing field value`);
 
       patch(fieldContext, { value: null });
     }
   });
 
-  return fieldContext.value.isApplicableSignal.value;
+  return fieldContext.value.isApplicableSignal!.value;
 };
+
+function ensureNotNull<T>(
+  name: string,
+  value: T
+): value is Exclude<T, null | undefined> {
+  if (value == null) {
+    throw new Error(`${name} should not be null.`);
+  }
+
+  return value != null;
+}

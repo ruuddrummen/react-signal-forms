@@ -11,7 +11,6 @@ const fields: FieldCollection = {
   field2: {
     name: "field2",
     label: "Secret field",
-    applicableIf: (context) => context.fields.field1.value.value === "SECRET",
     createApplicabilitySignal: (fields) =>
       computed(() => {
         console.log("(field2) Checking applicability rule");
@@ -24,14 +23,20 @@ const fields: FieldCollection = {
 export const App: React.FC = () => {
   const formKey = useSignal(Math.random().toString());
 
-  const resetForm = () => {
+  const refresh = () => {
     formKey.value = Math.random().toString();
+  };
+
+  const reset = () => {
+    localStorage.clear();
+    refresh();
   };
 
   return (
     <Container className="App">
       <h2>
-        React Signals Form <Button onClick={resetForm}>Reset</Button>
+        React Signals Form <Button onClick={refresh}>Refresh</Button>{" "}
+        <Button onClick={reset}>Reset</Button>
       </h2>
       <Form fields={fields} key={formKey.value}>
         <FormInput field={fields.field1} />
