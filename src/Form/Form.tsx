@@ -1,4 +1,4 @@
-import { signal } from "@preact/signals-react";
+import { signal, useSignalEffect } from "@preact/signals-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   FieldCollection,
@@ -42,7 +42,7 @@ const useFormContextProvider = (fields: FieldCollection) => {
       fields: Object.keys(fields).reduce<FieldContextCollection>(
         (prev, current) => {
           prev[current] = signal({
-            value: "",
+            value: null,
             isApplicable: true,
             isApplicableSignal: alwaysTrueSignal,
           });
@@ -62,6 +62,20 @@ const useFormContextProvider = (fields: FieldCollection) => {
 
     setIsInitializing(false);
   }, [fields]);
+
+  // Listen to changes on all signals and do global calculations on changes.
+  useSignalEffect(() => {
+    const formState = Object.keys(fields).map((key) => {
+      const fieldContext = formContext.current.fields[key];
+
+      return {
+        ...fields[key],
+        ...fieldContext.value,
+      };
+    });
+
+    console.log("Form state", formState);
+  });
 
   return {
     formContext,
