@@ -1,8 +1,7 @@
-import { signal, useSignalEffect, Signal } from "@preact/signals-react";
-import React, { useEffect, useRef } from "react";
+import { signal } from "@preact/signals-react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FieldCollection,
-  FieldContext,
   FieldContextCollection,
   FormContext,
   FormContextProvider,
@@ -16,15 +15,31 @@ interface FormProps {
 const alwaysTrueSignal = signal(true);
 
 export const Form: React.FC<FormProps> = (props) => {
+  const { formContext, isInitializing } = useFormContextProvider(props.fields);
+
+  if (isInitializing) {
+    return null;
+  }
+
+  return (
+    <FormContextProvider value={formContext.current}>
+      <form>{props.children}</form>
+    </FormContextProvider>
+  );
+};
+
+const useFormContextProvider = (fields: FieldCollection) => {
   // Store form context in a ref.
   const formContext = useRef<FormContext>({
     fields: {},
   });
 
+  const [isInitializing, setIsInitializing] = useState(true);
+
   // Initialize the form context.
   useEffect(() => {
     formContext.current = {
-      fields: Object.keys(props.fields).reduce<FieldContextCollection>(
+      fields: Object.keys(fields).reduce<FieldContextCollection>(
         (prev, current) => {
           prev[current] = signal({
             value: "",
@@ -39,37 +54,17 @@ export const Form: React.FC<FormProps> = (props) => {
     };
 
     // Initialize applicability signals.
-    Object.keys(props.fields).forEach((key) => {
+    Object.keys(fields).forEach((key) => {
       formContext.current.fields[key].value.isApplicableSignal =
-        props.fields[key].createApplicabilitySignal?.(
-          formContext.current.fields
-        ) ?? alwaysTrueSignal;
+        fields[key].createApplicabilitySignal?.(formContext.current.fields) ??
+        alwaysTrueSignal;
     });
-  }, []);
 
-  // Listen to changes on all signals and do global calculations on changes.
-  // useSignalEffect(() => {
-  //   console.log("Checking calculations on form");
+    setIsInitializing(false);
+  }, [fields]);
 
-  //   Object.keys(props.fields).forEach((key) => {
-  //     const fieldContext = formContext.current.fields[key];
-
-  //     const isApplicable =
-  //       props.fields[key].applicableIf?.(formContext.current) ?? true;
-
-  //     if (fieldContext.value.isApplicable !== isApplicable) {
-  //       fieldContext.value = {
-  //         ...fieldContext.value,
-  //         isApplicable: isApplicable,
-  //         ...(!isApplicable ? { value: "" } : {}),
-  //       };
-  //     }
-  //   });
-  // });
-
-  return (
-    <FormContextProvider value={formContext.current}>
-      <form>{props.children}</form>
-    </FormContextProvider>
-  );
+  return {
+    formContext,
+    isInitializing,
+  };
 };
