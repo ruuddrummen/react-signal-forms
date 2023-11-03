@@ -23,6 +23,7 @@ export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
 export interface Field {
   name: string;
   label: string;
+  isValid?: (value: string) => boolean;
   createApplicabilitySignal?: (
     fields: FieldContextCollection
   ) => Signal<boolean>;

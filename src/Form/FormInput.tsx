@@ -12,7 +12,7 @@ interface FormInputProps {
 export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
   const isApplicable = useFieldApplicability(field, fieldContext);
-
+  const isValid = useValidation(field, fieldContext);
   const renderCount = useRenderCount();
 
   if (!isApplicable) {
@@ -33,6 +33,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
         label={`${field.label} (rendered ${renderCount.current} times)`}
         value={fieldContext.value.value ?? ""}
         onChange={onChange}
+        error={!isValid}
       />
     </FormControl>
   );
@@ -60,4 +61,8 @@ const useFieldApplicability = (
   });
 
   return fieldContext.value.isApplicableSignal!.value;
+};
+
+const useValidation = (field: Field, fieldContext: Signal<FieldContext>) => {
+  return field.isValid?.(fieldContext.value.value) ?? true;
 };

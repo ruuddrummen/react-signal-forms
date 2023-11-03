@@ -7,7 +7,11 @@ import { computed, useSignal } from "@preact/signals-react";
 import { Button, Container } from "@mui/material";
 
 const fields: FieldCollection = {
-  field1: { name: "field1", label: "Field 1 (try typing SECRET)" },
+  field1: {
+    name: "field1",
+    label: "Field 1 - try typing SECRET",
+    isValid: (value) => value === "SECRET",
+  },
   field2: {
     name: "field2",
     label: "Secret field",
