@@ -1,13 +1,13 @@
-import { ReadonlySignal, Signal, computed } from "@preact/signals-react";
+import { Signal } from "@preact/signals-react";
 import React, { useContext } from "react";
 
-const FormContext = React.createContext<FormContext>({
+const ReactFormContext = React.createContext<FormContext>({
   fields: {},
 });
 
-export const FormContextProvider = FormContext.Provider;
+export const FormContextProvider = ReactFormContext.Provider;
 
-export const useFormContext = () => useContext(FormContext);
+export const useFormContext = () => useContext(ReactFormContext);
 
 export interface FormContext {
   fields: { [name: string]: Signal<FieldContext> };
@@ -15,7 +15,6 @@ export interface FormContext {
 
 export interface FieldContext {
   value: any;
-  isApplicable: boolean;
   isApplicableSignal: Signal<boolean>;
 }
 
