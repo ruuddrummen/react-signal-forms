@@ -4,8 +4,8 @@ import { FormControl, TextField } from "@mui/material";
 import { patch } from "@/signals";
 import { useRenderCount } from "@/utils";
 import { useFieldContext } from "./formContext";
-import { useFieldApplicability } from "./rules/applicabilityRules";
-import { useFieldValidation } from "./rules/validationRules";
+import { isApplicable } from "./rules/applicabilityRules";
+import { isValid } from "./rules/validationRules";
 
 interface FormInputProps {
   field: Field;
@@ -13,11 +13,9 @@ interface FormInputProps {
 
 export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
-  const isApplicable = useFieldApplicability(field, fieldContext);
-  const isValid = useFieldValidation(field, fieldContext);
   const renderCount = useRenderCount();
 
-  if (!isApplicable) {
+  if (!isApplicable(fieldContext)) {
     return null;
   }
 
@@ -35,7 +33,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
         label={`${field.label} (rendered ${renderCount.current} times)`}
         value={fieldContext.value.value ?? ""}
         onChange={onChange}
-        error={!isValid}
+        error={!isValid(fieldContext)}
       />
     </FormControl>
   );

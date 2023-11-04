@@ -5,7 +5,7 @@ import { FormInput } from "./Form/FormInput";
 import { useSignal } from "@preact/signals-react";
 import { Button, Container } from "@mui/material";
 import { applicableIf } from "./Form/rules/applicabilityRules";
-import { isValid } from "./Form/rules/validationRules";
+import { validIf } from "./Form/rules/validationRules";
 import { createFields } from "./Form/createFields";
 
 interface MyForm {
@@ -22,7 +22,7 @@ const fields = createFields<MyForm>((form) => {
 
   form.field("validatedField", (field) => {
     field.label = "Field with validation - try typing SECRET";
-    field.rules = [isValid(({ value }) => value?.startsWith("SECRET"))];
+    field.rules = [validIf(({ value }) => value?.startsWith("SECRET"))];
   });
 
   form.field("secretField", (field) => {

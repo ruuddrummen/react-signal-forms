@@ -49,13 +49,6 @@ export function useApplicabilityRules(
   }, [formContext, fields]);
 }
 
-export function useFieldApplicability(
-  _field: Field,
-  fieldContext: Signal<FieldContext>
-) {
-  return fieldContext.value.isApplicableSignal!.value;
-}
-
 export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
   test: (context: FormContext<TForm>) => boolean
 ): FieldRule<TForm, TKey> {
@@ -63,6 +56,10 @@ export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
     execute: (context: FormContext<TForm>) => test(context),
     ruleType: "applicability",
   } as ApplicabilityFieldRule<TForm, TKey>;
+}
+
+export function isApplicable(fieldContext: Signal<FieldContext>) {
+  return fieldContext.value.isApplicableSignal!.value;
 }
 
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(

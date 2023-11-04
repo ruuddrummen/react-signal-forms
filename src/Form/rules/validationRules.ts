@@ -48,14 +48,7 @@ export function useValidation(
   }, [fields, formContext]);
 }
 
-export function useFieldValidation(
-  _field: Field,
-  fieldContext: Signal<FieldContext>
-) {
-  return fieldContext.value.isValidSignal!.value;
-}
-
-export function isValid<TForm, TKey extends KeyOf<TForm>>(
+export function validIf<TForm, TKey extends KeyOf<TForm>>(
   test: (args: { value: TForm[TKey]; context: FormContext<TForm> }) => boolean
 ): FieldRule<TForm, TKey> {
   return {
@@ -63,6 +56,10 @@ export function isValid<TForm, TKey extends KeyOf<TForm>>(
       test({ value, context }),
     ruleType: "validation",
   } as ValidationFieldRule<TForm, TKey>;
+}
+
+export function isValid(fieldContext: Signal<FieldContext>) {
+  return fieldContext.value.isValidSignal!.value;
 }
 
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(

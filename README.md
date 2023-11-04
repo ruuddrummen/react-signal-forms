@@ -1,3 +1,12 @@
+# React Signal Forms
+
+## TODO
+
+- Create signal per value instead of per field.
+- Fix double runs on applicability rules.
+- Further separate rules from eachother.
+- ...
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
