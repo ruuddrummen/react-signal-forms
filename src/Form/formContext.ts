@@ -1,7 +1,7 @@
 import { useSignal, computed, Signal, signal } from "@preact/signals-react";
 import { createContext, useContext, useEffect } from "react";
 import { patch } from "../signals";
-import { useApplicabilityRules } from "./applicabilityRules";
+import { useApplicabilityRules } from "./rules/applicabilityRules";
 import {
   FieldCollection,
   FormContext,
@@ -10,7 +10,7 @@ import {
   Field,
   FieldContext,
 } from "./types";
-import { useValidation } from "./validationRules";
+import { useValidation } from "./rules/validationRules";
 
 const ReactFormContext = createContext<FormContext>({ fields: {} });
 

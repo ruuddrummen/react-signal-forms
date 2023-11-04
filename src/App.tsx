@@ -3,23 +3,31 @@ import "./App.css";
 import { Form } from "./Form/Form";
 import { FormInput } from "./Form/FormInput";
 import { FieldCollection } from "./Form/types";
-import { computed, useSignal } from "@preact/signals-react";
+import { useSignal } from "@preact/signals-react";
 import { Button, Container } from "@mui/material";
+import { applicableIf } from "./Form/rules/applicabilityRules";
+import { isValid } from "./Form/rules/validationRules";
 
-const fields: FieldCollection = {
+interface MyForm {
+  field1: string;
+  field2: string;
+  field3: string;
+}
+
+const fields: FieldCollection<MyForm> = {
   field1: {
     name: "field1",
     label: "Field 1 - try typing SECRET",
-    isValid: (value) => value === "SECRET",
+    rules: [isValid<MyForm, "field1">(({ value }) => value === "SECRET")],
   },
   field2: {
     name: "field2",
     label: "Secret field",
-    createApplicabilitySignal: (fields) =>
-      computed(() => {
-        console.log("(field2) Checking applicability rule");
-        return fields.field1.value.value === "SECRET";
-      }),
+    rules: [
+      applicableIf<MyForm>(
+        ({ fields }) => fields.field1.value.value === "SECRET"
+      ),
+    ],
   },
   field3: { name: "field3", label: "Field 3" },
 };

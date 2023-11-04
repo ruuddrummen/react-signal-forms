@@ -1,18 +1,20 @@
 import { Signal } from "@preact/signals-react";
 
-export interface Field {
+export interface Field<TForm = any> {
   name: string;
   label: string;
   isValid?: (value: string) => boolean;
-  createApplicabilitySignal?: (
-    fields: FieldContextCollection
-  ) => Signal<boolean>;
+  rules?: Array<FieldRule<TForm>>;
 }
 
-export type FieldCollection = { [name: string]: Field };
+export interface FieldRule<TForm> {
+  ruleType: string;
+}
 
-export interface FormContext {
-  fields: { [name: string]: Signal<FieldContext> };
+export type FieldCollection<TForm = any> = Record<keyof TForm, Field>;
+
+export interface FormContext<TForm = any> {
+  fields: Record<keyof TForm, Signal<FieldContext>>; // { [name: string]: Signal<FieldContext> };
 }
 
 /**
