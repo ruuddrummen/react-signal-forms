@@ -22,14 +22,14 @@ const fields = createFields<MyForm>((form) => {
 
   form.field("validatedField", (field) => {
     field.label = "Field with validation - try typing SECRET";
-    field.rules = [isValid(({ value }) => value === "SECRET")];
+    field.rules = [isValid(({ value }) => value?.startsWith("SECRET"))];
   });
 
   form.field("secretField", (field) => {
     field.label = "Secret field";
     field.rules = [
-      applicableIf(
-        ({ fields }) => fields.validatedField.value.value === "SECRET"
+      applicableIf(({ fields }) =>
+        fields.validatedField.value.value?.startsWith("SECRET")
       ),
     ];
   });
