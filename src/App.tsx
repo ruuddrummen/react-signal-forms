@@ -9,26 +9,28 @@ import { isValid } from "./Form/rules/validationRules";
 import { createFields } from "./Form/createFields";
 
 interface MyForm {
-  field0: string;
-  field1: string;
-  field2: string;
+  simpleField: string;
+  validatedField: string;
+  secretField: string;
 }
 
 const fields = createFields<MyForm>((form) => {
-  form.field("field0", (field) => {
+  form.field("simpleField", (field) => {
     field.label = "Simple field with no rules";
     field.defaultValue = "test";
   });
 
-  form.field("field1", (field) => {
+  form.field("validatedField", (field) => {
     field.label = "Field with validation - try typing SECRET";
     field.rules = [isValid(({ value }) => value === "SECRET")];
   });
 
-  form.field("field2", (field) => {
+  form.field("secretField", (field) => {
     field.label = "Secret field";
     field.rules = [
-      applicableIf(({ fields }) => fields.field1.value.value === "SECRET"),
+      applicableIf(
+        ({ fields }) => fields.validatedField.value.value === "SECRET"
+      ),
     ];
   });
 });
@@ -54,10 +56,10 @@ export const App: React.FC = () => {
         <Button onClick={reset}>Reset</Button>
       </h2>
       <Form fields={fields} key={formKey.value}>
-        <FormInput field={fields.field0} />
-        <FormInput field={fields.field1} />
-        <FormInput field={fields.field2} />
-        <FormInput field={fields.field2} />
+        <FormInput field={fields.simpleField} />
+        <FormInput field={fields.validatedField} />
+        <FormInput field={fields.secretField} />
+        <FormInput field={fields.secretField} />
       </Form>
     </Container>
   );
