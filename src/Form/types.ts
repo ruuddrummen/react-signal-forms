@@ -1,20 +1,23 @@
 import { Signal } from "@preact/signals-react";
+import { KeyOf } from "../utils";
 
-export interface Field<TForm = any> {
+export interface Field<TForm = any, TKey extends KeyOf<TForm> = KeyOf<TForm>> {
   name: string;
-  label: string;
-  isValid?: (value: string) => boolean;
-  rules?: Array<FieldRule<TForm>>;
+  label: string | null;
+  rules?: Array<FieldRule<TForm, TKey>>;
 }
 
-export interface FieldRule<TForm> {
+export interface FieldRule<TForm, TKey extends KeyOf<TForm>> {
   ruleType: string;
 }
 
-export type FieldCollection<TForm = any> = Record<keyof TForm, Field>;
+export type FieldCollection<TForm = any> = Record<
+  KeyOf<TForm>,
+  Field<TForm, KeyOf<TForm>>
+>;
 
 export interface FormContext<TForm = any> {
-  fields: Record<keyof TForm, Signal<FieldContext>>; // { [name: string]: Signal<FieldContext> };
+  fields: Record<KeyOf<TForm>, Signal<FieldContext>>;
 }
 
 /**
@@ -40,4 +43,4 @@ export interface FieldContext {
 
 export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
 
-export type FormState = Array<Field & FieldContext>;
+export type FormState = Array<Field<any, any> & FieldContext>;

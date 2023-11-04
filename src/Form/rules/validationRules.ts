@@ -7,9 +7,10 @@ import {
   FieldRule,
   FormContext,
 } from "../types";
+import { KeyOf, forEachKeyOf } from "../../utils";
 
-interface ValidationFieldRule<TForm, TKey extends keyof TForm>
-  extends FieldRule<TForm> {
+interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
+  extends FieldRule<TForm, TKey> {
   execute: (value: TForm[TKey], context: FormContext<TForm>) => boolean;
 }
 
@@ -53,18 +54,18 @@ export function useFieldValidation(
   return fieldContext.value.isValidSignal!.value;
 }
 
-export function isValid<TForm, TKey extends keyof TForm>(
+export function isValid<TForm, TKey extends KeyOf<TForm>>(
   test: (args: { value: TForm[TKey]; context: FormContext<TForm> }) => boolean
-): ValidationFieldRule<TForm, TKey> {
+): FieldRule<TForm, TKey> {
   return {
     execute: (value: TForm[TKey], context: FormContext<TForm>) =>
       test({ value, context }),
     ruleType: "validation",
-  };
+  } as ValidationFieldRule<TForm, TKey>;
 }
 
-function isValidationRule<TForm, TKey extends keyof TForm>(
-  rule: FieldRule<TForm>
+function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
+  rule: FieldRule<TForm, TKey>
 ): rule is ValidationFieldRule<TForm, TKey> {
   return rule.ruleType === "validation";
 }

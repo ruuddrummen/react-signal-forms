@@ -13,8 +13,10 @@ import {
 } from "../types";
 import { useEffect } from "react";
 import { patch } from "../../signals";
+import { KeyOf } from "../../utils";
 
-interface ApplicabilityFieldRule<TForm> extends FieldRule<TForm> {
+interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
+  extends FieldRule<TForm, TKey> {
   execute: (context: FormContext<TForm>) => boolean;
 }
 
@@ -59,17 +61,17 @@ export function useFieldApplicability(
   return fieldContext.value.isApplicableSignal!.value;
 }
 
-export function applicableIf<TForm>(
+export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
   test: (context: FormContext<TForm>) => boolean
-): ApplicabilityFieldRule<TForm> {
+): FieldRule<TForm, TKey> {
   return {
     execute: (context: FormContext<TForm>) => test(context),
     ruleType: "applicability",
-  };
+  } as ApplicabilityFieldRule<TForm, TKey>;
 }
 
-function isApplicabilityRule<TForm>(
-  rule: FieldRule<TForm>
-): rule is ApplicabilityFieldRule<TForm> {
+function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
+  rule: FieldRule<TForm, TKey>
+): rule is ApplicabilityFieldRule<TForm, TKey> {
   return rule.ruleType === "applicability";
 }
