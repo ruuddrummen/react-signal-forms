@@ -7,7 +7,7 @@ import {
   FieldRule,
   FormContext,
 } from "../types";
-import { KeyOf } from "../../utils";
+import { KeyOf } from "@/utils";
 
 interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {

@@ -1,4 +1,4 @@
-import { KeyOf } from "../utils";
+import { KeyOf } from "@/utils";
 import { Field, FieldCollection, FieldRule } from "./types";
 
 export function createFields<TForm>(

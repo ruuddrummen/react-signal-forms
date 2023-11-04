@@ -7,8 +7,8 @@ import {
   FormContext,
 } from "../types";
 import { useEffect } from "react";
-import { patch } from "../../signals";
-import { KeyOf } from "../../utils";
+import { patch } from "@/signals";
+import { KeyOf } from "@/utils";
 
 interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {

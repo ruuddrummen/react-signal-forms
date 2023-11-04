@@ -1,1 +1,1 @@
-export * from "./patch";
+export { patch } from "./patch";

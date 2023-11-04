@@ -1,5 +1,5 @@
 import { Signal } from "@preact/signals-react";
-import { KeyOf } from "../utils";
+import { KeyOf } from "@/utils";
 
 export interface Field<TForm = any, TKey extends KeyOf<TForm> = KeyOf<TForm>> {
   name: string;
