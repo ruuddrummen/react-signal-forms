@@ -59,7 +59,7 @@ export const App: React.FC = () => {
         <FormInput field={fields.simpleField} />
         <FormInput field={fields.validatedField} />
         <FormInput field={fields.secretField} />
-        <FormInput field={fields.secretField} />
+        {/* <FormInput field={fields.secretField} /> */}
       </Form>
     </Container>
   );

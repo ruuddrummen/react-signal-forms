@@ -7,7 +7,7 @@ import {
   FieldRule,
   FormContext,
 } from "../types";
-import { KeyOf, forEachKeyOf } from "../../utils";
+import { KeyOf } from "../../utils";
 
 interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
@@ -27,22 +27,23 @@ export function useValidation(
       const rules = fields[key].rules?.filter(isValidationRule) ?? [];
       const fieldContext = formContext.value.fields[key];
 
-      formContext.value.fields[key].value.isValidSignal =
-        rules.length > 0
-          ? computed(() => {
-              const result = rules.every((r) =>
-                r.execute(fieldContext.value.value, formContext.value)
-              );
+      if (rules.length > 0) {
+        fieldContext.value.isValidSignal = computed(() => {
+          const result = rules.every((r) =>
+            r.execute(fieldContext.value.value, formContext.value)
+          );
 
-              console.log(
-                `(${key}) Checked validation rule`,
-                fieldContext.value,
-                result
-              );
+          console.log(
+            `(${key}) Checked validation rule`,
+            fieldContext.value,
+            result
+          );
 
-              return result;
-            })
-          : alwaysTrueSignal;
+          return result;
+        });
+      } else {
+        fieldContext.value.isValidSignal = alwaysTrueSignal;
+      }
     });
   }, [fields, formContext]);
 }

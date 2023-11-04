@@ -1,9 +1,4 @@
-import {
-  Signal,
-  computed,
-  signal,
-  useSignalEffect,
-} from "@preact/signals-react";
+import { Signal, computed, signal } from "@preact/signals-react";
 import {
   Field,
   FieldCollection,
@@ -29,35 +24,35 @@ export function useApplicabilityRules(
   useEffect(() => {
     console.log("(Form) Initializing new applicability rules");
 
-    Object.keys(fields).forEach(
-      (key) => {
-        const rules = fields[key].rules?.filter(isApplicabilityRule) ?? [];
+    Object.keys(fields).forEach((key) => {
+      const rules = fields[key].rules?.filter(isApplicabilityRule) ?? [];
+      const fieldContext = formContext.value.fields[key];
 
-        formContext.value.fields[key].value.isApplicableSignal =
-          rules.length > 0
-            ? computed(() => {
-                console.log(`(${key}) Checking applicability rule`);
-                return rules.every((r) => r.execute(formContext.value));
-              })
-            : alwaysTrueSignal;
-      },
-      [fields, formContext]
-    );
-  });
+      if (rules.length > 0) {
+        const signal = computed(() => {
+          console.log(`(${key}) Checking applicability rule`);
+          return rules.every((r) => r.execute(formContext.value));
+        });
+
+        signal.subscribe((value) => {
+          if (!value) {
+            console.log(`(${key}) Clearing field value`);
+            patch(fieldContext, { value: null });
+          }
+        });
+
+        fieldContext.value.isApplicableSignal = signal;
+      } else {
+        fieldContext.value.isApplicableSignal = alwaysTrueSignal;
+      }
+    });
+  }, [formContext, fields]);
 }
 
 export function useFieldApplicability(
-  field: Field,
+  _field: Field,
   fieldContext: Signal<FieldContext>
 ) {
-  useSignalEffect(() => {
-    if (!fieldContext.value.isApplicableSignal!.value) {
-      console.log(`(${field.name}) Clearing field value`);
-
-      patch(fieldContext, { value: null });
-    }
-  });
-
   return fieldContext.value.isApplicableSignal!.value;
 }
 
