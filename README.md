@@ -3,8 +3,12 @@
 ## TODO
 
 - Create signal per value instead of per field.
-- Fix double runs on applicability rules.
+- 🐛 Fix double runs on applicability rules.
 - Further separate rules from eachother.
+- Add type safety to field value in context / signal.
+- Add field types.
+- Add more input components.
+- Map data types to field types.
 - ...
 
 # Getting Started with Create React App

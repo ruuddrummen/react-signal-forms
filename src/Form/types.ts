@@ -7,6 +7,7 @@ export interface Field<TForm = any, TKey extends KeyOf<TForm> = KeyOf<TForm>> {
   rules?: Array<FieldRule<TForm, TKey>>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface FieldRule<TForm, TKey extends KeyOf<TForm>> {
   ruleType: string;
 }
