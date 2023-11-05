@@ -1,5 +1,11 @@
 import { signal } from "@preact/signals-react";
-import { createContext, useContext, useRef } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
 import {
   FieldCollection,
   FormContext,
@@ -8,10 +14,11 @@ import {
   Field,
   FieldContext,
 } from "./types";
+import React from "react";
 
 const ReactFormContext = createContext<FormContext>({ fields: {} });
 
-export const FormContextProvider = ReactFormContext.Provider;
+const FormContextProvider = ReactFormContext.Provider;
 
 export const useFormContext = () => useContext(ReactFormContext);
 
@@ -28,8 +35,20 @@ export function useFormContextProvider(
     createFieldSignals(fields, extensions)
   );
 
+  const ContextProvider = useMemo(() => {
+    const ProviderComponent: React.FC<PropsWithChildren> = ({ children }) => {
+      return (
+        <FormContextProvider value={formContext.current}>
+          {children}
+        </FormContextProvider>
+      );
+    };
+
+    return ProviderComponent;
+  }, []);
+
   return {
-    formContext: formContext.current,
+    FormContextProvider: ContextProvider,
   };
 }
 

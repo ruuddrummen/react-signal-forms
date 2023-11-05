@@ -1,7 +1,7 @@
 import React from "react";
 import { FieldCollection } from "./types";
 import { FormStateManager } from "./FormStateManager";
-import { FormContextProvider, useFormContextProvider } from "./formContext";
+import { useFormContextProvider } from "./formContext";
 import { useApplicabilityRules } from "./extensions/applicabilityRules";
 import { useValidation as useValidationRules } from "./extensions/validationRules";
 
@@ -11,7 +11,7 @@ interface FormProps {
 }
 
 export const Form: React.FC<FormProps> = (props) => {
-  const { formContext } = useFormContextProvider(props.fields, [
+  const { FormContextProvider } = useFormContextProvider(props.fields, [
     useApplicabilityRules,
     useValidationRules,
   ]);
@@ -19,7 +19,7 @@ export const Form: React.FC<FormProps> = (props) => {
   console.log("(Form) Rendering form");
 
   return (
-    <FormContextProvider value={formContext}>
+    <FormContextProvider>
       <form>{props.children}</form>
       <FormStateManager fields={props.fields} />
     </FormContextProvider>
