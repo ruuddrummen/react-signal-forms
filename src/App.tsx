@@ -60,6 +60,7 @@ export const App: React.FC = () => {
         <MyTextInput field={fields.validatedField} />
         <MyTextInput field={fields.secretField} />
         {/* <MyTextInput field={fields.numberField} /> */}
+        {/* <MyTextInput field={fields.booleanField} /> */}
       </MyForm>
     </Container>
   );
