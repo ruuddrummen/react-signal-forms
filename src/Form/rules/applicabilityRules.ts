@@ -1,6 +1,5 @@
 import { Signal, computed, signal } from "@preact/signals-react";
 import {
-  Field,
   FieldCollection,
   FieldContext,
   FieldRule,

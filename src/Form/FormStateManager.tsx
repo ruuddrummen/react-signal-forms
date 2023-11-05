@@ -21,7 +21,7 @@ export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
 };
 
 function useFormState(fields: FieldCollection, formContext: FormContext) {
-  return useComputed<FormState | null>(() => {
+  return useComputed<FormState>(() => {
     const formState = Object.keys(fields).map((key) => {
       const fieldContext = formContext.fields[key]?.value;
 
