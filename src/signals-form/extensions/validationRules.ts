@@ -1,12 +1,11 @@
-import { signal, Signal, computed } from "@preact/signals-react";
-import { useEffect } from "react";
+import { KeyOf } from "@/utils";
+import { computed, signal } from "@preact/signals-react";
 import {
   FieldCollection,
   FieldContext,
   FieldRule,
   FormContext,
 } from "../types";
-import { KeyOf } from "@/utils";
 
 interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {

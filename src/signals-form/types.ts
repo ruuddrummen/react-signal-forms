@@ -41,6 +41,7 @@ export interface FieldContext<TValue = any> {
 
 /**
  * Field context for validation rules.
+ * TODO: refactor to validation extensions.
  */
 export interface FieldContext<TValue = any> {
   isValidSignal?: Signal<boolean>;
@@ -48,6 +49,7 @@ export interface FieldContext<TValue = any> {
 
 /**
  * Field context for applicability rules.
+ * TODO: refactor to applicability extensions.
  */
 export interface FieldContext<TValue = any> {
   isApplicableSignal?: Signal<boolean>;
