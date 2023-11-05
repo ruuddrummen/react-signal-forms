@@ -5,6 +5,7 @@ export interface FieldBase<TValue> {
   name: string;
   label: string | null;
   defaultValue: TValue | null;
+  // rules?: Array<FieldRule<any, string>>;
 }
 
 export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>>
@@ -32,9 +33,6 @@ export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: FieldContext<TForm[Key]>;
 };
 
-/**
- * Base field context.
- */
 export interface FieldContext<TValue = any> {
   valueSignal: Signal<TValue>;
   extensions: FieldContextExtensions;
@@ -45,13 +43,5 @@ type FieldContextExtensions = {
 };
 
 export interface FieldContextExtension {}
-
-/**
- * Field context for applicability rules.
- * TODO: refactor to applicability extensions.
- */
-export interface FieldContext<TValue = any> {
-  isApplicableSignal?: Signal<boolean>;
-}
 
 export type FormState = Array<Field<any, any> & FieldContext<any>>;
