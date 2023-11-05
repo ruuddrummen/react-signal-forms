@@ -1,15 +1,22 @@
 import { KeyOf } from "@/utils";
-import { computed, signal } from "@preact/signals-react";
+import { Signal, computed, signal } from "@preact/signals-react";
 import {
   FieldCollection,
   FieldContext,
+  FieldContextExtension,
   FieldRule,
   FormContext,
 } from "../types";
 
+const EXTENSION_NAME = "validation";
+
 interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
   execute: (value: TForm[TKey], context: FormContext<TForm>) => boolean;
+}
+
+interface ValidationFieldContextExtension extends FieldContextExtension {
+  isValidSignal: Signal<boolean>;
 }
 
 const alwaysTrueSignal = signal(true);
@@ -21,27 +28,41 @@ export function useValidationRules(
   console.log("(Form) Initializing validation rules");
 
   Object.keys(fields).forEach((key) => {
-    const rules = fields[key].rules?.filter(isValidationRule) ?? [];
     const fieldContext = formContext.fields[key];
 
-    if (rules.length > 0) {
-      fieldContext.isValidSignal = computed(() => {
-        const result = rules.every((r) =>
-          r.execute(fieldContext.valueSignal.value, formContext)
-        );
+    const contextExtension: ValidationFieldContextExtension = {
+      isValidSignal: createValidationSignal(fields, key, formContext),
+    };
 
-        console.log(
-          `(${key}) Checked validation rule`,
-          fieldContext.valueSignal,
-          result
-        );
-
-        return result;
-      });
-    } else {
-      fieldContext.isValidSignal = alwaysTrueSignal;
-    }
+    fieldContext.extensions[EXTENSION_NAME] = contextExtension;
   });
+}
+
+function createValidationSignal(
+  fields: FieldCollection,
+  fieldName: string,
+  formContext: FormContext<any>
+): Signal<boolean> {
+  const fieldContext = formContext.fields[fieldName];
+  const rules = fields[fieldName].rules?.filter(isValidationRule) ?? [];
+
+  if (rules.length > 0) {
+    return computed(() => {
+      const result = rules.every((r) =>
+        r.execute(fieldContext.valueSignal.value, formContext)
+      );
+
+      console.log(
+        `(${fieldName}) Checked validation rule`,
+        fieldContext.valueSignal,
+        result
+      );
+
+      return result;
+    });
+  } else {
+    return alwaysTrueSignal;
+  }
 }
 
 export function validIf<TForm, TKey extends KeyOf<TForm>>(
@@ -50,16 +71,20 @@ export function validIf<TForm, TKey extends KeyOf<TForm>>(
   return {
     execute: (value: TForm[TKey], context: FormContext<TForm>) =>
       test({ value, context }),
-    ruleType: "validation",
+    extension: EXTENSION_NAME,
   } as ValidationFieldRule<TForm, TKey>;
 }
 
 export function isValid(fieldContext: FieldContext) {
-  return fieldContext.isValidSignal!.value;
+  const contextExtension = fieldContext.extensions[
+    EXTENSION_NAME
+  ] as ValidationFieldContextExtension;
+
+  return contextExtension.isValidSignal.value;
 }
 
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>
 ): rule is ValidationFieldRule<TForm, TKey> {
-  return rule.ruleType === "validation";
+  return rule.extension === EXTENSION_NAME;
 }

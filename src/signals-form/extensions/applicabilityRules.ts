@@ -49,7 +49,7 @@ export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
 ): FieldRule<TForm, TKey> {
   return {
     execute: (context: FormContext<TForm>) => test(context),
-    ruleType: "applicability",
+    extension: "applicability",
   } as ApplicabilityFieldRule<TForm, TKey>;
 }
 
@@ -60,5 +60,5 @@ export function isApplicable(fieldContext: FieldContext) {
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>
 ): rule is ApplicabilityFieldRule<TForm, TKey> {
-  return rule.ruleType === "applicability";
+  return rule.extension === "applicability";
 }

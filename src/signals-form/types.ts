@@ -17,7 +17,7 @@ export type TextField = FieldBase<string>;
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface FieldRule<TForm, Key extends KeyOf<TForm>> {
-  ruleType: string;
+  extension: string;
 }
 
 export type FieldCollection<TForm = any> = {
@@ -37,15 +37,14 @@ export type FieldContextCollection<TForm = any> = {
  */
 export interface FieldContext<TValue = any> {
   valueSignal: Signal<TValue>;
+  extensions: FieldContextExtensions;
 }
 
-/**
- * Field context for validation rules.
- * TODO: refactor to validation extensions.
- */
-export interface FieldContext<TValue = any> {
-  isValidSignal?: Signal<boolean>;
-}
+type FieldContextExtensions = {
+  [name: string]: FieldContextExtension;
+};
+
+export interface FieldContextExtension {}
 
 /**
  * Field context for applicability rules.

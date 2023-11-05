@@ -74,6 +74,7 @@ function createFieldSignals(
 
         prev[currentName] = {
           valueSignal: signal(value),
+          extensions: {},
         };
 
         return prev;
