@@ -10,6 +10,8 @@ interface MyFormFields {
   simpleField: string;
   validatedField: string;
   secretField: string;
+  numberField: number;
+  booleanField: boolean;
 }
 
 const fields = createFields<MyFormFields>((form) => {

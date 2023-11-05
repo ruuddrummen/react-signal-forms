@@ -18,30 +18,32 @@ export type FieldCollection<TForm = any> = Record<
 >;
 
 export interface FormContext<TForm = any> {
-  fields: Record<KeyOf<TForm>, FieldContext>;
+  fields: FieldContextCollection<TForm>;
 }
+
+export type FieldContextCollection<TForm = any> = {
+  [Key in KeyOf<TForm>]: FieldContext<TForm[Key]>;
+};
 
 /**
  * Base field context.
  */
-export interface FieldContext {
-  valueSignal: Signal<any>;
+export interface FieldContext<TValue = any> {
+  valueSignal: Signal<TValue>;
 }
 
 /**
  * Field context for validation rules.
  */
-export interface FieldContext {
+export interface FieldContext<TValue = any> {
   isValidSignal?: Signal<boolean>;
 }
 
 /**
  * Field context for applicability rules.
  */
-export interface FieldContext {
+export interface FieldContext<TValue = any> {
   isApplicableSignal?: Signal<boolean>;
 }
 
-export type FieldContextCollection = { [name: string]: FieldContext };
-
-export type FormState = Array<Field<any, any> & FieldContext>;
+export type FormState = Array<Field<any, any> & FieldContext<any>>;

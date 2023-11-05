@@ -15,6 +15,7 @@ import {
   FieldContext,
 } from "./types";
 import React from "react";
+import { KeyOf } from "@/utils";
 
 const ReactFormContext = createContext<FormContext>({ fields: {} });
 
@@ -85,7 +86,9 @@ function createFieldSignals(
   return formContext;
 }
 
-export function useFieldContext(field: Field): FieldContext {
+export function useFieldContext<TForm, TKey extends KeyOf<TForm>>(
+  field: Field<TForm, TKey>
+): FieldContext<TForm[TKey]> {
   const formContext = useFormContext();
   const fieldContext = formContext.fields[field.name];
 
