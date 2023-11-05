@@ -15,7 +15,7 @@ interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
 
 const alwaysTrueSignal = signal(true);
 
-export function useValidation(
+export function useValidationRules(
   fields: FieldCollection,
   formContext: FormContext
 ) {

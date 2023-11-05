@@ -1,16 +1,18 @@
 import React from "react";
-import { FieldCollection } from "./types";
-import { FormStateManager } from "./FormStateManager";
-import { useFormContextProvider } from "./formContext";
-import { useApplicabilityRules } from "./extensions/applicabilityRules";
-import { useValidation as useValidationRules } from "./extensions/validationRules";
+import {
+  FieldCollection,
+  useApplicabilityRules,
+  useFormContextProvider,
+  useValidationRules,
+} from "@/signals-form";
+import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
 
 interface FormProps {
   fields: FieldCollection;
   children: React.ReactNode;
 }
 
-export const Form: React.FC<FormProps> = (props) => {
+export const MyForm: React.FC<FormProps> = (props) => {
   const { FormContextProvider } = useFormContextProvider(props.fields, [
     useApplicabilityRules,
     useValidationRules,

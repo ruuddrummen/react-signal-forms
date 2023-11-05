@@ -1,10 +1,7 @@
-import React, { ChangeEvent } from "react";
-import { Field } from "./types";
-import { FormControl, TextField } from "@mui/material";
 import { useRenderCount } from "@/utils";
-import { useFieldContext } from "./formContext";
-import { isApplicable } from "./extensions/applicabilityRules";
-import { isValid } from "./extensions/validationRules";
+import { FormControl, TextField } from "@mui/material";
+import React, { ChangeEvent } from "react";
+import { Field, isApplicable, isValid, useFieldContext } from "@/signals-form";
 
 interface FormInputProps {
   field: Field;

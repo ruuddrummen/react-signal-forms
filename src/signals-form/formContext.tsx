@@ -35,6 +35,7 @@ export function useFormContextProvider(
     createFieldSignals(fields, extensions)
   );
 
+  // See: https://blog.bitsrc.io/new-react-design-pattern-return-component-from-hooks-79215c3eac00
   const ContextProvider = useMemo(() => {
     const ProviderComponent: React.FC<PropsWithChildren> = ({ children }) => {
       return (
