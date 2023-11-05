@@ -9,7 +9,6 @@ import {
 import {
   FieldCollection,
   FormContext,
-  FormState,
   FieldContextCollection,
   FieldContext,
   FieldBase,
@@ -62,14 +61,12 @@ function createFieldSignals(
 
   const formState = JSON.parse(
     localStorage.getItem("FormState") ?? "[]"
-  ) as FormState;
+  ) as FieldContextCollection;
 
   const formContext: FormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
-        const value =
-          formState.find((field) => field.name === currentName)?.valueSignal ??
-          null;
+        const value = formState[currentName]?.valueSignal ?? null;
 
         prev[currentName] = {
           valueSignal: signal(value),
