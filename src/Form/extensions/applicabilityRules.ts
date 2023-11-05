@@ -5,7 +5,6 @@ import {
   FieldRule,
   FormContext,
 } from "../types";
-import { useEffect } from "react";
 import { patch } from "@/signals";
 import { KeyOf } from "@/utils";
 
@@ -18,34 +17,32 @@ const alwaysTrueSignal = signal(true);
 
 export function useApplicabilityRules(
   fields: FieldCollection,
-  formContext: Signal<FormContext>
+  formContext: FormContext
 ) {
-  useEffect(() => {
-    console.log("(Form) Initializing new applicability rules");
+  console.log("(Form) Initializing applicability rules");
 
-    Object.keys(fields).forEach((key) => {
-      const rules = fields[key].rules?.filter(isApplicabilityRule) ?? [];
-      const fieldContext = formContext.value.fields[key];
+  Object.keys(fields).forEach((key) => {
+    const rules = fields[key].rules?.filter(isApplicabilityRule) ?? [];
+    const fieldContext = formContext.fields[key];
 
-      if (rules.length > 0) {
-        const signal = computed(() => {
-          console.log(`(${key}) Checking applicability rule`);
-          return rules.every((r) => r.execute(formContext.value));
-        });
+    if (rules.length > 0) {
+      const signal = computed(() => {
+        console.log(`(${key}) Checking applicability rule`);
+        return rules.every((r) => r.execute(formContext));
+      });
 
-        signal.subscribe((value) => {
-          if (!value) {
-            console.log(`(${key}) Clearing field value`);
-            patch(fieldContext, { value: null });
-          }
-        });
+      signal.subscribe((value) => {
+        if (!value) {
+          console.log(`(${key}) Clearing field value`);
+          patch(fieldContext, { value: null });
+        }
+      });
 
-        fieldContext.value.isApplicableSignal = signal;
-      } else {
-        fieldContext.value.isApplicableSignal = alwaysTrueSignal;
-      }
-    });
-  }, [formContext, fields]);
+      fieldContext.value.isApplicableSignal = signal;
+    } else {
+      fieldContext.value.isApplicableSignal = alwaysTrueSignal;
+    }
+  });
 }
 
 export function applicableIf<TForm, TKey extends KeyOf<TForm>>(

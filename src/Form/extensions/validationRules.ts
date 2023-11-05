@@ -17,34 +17,32 @@ const alwaysTrueSignal = signal(true);
 
 export function useValidation(
   fields: FieldCollection,
-  formContext: Signal<FormContext>
+  formContext: FormContext
 ) {
-  useEffect(() => {
-    console.log("(Form) Initializing new validation rules");
+  console.log("(Form) Initializing validation rules");
 
-    Object.keys(fields).forEach((key) => {
-      const rules = fields[key].rules?.filter(isValidationRule) ?? [];
-      const fieldContext = formContext.value.fields[key];
+  Object.keys(fields).forEach((key) => {
+    const rules = fields[key].rules?.filter(isValidationRule) ?? [];
+    const fieldContext = formContext.fields[key];
 
-      if (rules.length > 0) {
-        fieldContext.value.isValidSignal = computed(() => {
-          const result = rules.every((r) =>
-            r.execute(fieldContext.value.value, formContext.value)
-          );
+    if (rules.length > 0) {
+      fieldContext.value.isValidSignal = computed(() => {
+        const result = rules.every((r) =>
+          r.execute(fieldContext.value.value, formContext)
+        );
 
-          console.log(
-            `(${key}) Checked validation rule`,
-            fieldContext.value,
-            result
-          );
+        console.log(
+          `(${key}) Checked validation rule`,
+          fieldContext.value,
+          result
+        );
 
-          return result;
-        });
-      } else {
-        fieldContext.value.isValidSignal = alwaysTrueSignal;
-      }
-    });
-  }, [fields, formContext]);
+        return result;
+      });
+    } else {
+      fieldContext.value.isValidSignal = alwaysTrueSignal;
+    }
+  });
 }
 
 export function validIf<TForm, TKey extends KeyOf<TForm>>(

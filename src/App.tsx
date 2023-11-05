@@ -4,8 +4,8 @@ import { Form } from "./Form/Form";
 import { FormInput } from "./Form/FormInput";
 import { useSignal } from "@preact/signals-react";
 import { Button, Container } from "@mui/material";
-import { applicableIf } from "./Form/rules/applicabilityRules";
-import { validIf } from "./Form/rules/validationRules";
+import { applicableIf } from "./Form/extensions/applicabilityRules";
+import { validIf } from "./Form/extensions/validationRules";
 import { createFields } from "./Form/createFields";
 
 interface MyForm {

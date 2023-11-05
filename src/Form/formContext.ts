@@ -1,7 +1,5 @@
-import { useSignal, computed, Signal, signal } from "@preact/signals-react";
-import { createContext, useContext, useEffect } from "react";
-import { patch } from "../signals";
-import { useApplicabilityRules } from "./rules/applicabilityRules";
+import { Signal, signal } from "@preact/signals-react";
+import { createContext, useContext, useRef } from "react";
 import {
   FieldCollection,
   FormContext,
@@ -10,7 +8,6 @@ import {
   Field,
   FieldContext,
 } from "./types";
-import { useValidation } from "./rules/validationRules";
 
 const ReactFormContext = createContext<FormContext>({ fields: {} });
 
@@ -18,32 +15,28 @@ export const FormContextProvider = ReactFormContext.Provider;
 
 export const useFormContext = () => useContext(ReactFormContext);
 
-export function useFormContextProvider(fields: FieldCollection) {
-  const formContext = useSignal<FormContext>({
-    fields: {},
-  });
+type FormExtension = (
+  fields: FieldCollection,
+  formContext: FormContext
+) => void;
 
-  const isInitialized = computed(
-    () => Object.keys(formContext.value.fields).length > 0
+export function useFormContextProvider(
+  fields: FieldCollection,
+  extensions: Array<FormExtension>
+) {
+  const formContext = useRef<FormContext>(
+    createFieldSignals(fields, extensions)
   );
 
-  useFields(fields, formContext);
-  useValidation(fields, formContext);
-  useApplicabilityRules(fields, formContext);
-
   return {
-    formContext: formContext.value,
-    isInitialized: isInitialized.value,
+    formContext: formContext.current,
   };
 }
 
-function useFields(fields: FieldCollection, formContext: Signal<FormContext>) {
-  useEffect(() => {
-    patch(formContext, createFieldSignals(fields));
-  }, [formContext, fields]);
-}
-
-function createFieldSignals(fields: FieldCollection) {
+function createFieldSignals(
+  fields: FieldCollection,
+  extensions: Array<FormExtension>
+) {
   console.log("(Form) Creating field signals");
 
   const formState = JSON.parse(
@@ -65,6 +58,8 @@ function createFieldSignals(fields: FieldCollection) {
       {}
     ),
   };
+
+  extensions.forEach((ext) => ext(fields, formContext));
 
   return formContext;
 }

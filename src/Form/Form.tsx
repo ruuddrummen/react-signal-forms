@@ -1,8 +1,9 @@
 import React from "react";
 import { FieldCollection } from "./types";
 import { FormStateManager } from "./FormStateManager";
-import { CircularProgress } from "@mui/material";
 import { FormContextProvider, useFormContextProvider } from "./formContext";
+import { useApplicabilityRules } from "./extensions/applicabilityRules";
+import { useValidation as useValidationRules } from "./extensions/validationRules";
 
 interface FormProps {
   fields: FieldCollection;
@@ -10,12 +11,10 @@ interface FormProps {
 }
 
 export const Form: React.FC<FormProps> = (props) => {
-  const { formContext, isInitialized } = useFormContextProvider(props.fields);
-
-  if (!isInitialized) {
-    console.log("(Form) Rendering spinner");
-    return <CircularProgress />;
-  }
+  const { formContext } = useFormContextProvider(props.fields, [
+    useApplicabilityRules,
+    useValidationRules,
+  ]);
 
   console.log("(Form) Rendering form");
 

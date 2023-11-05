@@ -4,8 +4,8 @@ import { FormControl, TextField } from "@mui/material";
 import { patch } from "@/signals";
 import { useRenderCount } from "@/utils";
 import { useFieldContext } from "./formContext";
-import { isApplicable } from "./rules/applicabilityRules";
-import { isValid } from "./rules/validationRules";
+import { isApplicable } from "./extensions/applicabilityRules";
+import { isValid } from "./extensions/validationRules";
 
 interface FormInputProps {
   field: Field;
