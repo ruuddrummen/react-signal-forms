@@ -4,7 +4,7 @@ import React from "react";
 import "./App.css";
 import { applicableIf, createFields, validIf } from "./signals-form";
 import { MyForm } from "./MyForm/MyForm";
-import { FormInput } from "./MyForm/MyFormInput";
+import { MyTextInput } from "./MyForm/MyTextInput";
 
 interface MyFormFields {
   simpleField: string;
@@ -56,10 +56,10 @@ export const App: React.FC = () => {
         <Button onClick={reset}>Reset</Button>
       </h2>
       <MyForm fields={fields} key={formKey.value}>
-        <FormInput field={fields.simpleField} />
-        <FormInput field={fields.validatedField} />
-        <FormInput field={fields.secretField} />
-        {/* <FormInput field={fields.secretField} /> */}
+        <MyTextInput field={fields.simpleField} />
+        <MyTextInput field={fields.validatedField} />
+        <MyTextInput field={fields.secretField} />
+        {/* <MyTextInput field={fields.numberField} /> */}
       </MyForm>
     </Container>
   );

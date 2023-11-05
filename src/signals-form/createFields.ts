@@ -49,6 +49,7 @@ class FieldBuilder<TForm, TKey extends KeyOf<TForm>> {
     return {
       name: this.name,
       label: this.label,
+      defaultValue: this.defaultValue,
       rules: this.rules,
     };
   }

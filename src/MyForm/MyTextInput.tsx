@@ -1,13 +1,14 @@
 import { useRenderCount } from "@/utils";
-import { FormControl, TextField } from "@mui/material";
+import { FormControl, TextField as MuiTextField } from "@mui/material";
 import React, { ChangeEvent } from "react";
-import { Field, isApplicable, isValid, useFieldContext } from "@/signals-form";
+import { isApplicable, isValid, useFieldContext } from "@/signals-form";
+import { TextField } from "@/signals-form/types";
 
 interface FormInputProps {
-  field: Field;
+  field: TextField;
 }
 
-export const FormInput: React.FC<FormInputProps> = ({ field }) => {
+export const MyTextInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
   const renderCount = useRenderCount();
 
@@ -25,7 +26,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
 
   return (
     <FormControl fullWidth margin="normal">
-      <TextField
+      <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
         value={fieldContext.valueSignal.value ?? ""}
         onChange={onChange}
