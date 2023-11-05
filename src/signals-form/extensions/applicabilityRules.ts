@@ -1,5 +1,5 @@
 import { KeyOf } from "@/utils";
-import { Signal, computed, signal } from "@preact/signals-react";
+import { Signal, computed } from "@preact/signals-react";
 import {
   FieldCollection,
   FieldContext,
@@ -7,6 +7,7 @@ import {
   FieldRule,
   FormContext,
 } from "../types";
+import { alwaysTrueSignal } from "@/signals";
 
 const EXTENSION_NAME = "applicability";
 
@@ -18,8 +19,6 @@ interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
 interface ApplicabilityFieldContextExtension extends FieldContextExtension {
   isApplicableSignal: Signal<boolean>;
 }
-
-const alwaysTrueSignal = signal(true);
 
 export function useApplicabilityRules(
   fields: FieldCollection,

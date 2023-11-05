@@ -3,11 +3,11 @@
 ## TODO
 
 - ✅ Create signal per value instead of per field.
-- Further separate rules and rule context from eachother.
-- Add type safety to field value in context / signal.
-- Add field types.
-- Add more input components.
-- Map data types to field types.
+- ✅ Further separate rules and rule context from eachother.
+- ✅ Add type safety to field value in context / signal.
+- ✅ Add field types.
+- ✅ Map data types to field types.
+- ⬜ Add more input components.
 - ...
 
 # Getting Started with Create React App

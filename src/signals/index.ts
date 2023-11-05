@@ -1,1 +1,2 @@
-export { patch } from "./patch";
+export * from "./patch";
+export * from "./alwaysTrue";

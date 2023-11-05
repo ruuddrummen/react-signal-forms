@@ -1,4 +1,9 @@
-export type { FieldCollection, Field } from "./types";
+export type {
+  FieldCollection,
+  TextField,
+  NumberField,
+  BooleanField,
+} from "./types";
 
 export { createFields } from "./createFields";
 
