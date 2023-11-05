@@ -48,17 +48,11 @@ function createValidationSignal(
 
   if (rules.length > 0) {
     return computed(() => {
-      const result = rules.every((r) =>
+      console.log(`(${fieldName}) Checking validation rule`);
+
+      return rules.every((r) =>
         r.execute(fieldContext.valueSignal.value, formContext)
       );
-
-      console.log(
-        `(${fieldName}) Checked validation rule`,
-        fieldContext.valueSignal,
-        result
-      );
-
-      return result;
     });
   } else {
     return alwaysTrueSignal;
