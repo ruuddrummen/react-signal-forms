@@ -35,7 +35,7 @@ const fields = createFields<MyForm>((form) => {
   });
 });
 
-console.log("Created field collection", fields);
+console.log("(App) Created field collection", fields);
 
 export const App: React.FC = () => {
   const formKey = useSignal(Math.random().toString());

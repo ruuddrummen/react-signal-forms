@@ -55,7 +55,7 @@ export function ensureNotNull<T>(
 }
 
 export const useRenderCount = () => {
-  const count = useRef(0);
+  const count = useRef(1);
 
   useEffect(() => {
     count.current++;
