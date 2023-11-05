@@ -51,6 +51,7 @@ export function useFormContextProvider(
   }, []);
 
   return {
+    formContext,
     FormContextProvider: ContextProvider,
   };
 }
