@@ -1,4 +1,4 @@
-import { Signal, signal } from "@preact/signals-react";
+import { signal } from "@preact/signals-react";
 import { createContext, useContext, useRef } from "react";
 import {
   FieldCollection,
@@ -43,15 +43,16 @@ function createFieldSignals(
     localStorage.getItem("FormState") ?? "[]"
   ) as FormState;
 
-  const formContext = {
+  const formContext: FormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
         const value =
-          formState.find((field) => field.name === currentName)?.value ?? null;
+          formState.find((field) => field.name === currentName)?.valueSignal ??
+          null;
 
-        prev[currentName] = signal({
-          value,
-        });
+        prev[currentName] = {
+          valueSignal: signal(value),
+        };
 
         return prev;
       },
@@ -64,7 +65,7 @@ function createFieldSignals(
   return formContext;
 }
 
-export function useFieldContext(field: Field): Signal<FieldContext> {
+export function useFieldContext(field: Field): FieldContext {
   const formContext = useFormContext();
   const fieldContext = formContext.fields[field.name];
 

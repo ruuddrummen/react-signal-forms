@@ -26,21 +26,21 @@ export function useValidation(
     const fieldContext = formContext.fields[key];
 
     if (rules.length > 0) {
-      fieldContext.value.isValidSignal = computed(() => {
+      fieldContext.isValidSignal = computed(() => {
         const result = rules.every((r) =>
-          r.execute(fieldContext.value.value, formContext)
+          r.execute(fieldContext.valueSignal.value, formContext)
         );
 
         console.log(
           `(${key}) Checked validation rule`,
-          fieldContext.value,
+          fieldContext.valueSignal,
           result
         );
 
         return result;
       });
     } else {
-      fieldContext.value.isValidSignal = alwaysTrueSignal;
+      fieldContext.isValidSignal = alwaysTrueSignal;
     }
   });
 }
@@ -55,8 +55,8 @@ export function validIf<TForm, TKey extends KeyOf<TForm>>(
   } as ValidationFieldRule<TForm, TKey>;
 }
 
-export function isValid(fieldContext: Signal<FieldContext>) {
-  return fieldContext.value.isValidSignal!.value;
+export function isValid(fieldContext: FieldContext) {
+  return fieldContext.isValidSignal!.value;
 }
 
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(

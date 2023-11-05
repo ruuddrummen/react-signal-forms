@@ -34,13 +34,13 @@ export function useApplicabilityRules(
       signal.subscribe((value) => {
         if (!value) {
           console.log(`(${key}) Clearing field value`);
-          patch(fieldContext, { value: null });
+          fieldContext.valueSignal.value = null;
         }
       });
 
-      fieldContext.value.isApplicableSignal = signal;
+      fieldContext.isApplicableSignal = signal;
     } else {
-      fieldContext.value.isApplicableSignal = alwaysTrueSignal;
+      fieldContext.isApplicableSignal = alwaysTrueSignal;
     }
   });
 }
@@ -54,8 +54,8 @@ export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
   } as ApplicabilityFieldRule<TForm, TKey>;
 }
 
-export function isApplicable(fieldContext: Signal<FieldContext>) {
-  return fieldContext.value.isApplicableSignal!.value;
+export function isApplicable(fieldContext: FieldContext) {
+  return fieldContext.isApplicableSignal!.value;
 }
 
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(

@@ -22,7 +22,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
   function onChange(event: ChangeEvent<HTMLInputElement>): void {
     console.log(`(${field.name}) Setting value to:`, event.currentTarget.value);
 
-    patch(fieldContext, { value: event.currentTarget.value });
+    fieldContext.valueSignal.value = event.currentTarget.value;
   }
 
   console.log(`(${field.name}) Rendering input`);
@@ -31,7 +31,7 @@ export const FormInput: React.FC<FormInputProps> = ({ field }) => {
     <FormControl fullWidth margin="normal">
       <TextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
-        value={fieldContext.value.value ?? ""}
+        value={fieldContext.valueSignal.value ?? ""}
         onChange={onChange}
         error={!isValid(fieldContext)}
       />

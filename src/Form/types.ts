@@ -18,14 +18,14 @@ export type FieldCollection<TForm = any> = Record<
 >;
 
 export interface FormContext<TForm = any> {
-  fields: Record<KeyOf<TForm>, Signal<FieldContext>>;
+  fields: Record<KeyOf<TForm>, FieldContext>;
 }
 
 /**
  * Base field context.
  */
 export interface FieldContext {
-  value: any;
+  valueSignal: Signal<any>;
 }
 
 /**
@@ -42,6 +42,6 @@ export interface FieldContext {
   isApplicableSignal?: Signal<boolean>;
 }
 
-export type FieldContextCollection = { [name: string]: Signal<FieldContext> };
+export type FieldContextCollection = { [name: string]: FieldContext };
 
 export type FormState = Array<Field<any, any> & FieldContext>;
