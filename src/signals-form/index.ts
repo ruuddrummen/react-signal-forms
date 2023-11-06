@@ -1,3 +1,5 @@
+export { initSignalForms } from "./init";
+
 export type {
   BooleanField,
   FieldCollection,
@@ -8,10 +10,8 @@ export type {
 
 export { createFields } from "./fields";
 
-export {
-  useFieldContext,
-  useFormContext,
-  useFormContextProvider,
-} from "./formContext";
+export { useFormContext, useFormContextProvider } from "./formContext";
+
+// export { useFieldContext } from "./fieldContext";
 
 export * from "./extensions";

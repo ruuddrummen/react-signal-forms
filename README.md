@@ -8,10 +8,10 @@
 - [x] Add field types.
 - [x] Map data types to field types.
 - [ ] Add functions and extensions to `useFieldContext`, such as
-  - `fieldContext.value()`
-  - `fieldContext.setValue()`
-  - `fieldContext.isValid()`
-  - `fieldContext.isApplicable()`
+  - [x] `fieldContext.value()`
+  - [x] `fieldContext.setValue()`
+  - [x] `fieldContext.isValid()`
+  - [x] `fieldContext.isApplicable()`
 - [ ] Add form scope signal such as `isSubmittingSignal`.
 - [ ] Add child array forms.
 - [ ] ❓ Add field groups with rules, such as applicability.

@@ -1,13 +1,12 @@
-import { Signal } from "@preact/signals-react";
 import { KeyOf } from "@/utils";
+import { Signal } from "@preact/signals-react";
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>;
 };
 
 export interface IFieldContext<TValue = any> {
-  // valueSignal: Signal<TValue>;
-  extensions: FieldContextExtensions;
+  _extensions: FieldContextExtensions;
   value: () => TValue;
   setValue: (value: TValue) => void;
 }
@@ -20,18 +19,18 @@ export interface FieldContextExtension {}
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   private valueSignal: Signal<TValue>;
-  extensions: FieldContextExtensions;
+  _extensions: FieldContextExtensions;
 
   constructor(valueSignal: Signal<TValue>, extensions: FieldContextExtensions) {
     this.valueSignal = valueSignal;
-    this.extensions = extensions;
+    this._extensions = extensions;
   }
 
-  value() {
+  value = () => {
     return this.valueSignal.value;
-  }
+  };
 
-  setValue(value: TValue) {
+  setValue = (value: TValue) => {
     this.valueSignal.value = value;
-  }
+  };
 }

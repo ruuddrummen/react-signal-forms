@@ -4,6 +4,7 @@ import { IFieldContext, FieldContextExtension } from "../fieldContext";
 import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "@/signals";
 import { FieldRule, FieldCollection } from "../fields";
+import { SignalFormExtension } from "./types";
 
 const EXTENSION_NAME = "validation";
 
@@ -15,6 +16,22 @@ interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
 interface ValidationFieldContextExtension extends FieldContextExtension {
   isValidSignal: Signal<boolean>;
 }
+
+interface ValidationFieldContext {
+  isValid: () => boolean;
+}
+
+export const validationExtension: SignalFormExtension<ValidationFieldContext> =
+  {
+    extendFieldContext: (fieldContext) => {
+      const extension = fieldContext._extensions[
+        EXTENSION_NAME
+      ] as ValidationFieldContextExtension;
+
+      (fieldContext as IFieldContext & ValidationFieldContext).isValid = () =>
+        extension.isValidSignal.value;
+    },
+  };
 
 export function useValidationRules(
   fields: FieldCollection,
@@ -29,7 +46,7 @@ export function useValidationRules(
       isValidSignal: createValidationSignal(fields, key, formContext),
     };
 
-    fieldContext.extensions[EXTENSION_NAME] = contextExtension;
+    fieldContext._extensions[EXTENSION_NAME] = contextExtension;
   });
 }
 
@@ -62,13 +79,13 @@ export function validIf<TForm, TKey extends KeyOf<TForm>>(
   } as ValidationFieldRule<TForm, TKey>;
 }
 
-export function isValid(fieldContext: IFieldContext) {
-  const contextExtension = fieldContext.extensions[
-    EXTENSION_NAME
-  ] as ValidationFieldContextExtension;
+// export function isValid(fieldContext: IFieldContext) {
+//   const contextExtension = fieldContext._extensions[
+//     EXTENSION_NAME
+//   ] as ValidationFieldContextExtension;
 
-  return contextExtension.isValidSignal.value;
-}
+//   return contextExtension.isValidSignal.value;
+// }
 
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>

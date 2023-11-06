@@ -6,14 +6,9 @@ import {
   useMemo,
   useRef,
 } from "react";
-import {
-  FieldContextCollection,
-  IFieldContext,
-  FieldContext,
-} from "./fieldContext";
+import { FieldContextCollection, FieldContext } from "./fieldContext";
 import React from "react";
 import { FieldCollection } from ".";
-import { FieldBase } from "./fields";
 
 const FormContext = createContext<IFormContext>({ fields: {} });
 
@@ -59,8 +54,6 @@ function createFormContext(
   fields: FieldCollection,
   extensions: Array<FormExtension>
 ) {
-  console.log("(Form) Creating field signals");
-
   const formContext: IFormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
@@ -72,16 +65,9 @@ function createFormContext(
     ),
   };
 
+  console.log("(Form) Created field signals", formContext);
+
   extensions.forEach((ext) => ext(fields, formContext));
 
   return formContext;
-}
-
-export function useFieldContext<TValue>(
-  field: FieldBase<TValue>
-): IFieldContext<TValue> {
-  const formContext = useFormContext();
-  const fieldContext = formContext.fields[field.name];
-
-  return fieldContext;
 }

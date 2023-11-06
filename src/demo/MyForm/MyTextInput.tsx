@@ -1,12 +1,8 @@
-import {
-  TextField,
-  isApplicable,
-  isValid,
-  useFieldContext,
-} from "@/signals-form";
+import { TextField } from "@/signals-form";
 import { useRenderCount } from "@/utils";
 import { FormControl, TextField as MuiTextField } from "@mui/material";
 import React, { ChangeEvent } from "react";
+import { useFieldContext } from "../App";
 
 interface FormInputProps {
   field: TextField;
@@ -14,16 +10,18 @@ interface FormInputProps {
 
 export const MyTextInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
+  const { value, setValue, isValid, isApplicable } = fieldContext;
+
   const renderCount = useRenderCount();
 
-  if (!isApplicable(fieldContext)) {
+  if (!isApplicable()) {
     return null;
   }
 
   function onChange(event: ChangeEvent<HTMLInputElement>): void {
     console.log(`(${field.name}) Setting value to:`, event.currentTarget.value);
 
-    fieldContext.setValue(event.currentTarget.value);
+    setValue(event.currentTarget.value);
   }
 
   console.log(`(${field.name}) Rendering input`);
@@ -32,9 +30,9 @@ export const MyTextInput: React.FC<FormInputProps> = ({ field }) => {
     <FormControl fullWidth margin="normal">
       <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
-        value={fieldContext.value() ?? ""}
+        value={value() ?? ""}
         onChange={onChange}
-        error={!isValid(fieldContext)}
+        error={!isValid()}
       />
     </FormControl>
   );

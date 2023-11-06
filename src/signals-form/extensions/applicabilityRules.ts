@@ -4,16 +4,33 @@ import { IFieldContext, FieldContextExtension } from "../fieldContext";
 import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "@/signals";
 import { FieldRule, FieldCollection } from "../fields";
+import { SignalFormExtension } from "./types";
 
 const EXTENSION_NAME = "applicability";
+
+interface ApplicabilityFieldContextExtension extends FieldContextExtension {
+  isApplicableSignal: Signal<boolean>;
+}
+
+interface ApplicabilityFieldContext {
+  isApplicable: () => boolean;
+}
+
+export const applicabilityExtension: SignalFormExtension<ApplicabilityFieldContext> =
+  {
+    extendFieldContext: (fieldContext) => {
+      const extension = fieldContext._extensions[
+        EXTENSION_NAME
+      ] as ApplicabilityFieldContextExtension;
+
+      (fieldContext as IFieldContext & ApplicabilityFieldContext).isApplicable =
+        () => extension.isApplicableSignal.value;
+    },
+  };
 
 interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
   execute: (context: IFormContext<TForm>) => boolean;
-}
-
-interface ApplicabilityFieldContextExtension extends FieldContextExtension {
-  isApplicableSignal: Signal<boolean>;
 }
 
 export function useApplicabilityRules(
@@ -29,7 +46,7 @@ export function useApplicabilityRules(
       isApplicableSignal: createApplicabilitySignal(fields, key, formContext),
     };
 
-    fieldContext.extensions[EXTENSION_NAME] = contextExtension;
+    fieldContext._extensions[EXTENSION_NAME] = contextExtension;
   });
 }
 
@@ -42,13 +59,13 @@ export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
   } as ApplicabilityFieldRule<TForm, TKey>;
 }
 
-export function isApplicable(fieldContext: IFieldContext) {
-  const extension = fieldContext.extensions[
-    EXTENSION_NAME
-  ] as ApplicabilityFieldContextExtension;
+// export function isApplicable(fieldContext: IFieldContext) {
+//   const extension = fieldContext._extensions[
+//     EXTENSION_NAME
+//   ] as ApplicabilityFieldContextExtension;
 
-  return extension.isApplicableSignal.value;
-}
+//   return extension.isApplicableSignal.value;
+// }
 
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>

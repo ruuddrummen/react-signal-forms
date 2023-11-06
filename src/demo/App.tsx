@@ -1,10 +1,22 @@
-import { applicableIf, createFields, validIf } from "@/signals-form";
+import {
+  applicabilityExtension,
+  applicableIf,
+  createFields,
+  initSignalForms,
+  validIf,
+  validationExtension,
+} from "@/signals-form";
 import { Button, Container } from "@mui/material";
 import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
 import { MyForm } from "./MyForm/MyForm";
 import { MyTextInput } from "./MyForm/MyTextInput";
+
+export const { useFieldContext } = initSignalForms(
+  validationExtension,
+  applicabilityExtension
+);
 
 interface MyFormFields {
   simpleField: string;
