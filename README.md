@@ -1,14 +1,29 @@
 # React Signal Forms
 
-## TODO
+## TODO (General)
 
-- ✅ Create signal per value instead of per field.
-- ✅ Further separate rules and rule context from eachother.
-- ✅ Add type safety to field value in context / signal.
-- ✅ Add field types.
-- ✅ Map data types to field types.
-- ⬜ Add more input components.
-- ...
+- [x] Create signal per value instead of per field.
+- [x] Further separate rules and rule context from eachother.
+- [x] Add type safety to field value in context / signal.
+- [x] Add field types.
+- [x] Map data types to field types.
+- [ ] Add functions and extensions to `useFieldContext`, such as
+  - `fieldContext.value()`
+  - `fieldContext.setValue()`
+  - `fieldContext.isValid()`
+  - `fieldContext.isApplicable()`
+- [ ] Add form scope signal such as `isSubmittingSignal`.
+- [ ] Add child array forms.
+- [ ] ❓ Add field groups with rules, such as applicability.
+- [ ] Add more input components.
+- [ ] Make field types more specific than just data types.
+
+## TODO (Okapi)
+
+- [ ] Allow users to add custom field types or custom properties to existing field types, such as
+  - `coding` fields
+  - `sop`, `document` and `template` for document references
+  - `isUsedExternally` for integration references
 
 # Getting Started with Create React App
 
