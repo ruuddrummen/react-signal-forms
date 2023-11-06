@@ -1,13 +1,12 @@
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
 import {
-  FieldCollection,
   FieldContext,
   FieldContextExtension,
-  FieldRule,
   FormContext,
-} from "../types";
+} from "../fieldContext";
 import { alwaysTrueSignal } from "@/signals";
+import { FieldRule, FieldCollection } from "../fields";
 
 const EXTENSION_NAME = "validation";
 

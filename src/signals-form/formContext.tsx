@@ -7,13 +7,13 @@ import {
   useRef,
 } from "react";
 import {
-  FieldCollection,
   FormContext,
   FieldContextCollection,
   FieldContext,
-  FieldBase,
-} from "./types";
+} from "./fieldContext";
 import React from "react";
+import { FieldCollection } from ".";
+import { FieldBase } from "./fields";
 
 const ReactFormContext = createContext<FormContext>({ fields: {} });
 
@@ -31,7 +31,7 @@ export function useFormContextProvider(
   extensions: Array<FormExtension>
 ) {
   const formContext = useRef<FormContext>(
-    createFieldSignals(fields, extensions)
+    createFormContext(fields, extensions)
   );
 
   // See: https://blog.bitsrc.io/new-react-design-pattern-return-component-from-hooks-79215c3eac00
@@ -49,11 +49,11 @@ export function useFormContextProvider(
 
   return {
     formContext,
-    FormContextProvider: ContextProvider,
+    SignalsForm: ContextProvider,
   };
 }
 
-function createFieldSignals(
+function createFormContext(
   fields: FieldCollection,
   extensions: Array<FormExtension>
 ) {

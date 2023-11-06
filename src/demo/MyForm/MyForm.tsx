@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FieldCollection,
   useApplicabilityRules,
@@ -6,6 +5,7 @@ import {
   useValidationRules,
 } from "@/signals-form";
 import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
+import React from "react";
 
 interface FormProps {
   fields: FieldCollection;
@@ -13,10 +13,10 @@ interface FormProps {
 }
 
 export const MyForm: React.FC<FormProps> = (props) => {
-  const { FormContextProvider } = useFormContextProvider(props.fields, [
-    useApplicabilityRules,
-    useValidationRules,
-  ]);
+  const { SignalsForm: FormContextProvider } = useFormContextProvider(
+    props.fields,
+    [useApplicabilityRules, useValidationRules]
+  );
 
   console.log("(Form) Rendering form");
 

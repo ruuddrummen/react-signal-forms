@@ -1,16 +1,17 @@
 export type {
-  FieldCollection,
-  TextField,
-  NumberField,
   BooleanField,
-} from "./types";
+  FieldCollection,
+  NumberField,
+  TextField,
+  FieldRule,
+} from "./fields";
 
-export { createFields } from "./createFields";
+export { createFields } from "./fields";
 
 export {
-  useFormContextProvider,
-  useFormContext,
   useFieldContext,
+  useFormContext,
+  useFormContextProvider,
 } from "./formContext";
 
 export * from "./extensions";

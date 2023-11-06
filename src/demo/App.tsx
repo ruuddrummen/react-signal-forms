@@ -1,8 +1,8 @@
+import { applicableIf, createFields, validIf } from "@/signals-form";
 import { Button, Container } from "@mui/material";
 import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
-import { applicableIf, createFields, validIf } from "./signals-form";
 import { MyForm } from "./MyForm/MyForm";
 import { MyTextInput } from "./MyForm/MyTextInput";
 
