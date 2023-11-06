@@ -1,10 +1,7 @@
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
-import {
-  FieldContext,
-  FieldContextExtension,
-  FormContext,
-} from "../fieldContext";
+import { IFieldContext, FieldContextExtension } from "../fieldContext";
+import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "@/signals";
 import { FieldRule, FieldCollection } from "../fields";
 
@@ -12,7 +9,7 @@ const EXTENSION_NAME = "applicability";
 
 interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
-  execute: (context: FormContext<TForm>) => boolean;
+  execute: (context: IFormContext<TForm>) => boolean;
 }
 
 interface ApplicabilityFieldContextExtension extends FieldContextExtension {
@@ -21,7 +18,7 @@ interface ApplicabilityFieldContextExtension extends FieldContextExtension {
 
 export function useApplicabilityRules(
   fields: FieldCollection,
-  formContext: FormContext
+  formContext: IFormContext
 ) {
   console.log("(Form) Initializing applicability rules");
 
@@ -37,15 +34,15 @@ export function useApplicabilityRules(
 }
 
 export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
-  test: (context: FormContext<TForm>) => boolean
+  test: (context: IFormContext<TForm>) => boolean
 ): FieldRule<TForm, TKey> {
   return {
-    execute: (context: FormContext<TForm>) => test(context),
+    execute: (context: IFormContext<TForm>) => test(context),
     extension: "applicability",
   } as ApplicabilityFieldRule<TForm, TKey>;
 }
 
-export function isApplicable(fieldContext: FieldContext) {
+export function isApplicable(fieldContext: IFieldContext) {
   const extension = fieldContext.extensions[
     EXTENSION_NAME
   ] as ApplicabilityFieldContextExtension;
@@ -62,7 +59,7 @@ function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
 function createApplicabilitySignal(
   fields: FieldCollection,
   fieldName: string,
-  formContext: FormContext<any>
+  formContext: IFormContext<any>
 ): Signal<boolean> {
   const rules = fields[fieldName].rules?.filter(isApplicabilityRule) ?? [];
   const fieldContext = formContext.fields[fieldName];
@@ -76,7 +73,7 @@ function createApplicabilitySignal(
     signal.subscribe((value) => {
       if (!value) {
         console.log(`(${fieldName}) Clearing field value`);
-        fieldContext.valueSignal.value = null;
+        fieldContext.setValue(null);
       }
     });
 

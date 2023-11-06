@@ -7,30 +7,32 @@ import {
   useRef,
 } from "react";
 import {
-  FormContext,
   FieldContextCollection,
+  IFieldContext,
   FieldContext,
 } from "./fieldContext";
 import React from "react";
 import { FieldCollection } from ".";
 import { FieldBase } from "./fields";
 
-const ReactFormContext = createContext<FormContext>({ fields: {} });
+const FormContext = createContext<IFormContext>({ fields: {} });
 
-const FormContextProvider = ReactFormContext.Provider;
+export const useFormContext = () => useContext(FormContext);
 
-export const useFormContext = () => useContext(ReactFormContext);
+export interface IFormContext<TForm = any> {
+  fields: FieldContextCollection<TForm>;
+}
 
 type FormExtension = (
   fields: FieldCollection,
-  formContext: FormContext
+  formContext: IFormContext
 ) => void;
 
 export function useFormContextProvider(
   fields: FieldCollection,
   extensions: Array<FormExtension>
 ) {
-  const formContext = useRef<FormContext>(
+  const formContext = useRef<IFormContext>(
     createFormContext(fields, extensions)
   );
 
@@ -38,9 +40,9 @@ export function useFormContextProvider(
   const ContextProvider = useMemo(() => {
     const ProviderComponent: React.FC<PropsWithChildren> = ({ children }) => {
       return (
-        <FormContextProvider value={formContext.current}>
+        <FormContext.Provider value={formContext.current}>
           {children}
-        </FormContextProvider>
+        </FormContext.Provider>
       );
     };
 
@@ -59,19 +61,10 @@ function createFormContext(
 ) {
   console.log("(Form) Creating field signals");
 
-  const formState = JSON.parse(
-    localStorage.getItem("FormState") ?? "[]"
-  ) as FieldContextCollection;
-
-  const formContext: FormContext = {
+  const formContext: IFormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
-        const value = formState[currentName]?.valueSignal ?? null;
-
-        prev[currentName] = {
-          valueSignal: signal(value),
-          extensions: {},
-        };
+        prev[currentName] = new FieldContext(signal(null), {});
 
         return prev;
       },
@@ -86,7 +79,7 @@ function createFormContext(
 
 export function useFieldContext<TValue>(
   field: FieldBase<TValue>
-): FieldContext<TValue> {
+): IFieldContext<TValue> {
   const formContext = useFormContext();
   const fieldContext = formContext.fields[field.name];
 

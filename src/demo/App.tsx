@@ -29,7 +29,7 @@ const fields = createFields<MyFormFields>((form) => {
     field.label = "Secret field";
     field.rules = [
       applicableIf(({ fields }) =>
-        fields.validatedField.valueSignal.value?.startsWith("SECRET")
+        fields.validatedField.value()?.startsWith("SECRET")
       ),
     ];
   });

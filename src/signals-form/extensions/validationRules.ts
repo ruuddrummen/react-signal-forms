@@ -1,10 +1,7 @@
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
-import {
-  FieldContext,
-  FieldContextExtension,
-  FormContext,
-} from "../fieldContext";
+import { IFieldContext, FieldContextExtension } from "../fieldContext";
+import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "@/signals";
 import { FieldRule, FieldCollection } from "../fields";
 
@@ -12,7 +9,7 @@ const EXTENSION_NAME = "validation";
 
 interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
-  execute: (value: TForm[TKey], context: FormContext<TForm>) => boolean;
+  execute: (value: TForm[TKey], context: IFormContext<TForm>) => boolean;
 }
 
 interface ValidationFieldContextExtension extends FieldContextExtension {
@@ -21,7 +18,7 @@ interface ValidationFieldContextExtension extends FieldContextExtension {
 
 export function useValidationRules(
   fields: FieldCollection,
-  formContext: FormContext
+  formContext: IFormContext
 ) {
   console.log("(Form) Initializing validation rules");
 
@@ -39,7 +36,7 @@ export function useValidationRules(
 function createValidationSignal(
   fields: FieldCollection,
   fieldName: string,
-  formContext: FormContext<any>
+  formContext: IFormContext<any>
 ): Signal<boolean> {
   const fieldContext = formContext.fields[fieldName];
   const rules = fields[fieldName].rules?.filter(isValidationRule) ?? [];
@@ -48,9 +45,7 @@ function createValidationSignal(
     return computed(() => {
       console.log(`(${fieldName}) Checking validation rule`);
 
-      return rules.every((r) =>
-        r.execute(fieldContext.valueSignal.value, formContext)
-      );
+      return rules.every((r) => r.execute(fieldContext.value(), formContext));
     });
   } else {
     return alwaysTrueSignal;
@@ -58,16 +53,16 @@ function createValidationSignal(
 }
 
 export function validIf<TForm, TKey extends KeyOf<TForm>>(
-  test: (args: { value: TForm[TKey]; context: FormContext<TForm> }) => boolean
+  test: (args: { value: TForm[TKey]; context: IFormContext<TForm> }) => boolean
 ): FieldRule<TForm, TKey> {
   return {
-    execute: (value: TForm[TKey], context: FormContext<TForm>) =>
+    execute: (value: TForm[TKey], context: IFormContext<TForm>) =>
       test({ value, context }),
     extension: EXTENSION_NAME,
   } as ValidationFieldRule<TForm, TKey>;
 }
 
-export function isValid(fieldContext: FieldContext) {
+export function isValid(fieldContext: IFieldContext) {
   const contextExtension = fieldContext.extensions[
     EXTENSION_NAME
   ] as ValidationFieldContextExtension;
