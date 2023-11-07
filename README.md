@@ -1,6 +1,6 @@
 # React Signal Forms
 
-A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with `@preact/signals`.
+A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
 - Easy and lightweight to develop both simple and large complex forms.
 - Only calculates and renders what is necessary by leveraging signals.
