@@ -22,7 +22,7 @@ export const MySwitch: React.FC<FormInputProps> = ({ field }) => {
       <FormControlLabel
         control={<Switch />}
         label={`${field.label} (rendered ${renderCount.current} times)`}
-        value={value}
+        value={value ?? false}
         onChange={(_e, checked) => setValue(checked)}
       />
     </FormControl>

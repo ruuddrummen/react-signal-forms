@@ -9,6 +9,7 @@ import {
   isRequired,
 } from "@/signal-forms/extensions";
 import { MySwitch } from "./MySwitchInput";
+import { MyNumberInput } from "./MyNumberInput";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
@@ -59,6 +60,10 @@ const fields = createFields<MyFormData>((form) => {
     ];
   });
 
+  form.field("numberField", (field) => {
+    field.label = "Number field";
+  });
+
   form.field("booleanField", (field) => {
     field.label = "Boolean field";
   });
@@ -73,7 +78,7 @@ export const MyForm: React.FC = () => {
       <MyTextInput field={fields.requiredField} />
       <MyTextInput field={fields.validatedField} />
       <MyTextInput field={fields.secretField} />
-      {/* <MyTextInput field={fields.numberField} /> */}
+      <MyNumberInput field={fields.numberField} />
       <MySwitch field={fields.booleanField} />
       <FormStateManager fields={fields} />
     </SignalForm>
