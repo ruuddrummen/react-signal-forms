@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { useSignalEffect } from "@preact/signals-react";
 import React, { useEffect } from "react";
-import { FieldCollection, useFormContext } from "../";
+import { FieldCollection, useFormContext } from "..";
 import { IFormContext } from "../formContext";
 
 type FieldValues = Record<string, any>;

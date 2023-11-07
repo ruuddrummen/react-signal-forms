@@ -1,13 +1,13 @@
-import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
+import { FormStateManager } from "@/signal-forms/helpers/FormStateManager";
 import { MyTextInput } from "./MyTextInput";
-import { createSignalForm, createFields } from "@/signals-form";
+import { createSignalForm, createFields } from "@/signal-forms";
 import {
   validationRules,
   applicabilityRules,
   validIf,
   applicableIf,
   isRequired,
-} from "@/signals-form/extensions";
+} from "@/signal-forms/extensions";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
