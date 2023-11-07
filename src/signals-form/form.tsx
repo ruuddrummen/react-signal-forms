@@ -34,7 +34,7 @@ export function createSignalForm<
             {children}
           </SignalForm>
         );
-      }, []);
+      }, [children, fields]);
 
       return SignalFormComponent;
     },
