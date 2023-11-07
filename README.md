@@ -31,7 +31,7 @@ If you want to explore the library without any setup, you can run the demo by cl
 ## Going through an example
 
 <!-- prettier-ignore-start -->
-```jsx
+```tsx
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
   validationRules, // adds validation rule support and field signals.
