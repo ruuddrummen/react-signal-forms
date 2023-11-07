@@ -6,6 +6,7 @@ import {
   applicabilityRules,
   validIf,
   applicableIf,
+  isRequired,
 } from "@/signals-form/extensions";
 
 // Create the form and hook with the extensions you want to use.
@@ -17,6 +18,7 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
 // Create a data interface.
 interface MyFormData {
   simpleField: string;
+  requiredField: string;
   validatedField: string;
   secretField: string;
   numberField: number;
@@ -28,6 +30,11 @@ const fields = createFields<MyFormData>((form) => {
   form.field("simpleField", (field) => {
     field.label = "Simple field with no rules";
     field.defaultValue = "test";
+  });
+
+  form.field("requiredField", (field) => {
+    field.label = "Required field";
+    field.rules = [isRequired()];
   });
 
   form.field("validatedField", (field) => {
@@ -55,6 +62,7 @@ export const MyForm: React.FC = () => {
   return (
     <SignalForm fields={fields}>
       <MyTextInput field={fields.simpleField} />
+      <MyTextInput field={fields.requiredField} />
       <MyTextInput field={fields.validatedField} />
       <MyTextInput field={fields.secretField} />
       {/* <MyTextInput field={fields.numberField} /> */}

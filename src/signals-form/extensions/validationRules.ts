@@ -57,18 +57,34 @@ interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
   execute: (value: TForm[TKey], context: IFormContext<TForm>) => boolean;
 }
 
-export function validIf<TForm, TKey extends KeyOf<TForm>>(
-  test: (args: { value: TForm[TKey]; context: IFormContext<TForm> }) => boolean
-): FieldRule<TForm, TKey> {
-  return {
-    execute: (value: TForm[TKey], context: IFormContext<TForm>) =>
-      test({ value, context }),
-    extension: EXTENSION_NAME,
-  } as ValidationFieldRule<TForm, TKey>;
-}
-
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>
 ): rule is ValidationFieldRule<TForm, TKey> {
   return rule.extension === EXTENSION_NAME;
+}
+
+export function validIf<TForm, TKey extends KeyOf<TForm>>(
+  test: (args: { value: TForm[TKey]; context: IFormContext<TForm> }) => boolean
+): FieldRule<TForm, TKey> {
+  return {
+    extension: EXTENSION_NAME,
+    execute: (value: TForm[TKey], context: IFormContext<TForm>) =>
+      test({ value, context }),
+  } as ValidationFieldRule<TForm, TKey>;
+}
+
+export function isRequired<TForm, TKey extends KeyOf<TForm>>(): FieldRule<
+  TForm,
+  TKey
+> {
+  return {
+    extension: EXTENSION_NAME,
+    execute(value, _context) {
+      if (typeof value === "string" && value === "") {
+        return false;
+      }
+
+      return value != null;
+    },
+  } as ValidationFieldRule<TForm, TKey>;
 }

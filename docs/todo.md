@@ -12,6 +12,9 @@
   - [x] `fieldContext.isApplicable`
 - [ ] Add form scope signal such as `isSubmittingSignal`.
   - Including async support for submitting.
+- [ ] Simplify implementation of field rules.
+- [ ] Add error messages to validation extension.
+  - [ ] Add severity to error messages or warnings.
 - [ ] Add child array forms.
 - [ ] ❓ Add field groups with rules, such as applicability.
 - [ ] Add more input components to demo.
