@@ -1,16 +1,21 @@
 import { useMemo } from "react";
-import { MergeTypes, SignalFormExtension } from "./extensions/types";
+import {
+  MergeFieldContextProperties,
+  SignalFormExtension,
+} from "./extensions/types";
 import { IFieldContext } from "./fieldContext";
 import { FieldBase, FieldCollection } from "./fields";
 import { useFormContext, useFormContextProvider } from "./formContext";
 
 interface SignalsFormProps {
   fields: FieldCollection;
-  extensions: Array<SignalFormExtension>;
+  extensions: Array<SignalFormExtension<any, any>>;
   children: React.ReactNode;
 }
 
-export function createSignalForm<TExtensions extends SignalFormExtension[]>(
+export function createSignalForm<
+  TExtensions extends SignalFormExtension<any, any>[]
+>(
   ...extensions: TExtensions
 ): {
   SignalForm: React.ComponentType<{
@@ -19,7 +24,7 @@ export function createSignalForm<TExtensions extends SignalFormExtension[]>(
   }>;
   useFieldSignals: <TValue>(
     field: FieldBase<TValue>
-  ) => IFieldContext<TValue> & MergeTypes<TExtensions>;
+  ) => IFieldContext<TValue> & MergeFieldContextProperties<TExtensions>;
 } {
   return {
     SignalForm: ({ fields, children }) => {
@@ -37,7 +42,8 @@ export function createSignalForm<TExtensions extends SignalFormExtension[]>(
       const formContext = useFormContext();
       let fieldContext = formContext.fields[field.name];
 
-      return fieldContext as IFieldContext & MergeTypes<TExtensions>;
+      return fieldContext as IFieldContext &
+        MergeFieldContextProperties<TExtensions>;
     },
   };
 }

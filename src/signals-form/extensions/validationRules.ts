@@ -1,10 +1,9 @@
+import { alwaysTrueSignal } from "@/signals";
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
-import { FieldContextExtension, FieldContext } from "../fieldContext";
+import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
-import { alwaysTrueSignal } from "@/signals";
-import { FieldRule, FieldCollection } from "../fields";
-import { SignalFormExtension } from "./types";
+import { FieldContextExtension, SignalFormExtension } from "./types";
 
 const EXTENSION_NAME = "validation";
 
@@ -12,45 +11,39 @@ interface ValidationFieldContextExtension extends FieldContextExtension {
   isValidSignal: Signal<boolean>;
 }
 
-interface ValidationFieldContext {
+interface ValidationFieldProperties {
   isValid: boolean;
 }
 
-export const validationExtension: SignalFormExtension<ValidationFieldContext> =
-  {
-    extendFormContext: (fields, formContext) => {
-      Object.keys(formContext.fields).forEach((key) => {
-        const fieldContext = formContext.fields[key] as FieldContext;
-
-        fieldContext.addExtension<
-          ValidationFieldContextExtension,
-          ValidationFieldContext
-        >(
-          EXTENSION_NAME,
-          {
-            isValidSignal: createValidationSignal(fields, key, formContext),
-          },
-          (extension) => ({
-            isValid: {
-              get: () => extension.isValidSignal.value,
-            },
-          })
-        );
-      });
-    },
-  };
+export const validationExtension: SignalFormExtension<
+  ValidationFieldContextExtension,
+  ValidationFieldProperties
+> = {
+  name: EXTENSION_NAME,
+  createFieldExtension(field, formContext) {
+    return {
+      isValidSignal: createValidationSignal(field, formContext),
+    };
+  },
+  createFieldProperties(extension) {
+    return {
+      isValid: {
+        get: () => extension.isValidSignal.value,
+      },
+    };
+  },
+};
 
 function createValidationSignal(
-  fields: FieldCollection,
-  fieldName: string,
+  field: Field,
   formContext: IFormContext
 ): Signal<boolean> {
-  const fieldContext = formContext.fields[fieldName];
-  const rules = fields[fieldName].rules?.filter(isValidationRule) ?? [];
+  const fieldContext = formContext.fields[field.name];
+  const rules = field.rules?.filter(isValidationRule) ?? [];
 
   if (rules.length > 0) {
     return computed(() => {
-      console.log(`(${fieldName}) Checking validation rule`);
+      console.log(`(${field.name}) Checking validation rule`);
 
       return rules.every((r) => r.execute(fieldContext.value, formContext));
     });

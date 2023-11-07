@@ -1,17 +1,16 @@
-import {
-  applicabilityExtension,
-  applicableIf,
-  createFields,
-  createSignalForm,
-  validIf,
-  validationExtension,
-} from "@/signals-form";
+import { createFields, createSignalForm } from "@/signals-form";
 import { Button, Container } from "@mui/material";
 import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
 import { MyTextInput } from "./MyForm/MyTextInput";
 import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
+import {
+  validationExtension,
+  applicabilityExtension,
+  validIf,
+  applicableIf,
+} from "@/signals-form/extensions";
 
 export const { SignalForm, useFieldSignals } = createSignalForm(
   validationExtension,

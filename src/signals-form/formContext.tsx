@@ -13,7 +13,7 @@ export interface IFormContext<TForm = any> {
 
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension>
+  extensions: Array<SignalFormExtension<any, any>>
 ) {
   const formContext = useRef<IFormContext>(
     createFormContext(fields, extensions)
@@ -27,7 +27,7 @@ export function useFormContextProvider(
 
 function createFormContext(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension>
+  extensions: Array<SignalFormExtension<any, any>>
 ) {
   const formContext: IFormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
@@ -40,9 +40,22 @@ function createFormContext(
     ),
   };
 
-  console.log("(Form) Created field signals", formContext);
+  Object.keys(fields).forEach((key) => {
+    const field = fields[key];
+    const fieldContext = formContext.fields[key] as FieldContext;
 
-  extensions.forEach((ext) => ext.extendFormContext(fields, formContext));
+    extensions.forEach((ext) => {
+      const fieldExtension = ext.createFieldExtension(field, formContext);
+
+      fieldContext.addExtension(
+        ext.name,
+        fieldExtension,
+        ext.createFieldProperties(fieldExtension)
+      );
+    });
+  });
+
+  console.log("(Form) Created field signals", formContext);
 
   return formContext;
 }

@@ -1,5 +1,10 @@
 import { KeyOf } from "@/utils";
 import { Signal, signal } from "@preact/signals-react";
+import {
+  FieldContextExtension,
+  FieldContextExtensions,
+  PropertyDescriptors,
+} from "./extensions/types";
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>;
@@ -10,15 +15,9 @@ export interface IFieldContext<TValue = any> {
   setValue: (value: TValue) => void;
 }
 
-type FieldContextExtensions = {
-  [name: string]: FieldContextExtension;
-};
-
-export interface FieldContextExtension {}
-
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   private __valueSignal: Signal<TValue>;
-  __extensions: FieldContextExtensions;
+  private __extensions: FieldContextExtensions;
 
   constructor(value: TValue) {
     this.__valueSignal = signal(value);
@@ -35,13 +34,11 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(
     name: string,
-    extension: TExtension,
-    createContext: (
-      extension: TExtension
-    ) => Record<keyof TContext, PropertyDescriptor>
+    fieldExtension: TExtension,
+    fieldContextProperties: PropertyDescriptors<TContext>
   ) => {
-    this.__extensions[name] = extension;
+    this.__extensions[name] = fieldExtension;
 
-    Object.defineProperties(this, createContext(extension));
+    Object.defineProperties(this, fieldContextProperties);
   };
 }

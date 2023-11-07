@@ -1,28 +1,38 @@
-import { IFieldContext } from "../fieldContext";
-import { FieldCollection } from "../fields";
+import { Field } from "../fields";
 import { IFormContext } from "../formContext";
 
-export interface SignalFormExtension<TFieldContext = any> {
-  extendFormContext: (
-    fields: FieldCollection,
+export interface FieldContextExtension {}
+
+export type FieldContextExtensions = {
+  [name: string]: FieldContextExtension;
+};
+export interface SignalFormExtension<
+  TFieldContextExtension extends FieldContextExtension,
+  TFieldContextProperties
+> {
+  name: string;
+  createFieldExtension: (
+    field: Field,
     formContext: IFormContext
-  ) => void;
+  ) => TFieldContextExtension;
+  createFieldProperties: (
+    extension: TFieldContextExtension
+  ) => PropertyDescriptors<TFieldContextProperties>;
 }
 
-// See: https://stackoverflow.com/questions/71595843/combine-all-types-in-array-into-a-single-type
-export type MergeTypes<T extends SignalFormExtension[]> = T extends [
-  a: SignalFormExtension<infer A>,
-  ...rest: infer R
-]
-  ? R extends SignalFormExtension[]
-    ? A & MergeTypes<R>
+export type MergeFieldContextProperties<
+  T extends SignalFormExtension<any, any>[]
+> = T extends [a: SignalFormExtension<any, infer B>, ...rest: infer R]
+  ? R extends SignalFormExtension<any, any>[]
+    ? B & MergeFieldContextProperties<R>
     : never
   : {};
 
-export function extendFieldContext<TFieldContext>(
-  fieldContext: IFieldContext,
-  property: keyof TFieldContext,
-  value: PropertyDescriptor
-) {
-  Object.defineProperty(fieldContext, property, value);
+interface PropertyDescriptor<T> {
+  get?(): T;
+  set?(v: T): void;
 }
+
+export type PropertyDescriptors<T> = {
+  [K in keyof T]: PropertyDescriptor<T[K]>;
+};

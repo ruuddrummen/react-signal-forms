@@ -11,5 +11,3 @@ export type {
 export { createFields } from "./fields";
 
 export { useFormContext } from "./formContext";
-
-export * from "./extensions";

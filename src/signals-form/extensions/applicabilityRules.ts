@@ -1,10 +1,9 @@
+import { alwaysTrueSignal } from "@/signals";
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
-import { FieldContextExtension, FieldContext } from "../fieldContext";
+import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
-import { alwaysTrueSignal } from "@/signals";
-import { FieldRule, FieldCollection } from "../fields";
-import { SignalFormExtension, extendFieldContext } from "./types";
+import { FieldContextExtension, SignalFormExtension } from "./types";
 
 const EXTENSION_NAME = "applicability";
 
@@ -12,55 +11,45 @@ interface ApplicabilityFieldContextExtension extends FieldContextExtension {
   isApplicableSignal: Signal<boolean>;
 }
 
-interface ApplicabilityFieldContext {
+interface ApplicabilityFieldProperties {
   isApplicable: boolean;
 }
 
-export const applicabilityExtension: SignalFormExtension<ApplicabilityFieldContext> =
-  {
-    extendFormContext: (fields, formContext) => {
-      Object.keys(formContext.fields).forEach((key) => {
-        const fieldContext = formContext.fields[key] as FieldContext;
-
-        fieldContext.addExtension<
-          ApplicabilityFieldContextExtension,
-          ApplicabilityFieldContext
-        >(
-          EXTENSION_NAME,
-          {
-            isApplicableSignal: createApplicabilitySignal(
-              fields,
-              key,
-              formContext
-            ),
-          },
-          (extension) => ({
-            isApplicable: {
-              get: () => extension.isApplicableSignal.value,
-            },
-          })
-        );
-      });
-    },
-  };
+export const applicabilityExtension: SignalFormExtension<
+  ApplicabilityFieldContextExtension,
+  ApplicabilityFieldProperties
+> = {
+  name: EXTENSION_NAME,
+  createFieldExtension(field, formContext) {
+    return {
+      isApplicableSignal: createApplicabilitySignal(field, formContext),
+    };
+  },
+  createFieldProperties(extension) {
+    return {
+      isApplicable: {
+        get: () => extension.isApplicableSignal.value,
+      },
+    };
+  },
+};
 
 function createApplicabilitySignal(
-  fields: FieldCollection,
-  fieldName: string,
+  field: Field,
   formContext: IFormContext<any>
 ): Signal<boolean> {
-  const rules = fields[fieldName].rules?.filter(isApplicabilityRule) ?? [];
-  const fieldContext = formContext.fields[fieldName];
+  const rules = field.rules?.filter(isApplicabilityRule) ?? [];
+  const fieldContext = formContext.fields[field.name];
 
   if (rules.length > 0) {
     const signal = computed(() => {
-      console.log(`(${fieldName}) Checking applicability rule`);
+      console.log(`(${field.name}) Checking applicability rule`);
       return rules.every((r) => r.execute(formContext));
     });
 
     signal.subscribe((value) => {
       if (!value) {
-        console.log(`(${fieldName}) Clearing field value`);
+        console.log(`(${field.name}) Clearing field value`);
         fieldContext.setValue(null);
       }
     });
