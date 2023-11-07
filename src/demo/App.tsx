@@ -2,7 +2,7 @@ import {
   applicabilityExtension,
   applicableIf,
   createFields,
-  initSignalForms,
+  createSignalForm,
   validIf,
   validationExtension,
 } from "@/signals-form";
@@ -11,10 +11,11 @@ import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
 import { MyTextInput } from "./MyForm/MyTextInput";
+import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
 
-export const { SignalsForm, useFieldContext } = initSignalForms(
-  validationExtension
-  // applicabilityExtension
+export const { SignalForm, useFieldSignals } = createSignalForm(
+  validationExtension,
+  applicabilityExtension
 );
 
 interface MyFormFields {
@@ -66,13 +67,14 @@ export const App: React.FC = () => {
         React Signals Form <Button onClick={refresh}>Refresh</Button>
         <Button onClick={reset}>Reset</Button>
       </h2>
-      <SignalsForm fields={fields} key={formKey.value}>
+      <SignalForm fields={fields} key={formKey.value}>
         <MyTextInput field={fields.simpleField} />
         <MyTextInput field={fields.validatedField} />
         <MyTextInput field={fields.secretField} />
         {/* <MyTextInput field={fields.numberField} /> */}
         {/* <MyTextInput field={fields.booleanField} /> */}
-      </SignalsForm>
+        <FormStateManager fields={fields} />
+      </SignalForm>
     </Container>
   );
 };

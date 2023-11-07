@@ -1,26 +1,39 @@
+import { useMemo } from "react";
 import { MergeTypes, SignalFormExtension } from "./extensions/types";
 import { IFieldContext } from "./fieldContext";
 import { FieldBase, FieldCollection } from "./fields";
-import { useFormContext, useFormContextProvider2 } from "./formContext";
+import { useFormContext, useFormContextProvider } from "./formContext";
 
-export function initSignalForms<TExtensions extends SignalFormExtension[]>(
+interface SignalsFormProps {
+  fields: FieldCollection;
+  extensions: Array<SignalFormExtension>;
+  children: React.ReactNode;
+}
+
+export function createSignalForm<TExtensions extends SignalFormExtension[]>(
   ...extensions: TExtensions
 ): {
-  SignalsForm: React.ComponentType<{
+  SignalForm: React.ComponentType<{
     fields: FieldCollection;
     children: React.ReactNode;
   }>;
-  useFieldContext: <TValue>(
+  useFieldSignals: <TValue>(
     field: FieldBase<TValue>
   ) => IFieldContext<TValue> & MergeTypes<TExtensions>;
 } {
   return {
-    SignalsForm: ({ fields, children }) => {
-      const { ContextProvider } = useFormContextProvider2(fields, extensions);
+    SignalForm: ({ fields, children }) => {
+      const SignalFormComponent = useMemo(() => {
+        return (
+          <SignalForm fields={fields} extensions={extensions}>
+            {children}
+          </SignalForm>
+        );
+      }, []);
 
-      return <ContextProvider>{children}</ContextProvider>;
+      return SignalFormComponent;
     },
-    useFieldContext: function <TValue>(field: FieldBase<TValue>) {
+    useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
       const formContext = useFormContext();
       let fieldContext = formContext.fields[field.name];
 
@@ -28,3 +41,18 @@ export function initSignalForms<TExtensions extends SignalFormExtension[]>(
     },
   };
 }
+
+const SignalForm: React.FC<SignalsFormProps> = ({
+  fields,
+  extensions,
+  children,
+}) => {
+  const { ContextProvider, formContext } = useFormContextProvider(
+    fields,
+    extensions
+  );
+
+  return (
+    <ContextProvider value={formContext.current}>{children}</ContextProvider>
+  );
+};

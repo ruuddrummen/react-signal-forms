@@ -1,4 +1,4 @@
-import { IFieldContext } from "../fieldContext";
+import { FieldContextExtension, IFieldContext } from "../fieldContext";
 import { FieldCollection } from "../fields";
 import { IFormContext } from "../formContext";
 
@@ -19,3 +19,11 @@ export type MergeTypes<T extends SignalFormExtension[]> = T extends [
     ? A & MergeTypes<R>
     : never
   : {};
+
+export function extendFieldContext<TFieldContext>(
+  fieldContext: IFieldContext,
+  property: keyof TFieldContext,
+  value: PropertyDescriptor
+) {
+  Object.defineProperty(fieldContext, property, value);
+}

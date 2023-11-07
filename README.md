@@ -7,17 +7,17 @@
 - [x] Add type safety to field value in context / signal.
 - [x] Add field types.
 - [x] Map data types to field types.
-- [ ] Add functions and extensions to `useFieldContext`, such as
-  - [x] `fieldContext.value()`
+- [x] Add properties and extensions to `useFieldContext`, such as
+  - [x] `fieldContext.value`
   - [x] `fieldContext.setValue()`
-  - [x] `fieldContext.isValid()`
-  - [x] `fieldContext.isApplicable()`
+  - [x] `fieldContext.isValid`
+  - [x] `fieldContext.isApplicable`
 - [ ] Add form scope signal such as `isSubmittingSignal`.
 - [ ] Add child array forms.
 - [ ] ❓ Add field groups with rules, such as applicability.
 - [ ] Add more input components.
 - [ ] Make field types more specific than just data types.
-- [ ] Create `DefaultForm` and `FieldValue` types.
+- [ ] Create `DefaultForm` and `FieldValue` types for type safety when form interface is unknown.
   - Something like
     ```ts
       type FieldValue<T> = T extends Function ? never : T

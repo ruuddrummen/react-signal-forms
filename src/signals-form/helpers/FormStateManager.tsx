@@ -12,7 +12,7 @@ export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
   const formContext = useFormContext();
 
   useEffect(() => {
-    console.log("(FormStateManager) Loading values");
+    // console.log("(FormStateManager) Loading values");
 
     try {
       const storedValues = JSON.parse(
@@ -30,7 +30,7 @@ export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
   }, [formContext]);
 
   useSignalEffect(() => {
-    console.log("(FormStateManager) Saving values");
+    // console.log("(FormStateManager) Saving values");
     localStorage.setItem("FormState", JSON.stringify(toValues(formContext)));
   });
 

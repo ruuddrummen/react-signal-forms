@@ -1,6 +1,6 @@
 import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
-import { IFieldContext, FieldContextExtension } from "../fieldContext";
+import { FieldContextExtension, FieldContext } from "../fieldContext";
 import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "@/signals";
 import { FieldRule, FieldCollection } from "../fields";
@@ -25,54 +25,27 @@ export const validationExtension: SignalFormExtension<ValidationFieldContext> =
   {
     extendFormContext: (fields, formContext) => {
       Object.keys(formContext.fields).forEach((key) => {
-        const fieldContext = formContext.fields[key];
+        const fieldContext = formContext.fields[key] as FieldContext;
 
-        const contextExtension: ValidationFieldContextExtension = {
-          isValidSignal: createValidationSignal(fields, key, formContext),
-        };
+        fieldContext.addExtension<ValidationFieldContextExtension>(
+          EXTENSION_NAME,
+          {
+            isValidSignal: createValidationSignal(fields, key, formContext),
+          }
+        );
 
         Object.defineProperty(fieldContext, "isValid", {
           get: function () {
-            const extension = fieldContext._extensions[
+            const extension = fieldContext.__extensions[
               EXTENSION_NAME
             ] as ValidationFieldContextExtension;
 
             return extension.isValidSignal.value;
           },
         });
-
-        fieldContext._extensions[EXTENSION_NAME] = contextExtension;
       });
     },
-    // extendFieldContext: (fieldContext) => {
-    //   Object.defineProperty(fieldContext, "isValid", {
-    //     get: function () {
-    //       const extension = fieldContext._extensions[
-    //         EXTENSION_NAME
-    //       ] as ValidationFieldContextExtension;
-
-    //       return extension.isValidSignal.value;
-    //     },
-    //   });
-    // },
   };
-
-export function useValidationRules(
-  fields: FieldCollection,
-  formContext: IFormContext
-) {
-  console.log("(Form) Initializing validation rules");
-
-  Object.keys(fields).forEach((key) => {
-    const fieldContext = formContext.fields[key];
-
-    const contextExtension: ValidationFieldContextExtension = {
-      isValidSignal: createValidationSignal(fields, key, formContext),
-    };
-
-    fieldContext._extensions[EXTENSION_NAME] = contextExtension;
-  });
-}
 
 function createValidationSignal(
   fields: FieldCollection,

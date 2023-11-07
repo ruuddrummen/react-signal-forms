@@ -19,14 +19,63 @@ export interface IFormContext<TForm = any> {
   fields: FieldContextCollection<TForm>;
 }
 
-type FormExtension = (
-  fields: FieldCollection,
-  formContext: IFormContext
-) => void;
+// type FormExtension = (
+//   fields: FieldCollection,
+//   formContext: IFormContext
+// ) => void;
+
+// export function useFormContextProvider(
+//   fields: FieldCollection,
+//   extensions: Array<FormExtension>
+// ) {
+//   const formContext = useRef<IFormContext>(
+//     createFormContext(fields, extensions)
+//   );
+
+//   // See: https://blog.bitsrc.io/new-react-design-pattern-return-component-from-hooks-79215c3eac00
+//   const ContextProvider = useMemo(() => {
+//     const ProviderComponent: React.FC<PropsWithChildren> = ({ children }) => {
+//       return (
+//         <FormContext.Provider value={formContext.current}>
+//           {children}
+//         </FormContext.Provider>
+//       );
+//     };
+
+//     return ProviderComponent;
+//   }, []);
+
+//   return {
+//     formContext,
+//     SignalsForm: ContextProvider,
+//   };
+// }
+
+// function createFormContext(
+//   fields: FieldCollection,
+//   extensions: Array<FormExtension>
+// ) {
+//   const formContext: IFormContext = {
+//     fields: Object.keys(fields).reduce<FieldContextCollection>(
+//       (prev, currentName) => {
+//         prev[currentName] = new FieldContext(signal(null), {});
+
+//         return prev;
+//       },
+//       {}
+//     ),
+//   };
+
+//   console.log("(Form) Created field signals", formContext);
+
+//   extensions.forEach((ext) => ext(fields, formContext));
+
+//   return formContext;
+// }
 
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<FormExtension>
+  extensions: Array<SignalFormExtension>
 ) {
   const formContext = useRef<IFormContext>(
     createFormContext(fields, extensions)
@@ -47,67 +96,18 @@ export function useFormContextProvider(
 
   return {
     formContext,
-    SignalsForm: ContextProvider,
+    ContextProvider: FormContext.Provider,
   };
 }
 
 function createFormContext(
   fields: FieldCollection,
-  extensions: Array<FormExtension>
-) {
-  const formContext: IFormContext = {
-    fields: Object.keys(fields).reduce<FieldContextCollection>(
-      (prev, currentName) => {
-        prev[currentName] = new FieldContext(signal(null), {});
-
-        return prev;
-      },
-      {}
-    ),
-  };
-
-  console.log("(Form) Created field signals", formContext);
-
-  extensions.forEach((ext) => ext(fields, formContext));
-
-  return formContext;
-}
-
-export function useFormContextProvider2(
-  fields: FieldCollection,
-  extensions: Array<SignalFormExtension>
-) {
-  const formContext = useRef<IFormContext>(
-    createFormContext2(fields, extensions)
-  );
-
-  // See: https://blog.bitsrc.io/new-react-design-pattern-return-component-from-hooks-79215c3eac00
-  const ContextProvider = useMemo(() => {
-    const ProviderComponent: React.FC<PropsWithChildren> = ({ children }) => {
-      return (
-        <FormContext.Provider value={formContext.current}>
-          {children}
-        </FormContext.Provider>
-      );
-    };
-
-    return ProviderComponent;
-  }, []);
-
-  return {
-    formContext,
-    ContextProvider,
-  };
-}
-
-function createFormContext2(
-  fields: FieldCollection,
   extensions: Array<SignalFormExtension>
 ) {
   const formContext: IFormContext = {
     fields: Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
-        prev[currentName] = new FieldContext(signal(null), {});
+        prev[currentName] = new FieldContext(null);
 
         return prev;
       },
