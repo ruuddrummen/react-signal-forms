@@ -11,9 +11,9 @@ export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>>
   rules?: Array<FieldRule<TForm, Key>>;
 }
 
-export type TextField = FieldBase<string>;
-export type NumberField = FieldBase<number>;
-export type BooleanField = FieldBase<boolean>;
+export type TextField = FieldBase<string | null>;
+export type NumberField = FieldBase<number | null>;
+export type BooleanField = FieldBase<boolean | null>;
 
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
