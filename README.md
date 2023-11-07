@@ -34,13 +34,14 @@ If you want to explore the library without any setup, you can run the demo by cl
 ```jsx
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule support and isValid signal to fields
-  applicabilityRules // adds applicability rule support and isApplicable signal to fields
+  validationRules, // adds validation rule support and field signals.
+  applicabilityRules // adds applicability rule support and field signals.
 );
 
 // Create a data interface.
 interface MyFormData {
   simpleField: string;
+  requiredField: string;
   validatedField: string;
   secretField: string;
   numberField: number;
@@ -54,10 +55,18 @@ const fields = createFields<MyFormData>((form) => {
     field.defaultValue = "test";
   });
 
+  form.field("requiredField", (field) => {
+    field.label = "Required field";
+    field.rules = [
+      // A validation rule making the field required.
+      isRequired(),
+    ];
+  });
+
   form.field("validatedField", (field) => {
     field.label = "Field with validation - try typing SECRET";
     field.rules = [
-      // A validation rule.
+      // A custom validation rule.
       validIf(({ value }) => value?.startsWith("SECRET")),
     ];
   });
@@ -77,9 +86,9 @@ export const MyForm: React.FC = () => {
   return (
     <SignalForm fields={fields}>
       <MyTextInput field={fields.simpleField} />
+      <MyTextInput field={fields.requiredField} />
       <MyTextInput field={fields.validatedField} />
       <MyTextInput field={fields.secretField} />
-      <FormStateManager fields={fields} />
     </SignalForm>
   );
 };
@@ -91,6 +100,10 @@ const MyTextInput: React.FC<{ field: TextField }> = ({ field }) => {
   // Note: you get the basics and the extensions you choose above.
   const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
 
+  if (!isApplicable) {
+    return null;
+  }
+  
   return (
     <input
       value={value}

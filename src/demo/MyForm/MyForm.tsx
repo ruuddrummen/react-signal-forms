@@ -11,8 +11,8 @@ import {
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule support and isValid signal to fields
-  applicabilityRules // adds applicability rule support and isApplicable signal to fields
+  validationRules, // adds validation rule support and field signals.
+  applicabilityRules // adds applicability rule support and field signals.
 );
 
 // Create a data interface.
@@ -34,13 +34,16 @@ const fields = createFields<MyFormData>((form) => {
 
   form.field("requiredField", (field) => {
     field.label = "Required field";
-    field.rules = [isRequired()];
+    field.rules = [
+      // A validation rule making the field required.
+      isRequired(),
+    ];
   });
 
   form.field("validatedField", (field) => {
     field.label = "Field with validation - try typing SECRET";
     field.rules = [
-      // A validation rule.
+      // A custom validation rule.
       validIf(({ value }) => value?.startsWith("SECRET")),
     ];
   });
