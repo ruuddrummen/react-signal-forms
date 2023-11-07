@@ -18,19 +18,43 @@ interface ValidationFieldContextExtension extends FieldContextExtension {
 }
 
 interface ValidationFieldContext {
-  isValid: () => boolean;
+  isValid: boolean;
 }
 
 export const validationExtension: SignalFormExtension<ValidationFieldContext> =
   {
-    extendFieldContext: (fieldContext) => {
-      const extension = fieldContext._extensions[
-        EXTENSION_NAME
-      ] as ValidationFieldContextExtension;
+    extendFormContext: (fields, formContext) => {
+      Object.keys(formContext.fields).forEach((key) => {
+        const fieldContext = formContext.fields[key];
 
-      (fieldContext as IFieldContext & ValidationFieldContext).isValid = () =>
-        extension.isValidSignal.value;
+        const contextExtension: ValidationFieldContextExtension = {
+          isValidSignal: createValidationSignal(fields, key, formContext),
+        };
+
+        Object.defineProperty(fieldContext, "isValid", {
+          get: function () {
+            const extension = fieldContext._extensions[
+              EXTENSION_NAME
+            ] as ValidationFieldContextExtension;
+
+            return extension.isValidSignal.value;
+          },
+        });
+
+        fieldContext._extensions[EXTENSION_NAME] = contextExtension;
+      });
     },
+    // extendFieldContext: (fieldContext) => {
+    //   Object.defineProperty(fieldContext, "isValid", {
+    //     get: function () {
+    //       const extension = fieldContext._extensions[
+    //         EXTENSION_NAME
+    //       ] as ValidationFieldContextExtension;
+
+    //       return extension.isValidSignal.value;
+    //     },
+    //   });
+    // },
   };
 
 export function useValidationRules(
@@ -53,7 +77,7 @@ export function useValidationRules(
 function createValidationSignal(
   fields: FieldCollection,
   fieldName: string,
-  formContext: IFormContext<any>
+  formContext: IFormContext
 ): Signal<boolean> {
   const fieldContext = formContext.fields[fieldName];
   const rules = fields[fieldName].rules?.filter(isValidationRule) ?? [];
@@ -62,7 +86,7 @@ function createValidationSignal(
     return computed(() => {
       console.log(`(${fieldName}) Checking validation rule`);
 
-      return rules.every((r) => r.execute(fieldContext.value(), formContext));
+      return rules.every((r) => r.execute(fieldContext.value, formContext));
     });
   } else {
     return alwaysTrueSignal;
@@ -78,14 +102,6 @@ export function validIf<TForm, TKey extends KeyOf<TForm>>(
     extension: EXTENSION_NAME,
   } as ValidationFieldRule<TForm, TKey>;
 }
-
-// export function isValid(fieldContext: IFieldContext) {
-//   const contextExtension = fieldContext._extensions[
-//     EXTENSION_NAME
-//   ] as ValidationFieldContextExtension;
-
-//   return contextExtension.isValidSignal.value;
-// }
 
 function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>

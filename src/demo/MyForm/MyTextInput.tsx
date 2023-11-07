@@ -10,29 +10,28 @@ interface FormInputProps {
 
 export const MyTextInput: React.FC<FormInputProps> = ({ field }) => {
   const fieldContext = useFieldContext(field);
-  const { value, setValue, isValid, isApplicable } = fieldContext;
 
   const renderCount = useRenderCount();
 
-  if (!isApplicable()) {
-    return null;
-  }
+  // if (!fieldContext.isApplicable) {
+  //   return null;
+  // }
 
   function onChange(event: ChangeEvent<HTMLInputElement>): void {
     console.log(`(${field.name}) Setting value to:`, event.currentTarget.value);
 
-    setValue(event.currentTarget.value);
+    fieldContext.setValue(event.currentTarget.value);
   }
 
-  console.log(`(${field.name}) Rendering input`);
+  console.log(`(${field.name}) Rendering input`, fieldContext.isValid);
 
   return (
     <FormControl fullWidth margin="normal">
       <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
-        value={value() ?? ""}
+        value={fieldContext.value ?? ""}
         onChange={onChange}
-        error={!isValid()}
+        error={!fieldContext.isValid}
       />
     </FormControl>
   );

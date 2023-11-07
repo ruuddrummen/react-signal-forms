@@ -49,7 +49,7 @@ export const FormStateManager: React.FC<{ fields: FieldCollection }> = ({
 function toValues(formContext: IFormContext): FieldValues {
   return Object.keys(formContext.fields).reduce<FieldValues>(
     (prev, current) => {
-      prev[current] = formContext.fields[current].value();
+      prev[current] = formContext.fields[current].value;
 
       return prev;
     },

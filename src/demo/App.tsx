@@ -10,12 +10,11 @@ import { Button, Container } from "@mui/material";
 import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
-import { MyForm } from "./MyForm/MyForm";
 import { MyTextInput } from "./MyForm/MyTextInput";
 
-export const { useFieldContext } = initSignalForms(
-  validationExtension,
-  applicabilityExtension
+export const { SignalsForm, useFieldContext } = initSignalForms(
+  validationExtension
+  // applicabilityExtension
 );
 
 interface MyFormFields {
@@ -41,7 +40,7 @@ const fields = createFields<MyFormFields>((form) => {
     field.label = "Secret field";
     field.rules = [
       applicableIf(({ fields }) =>
-        fields.validatedField.value()?.startsWith("SECRET")
+        fields.validatedField.value?.startsWith("SECRET")
       ),
     ];
   });
@@ -67,13 +66,13 @@ export const App: React.FC = () => {
         React Signals Form <Button onClick={refresh}>Refresh</Button>
         <Button onClick={reset}>Reset</Button>
       </h2>
-      <MyForm fields={fields} key={formKey.value}>
+      <SignalsForm fields={fields} key={formKey.value}>
         <MyTextInput field={fields.simpleField} />
         <MyTextInput field={fields.validatedField} />
         <MyTextInput field={fields.secretField} />
         {/* <MyTextInput field={fields.numberField} /> */}
         {/* <MyTextInput field={fields.booleanField} /> */}
-      </MyForm>
+      </SignalsForm>
     </Container>
   );
 };

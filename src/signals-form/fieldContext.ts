@@ -7,7 +7,7 @@ export type FieldContextCollection<TForm = any> = {
 
 export interface IFieldContext<TValue = any> {
   _extensions: FieldContextExtensions;
-  value: () => TValue;
+  value: TValue;
   setValue: (value: TValue) => void;
 }
 
@@ -26,9 +26,9 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     this._extensions = extensions;
   }
 
-  value = () => {
+  get value() {
     return this.valueSignal.value;
-  };
+  }
 
   setValue = (value: TValue) => {
     this.valueSignal.value = value;

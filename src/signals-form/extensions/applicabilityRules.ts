@@ -18,14 +18,15 @@ interface ApplicabilityFieldContext {
 
 export const applicabilityExtension: SignalFormExtension<ApplicabilityFieldContext> =
   {
-    extendFieldContext: (fieldContext) => {
-      const extension = fieldContext._extensions[
-        EXTENSION_NAME
-      ] as ApplicabilityFieldContextExtension;
+    extendFormContext: (formContext) => {},
+    // extendFieldContext: (fieldContext) => {
+    //   const extension = fieldContext._extensions[
+    //     EXTENSION_NAME
+    //   ] as ApplicabilityFieldContextExtension;
 
-      (fieldContext as IFieldContext & ApplicabilityFieldContext).isApplicable =
-        () => extension.isApplicableSignal.value;
-    },
+    //   (fieldContext as IFieldContext & ApplicabilityFieldContext).isApplicable =
+    //     () => extension.isApplicableSignal.value;
+    // },
   };
 
 interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
@@ -58,14 +59,6 @@ export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
     extension: "applicability",
   } as ApplicabilityFieldRule<TForm, TKey>;
 }
-
-// export function isApplicable(fieldContext: IFieldContext) {
-//   const extension = fieldContext._extensions[
-//     EXTENSION_NAME
-//   ] as ApplicabilityFieldContextExtension;
-
-//   return extension.isApplicableSignal.value;
-// }
 
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>

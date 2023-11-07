@@ -17,6 +17,12 @@
 - [ ] ❓ Add field groups with rules, such as applicability.
 - [ ] Add more input components.
 - [ ] Make field types more specific than just data types.
+- [ ] Create `DefaultForm` and `FieldValue` types.
+  - Something like
+    ```ts
+      type FieldValue<T> = T extends Function ? never : T
+      type DefaultForm = Record<string, FieldValue<...>>
+    ```
 
 ## TODO (Okapi)
 
