@@ -8,6 +8,7 @@ import {
   applicableIf,
   isRequired,
 } from "@/signal-forms/extensions";
+import { MySwitch } from "./MySwitchInput";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
@@ -57,6 +58,10 @@ const fields = createFields<MyFormData>((form) => {
       ),
     ];
   });
+
+  form.field("booleanField", (field) => {
+    field.label = "Boolean field";
+  });
 });
 
 console.log("(App) Created field collection", fields);
@@ -69,7 +74,7 @@ export const MyForm: React.FC = () => {
       <MyTextInput field={fields.validatedField} />
       <MyTextInput field={fields.secretField} />
       {/* <MyTextInput field={fields.numberField} /> */}
-      {/* <MyTextInput field={fields.booleanField} /> */}
+      <MySwitch field={fields.booleanField} />
       <FormStateManager fields={fields} />
     </SignalForm>
   );

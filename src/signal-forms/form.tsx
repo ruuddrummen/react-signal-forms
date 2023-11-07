@@ -39,10 +39,14 @@ export function createSignalForm<
       return SignalFormComponent;
     },
     useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
-      const formContext = useFormContext();
-      let fieldContext = formContext.fields[field.name];
+      if (field == null) {
+        throw new Error(
+          `Missing field configuration. Did you forget to add a field in createFields?`
+        );
+      }
 
-      return fieldContext as IFieldContext &
+      const formContext = useFormContext();
+      return formContext.fields[field.name] as IFieldContext &
         MergeFieldContextProperties<TExtensions>;
     },
   };
