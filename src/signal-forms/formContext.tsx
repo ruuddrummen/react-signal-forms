@@ -7,14 +7,14 @@ import { alwaysFalseSignal } from "@/signals";
 
 const ReactFormContext = createContext<IFormContext>({
   fields: {},
-  isSubmitting: alwaysFalseSignal,
+  isSubmitting: false,
 });
 
 export const useFormContext = () => useContext(ReactFormContext);
 
 export interface IFormContext<TForm = any> {
   fields: FieldContextCollection<TForm>;
-  isSubmitting: Signal<boolean>;
+  isSubmitting: boolean;
 }
 
 export function useFormContextProvider(
@@ -43,14 +43,18 @@ function createFormContext(
 }
 
 class FormContext implements IFormContext {
+  private __isSubmittingSignal: Signal<boolean>;
   fields: FieldContextCollection<any>;
-  isSubmitting: Signal<boolean>;
+
+  get isSubmitting() {
+    return this.__isSubmittingSignal.value;
+  }
 
   constructor(
     fields: FieldCollection,
     extensions: Array<SignalFormExtension<any, any>>
   ) {
-    this.isSubmitting = signal(false);
+    this.__isSubmittingSignal = signal(false);
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
