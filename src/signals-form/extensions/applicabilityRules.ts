@@ -22,7 +22,10 @@ export const applicabilityExtension: SignalFormExtension<ApplicabilityFieldConte
       Object.keys(formContext.fields).forEach((key) => {
         const fieldContext = formContext.fields[key] as FieldContext;
 
-        fieldContext.addExtension<ApplicabilityFieldContextExtension>(
+        fieldContext.addExtension<
+          ApplicabilityFieldContextExtension,
+          ApplicabilityFieldContext
+        >(
           EXTENSION_NAME,
           {
             isApplicableSignal: createApplicabilitySignal(
@@ -30,21 +33,12 @@ export const applicabilityExtension: SignalFormExtension<ApplicabilityFieldConte
               key,
               formContext
             ),
-          }
-        );
-
-        extendFieldContext<ApplicabilityFieldContext>(
-          fieldContext,
-          "isApplicable",
-          {
-            get: function () {
-              const extension = fieldContext.__extensions[
-                EXTENSION_NAME
-              ] as ApplicabilityFieldContextExtension;
-
-              return extension.isApplicableSignal.value;
+          },
+          (extension) => ({
+            isApplicable: {
+              get: () => extension.isApplicableSignal.value,
             },
-          }
+          })
         );
       });
     },

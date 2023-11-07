@@ -8,11 +8,6 @@ import { SignalFormExtension } from "./types";
 
 const EXTENSION_NAME = "validation";
 
-interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
-  extends FieldRule<TForm, TKey> {
-  execute: (value: TForm[TKey], context: IFormContext<TForm>) => boolean;
-}
-
 interface ValidationFieldContextExtension extends FieldContextExtension {
   isValidSignal: Signal<boolean>;
 }
@@ -27,22 +22,20 @@ export const validationExtension: SignalFormExtension<ValidationFieldContext> =
       Object.keys(formContext.fields).forEach((key) => {
         const fieldContext = formContext.fields[key] as FieldContext;
 
-        fieldContext.addExtension<ValidationFieldContextExtension>(
+        fieldContext.addExtension<
+          ValidationFieldContextExtension,
+          ValidationFieldContext
+        >(
           EXTENSION_NAME,
           {
             isValidSignal: createValidationSignal(fields, key, formContext),
-          }
-        );
-
-        Object.defineProperty(fieldContext, "isValid", {
-          get: function () {
-            const extension = fieldContext.__extensions[
-              EXTENSION_NAME
-            ] as ValidationFieldContextExtension;
-
-            return extension.isValidSignal.value;
           },
-        });
+          (extension) => ({
+            isValid: {
+              get: () => extension.isValidSignal.value,
+            },
+          })
+        );
       });
     },
   };
@@ -64,6 +57,11 @@ function createValidationSignal(
   } else {
     return alwaysTrueSignal;
   }
+}
+
+interface ValidationFieldRule<TForm, TKey extends KeyOf<TForm>>
+  extends FieldRule<TForm, TKey> {
+  execute: (value: TForm[TKey], context: IFormContext<TForm>) => boolean;
 }
 
 export function validIf<TForm, TKey extends KeyOf<TForm>>(

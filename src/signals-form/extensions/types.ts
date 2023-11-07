@@ -1,4 +1,4 @@
-import { FieldContextExtension, IFieldContext } from "../fieldContext";
+import { IFieldContext } from "../fieldContext";
 import { FieldCollection } from "../fields";
 import { IFormContext } from "../formContext";
 
@@ -7,7 +7,6 @@ export interface SignalFormExtension<TFieldContext = any> {
     fields: FieldCollection,
     formContext: IFormContext
   ) => void;
-  // extendFieldContext: (fieldContext: IFieldContext) => void;
 }
 
 // See: https://stackoverflow.com/questions/71595843/combine-all-types-in-array-into-a-single-type

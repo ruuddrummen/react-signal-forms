@@ -34,10 +34,15 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     this.__valueSignal.value = value;
   };
 
-  addExtension<TExtension extends FieldContextExtension>(
+  addExtension = <TExtension extends FieldContextExtension, TContext>(
     name: string,
-    extension: TExtension
-  ) {
+    extension: TExtension,
+    createContext: (
+      extension: TExtension
+    ) => Record<keyof TContext, PropertyDescriptor>
+  ) => {
     this.__extensions[name] = extension;
-  }
+
+    Object.defineProperties(this, createContext(extension));
+  };
 }
