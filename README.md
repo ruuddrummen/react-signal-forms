@@ -11,7 +11,7 @@ A forms library which aims to provide a high performance modular forms experienc
   - Transparent user experience.
 - And many more smart and useful quotes.
 
-## Getting started (when the library is available)
+## Getting started (soon)
 
 To get started install the package with npm:
 
@@ -117,4 +117,4 @@ const MyTextInput: React.FC<{ field: TextField }> = ({ field }) => {
 
 ## Extensions
 
-...
+This is how the extension model works: `Coming soon...`
