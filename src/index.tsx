@@ -13,14 +13,14 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-if (new URLSearchParams(window.location.search).get("no-strict") != null) {
-  root.render(<App />);
-} else {
+if (new URLSearchParams(window.location.search).get("strict") != null) {
   root.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
+} else {
+  root.render(<App />);
 }
 
 // If you want to start measuring performance in your app, pass a function
