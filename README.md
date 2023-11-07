@@ -5,10 +5,10 @@ A forms library which aims to provide a high performance modular forms experienc
 - Easy and lightweight to develop both simple and large complex forms.
 - Only calculates and renders what is necessary by leveraging signals.
 - Strongly typed with typescript.
-- Highly extensible with an extension model.
+- Built from the ground with an extension model.
   - Pick and choose what you need.
   - Easy to plugin your own.
-  - Transparent developer experience in their use.
+  - Transparent user experience.
 - And many more smart and useful quotes.
 
 ## Getting started (when the library is available)
@@ -103,7 +103,7 @@ const MyTextInput: React.FC<{ field: TextField }> = ({ field }) => {
   if (!isApplicable) {
     return null;
   }
-  
+
   return (
     <input
       value={value}
