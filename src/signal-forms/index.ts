@@ -10,4 +10,4 @@ export type {
 
 export { createFields } from "./fields";
 
-export { useFormContext } from "./formContext";
+export { useFormSignals as useFormContext } from "./formContext";

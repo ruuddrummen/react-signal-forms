@@ -10,7 +10,7 @@ const ReactFormContext = createContext<IFormContext>({
   isSubmitting: false,
 });
 
-export const useFormContext = () => useContext(ReactFormContext);
+export const useFormSignals = () => useContext(ReactFormContext);
 
 export interface IFormContext<TForm = any> {
   fields: FieldContextCollection<TForm>;

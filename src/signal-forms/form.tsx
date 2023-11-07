@@ -5,7 +5,7 @@ import {
 } from "./extensions/types";
 import { IFieldContext } from "./fieldContext";
 import { FieldBase, FieldCollection } from "./fields";
-import { useFormContext, useFormContextProvider } from "./formContext";
+import { useFormSignals, useFormContextProvider } from "./formContext";
 
 interface SignalsFormProps {
   fields: FieldCollection;
@@ -45,7 +45,7 @@ export function createSignalForm<
         );
       }
 
-      const formContext = useFormContext();
+      const formContext = useFormSignals();
       return formContext.fields[field.name] as IFieldContext &
         MergeFieldContextProperties<TExtensions>;
     },
