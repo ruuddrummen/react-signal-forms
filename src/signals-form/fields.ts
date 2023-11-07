@@ -4,7 +4,6 @@ export interface FieldBase<TValue> {
   name: string;
   label: string | null;
   defaultValue: TValue | null;
-  // rules?: Array<FieldRule<any, string>>;
 }
 
 export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>>

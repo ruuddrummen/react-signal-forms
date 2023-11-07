@@ -6,7 +6,6 @@ export type FieldContextCollection<TForm = any> = {
 };
 
 export interface IFieldContext<TValue = any> {
-  // __extensions: FieldContextExtensions;
   value: TValue;
   setValue: (value: TValue) => void;
 }
