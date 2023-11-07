@@ -15,7 +15,7 @@ interface ApplicabilityFieldProperties {
   isApplicable: boolean;
 }
 
-export const applicabilityExtension: SignalFormExtension<
+export const applicabilityRules: SignalFormExtension<
   ApplicabilityFieldContextExtension,
   ApplicabilityFieldProperties
 > = {

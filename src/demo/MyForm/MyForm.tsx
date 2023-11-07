@@ -1,37 +1,13 @@
-# React Signal Forms
+import { FormStateManager } from "@/signals-form/helpers/FormStateManager";
+import { MyTextInput } from "./MyTextInput";
+import { createSignalForm, createFields } from "@/signals-form";
+import {
+  validationRules,
+  applicabilityRules,
+  validIf,
+  applicableIf,
+} from "@/signals-form/extensions";
 
-A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with `@preact/signals`.
-
-- Easy and lightweight to develop both simple and large complex forms.
-- Only calculates and renders what is necessary by leveraging signals.
-- Strongly typed with typescript.
-- Highly extensible with an extension model.
-  - Pick and choose what you need.
-  - Easy to plugin your own.
-  - Transparent developer experience in their use.
-- And many more smart and useful quotes.
-
-## Getting started (when the library is available)
-
-To get started install the package with npm:
-
-```
-  npm install react-signal-forms
-```
-
-## Running the demo
-
-If you want to explore the library without any setup, you can run the demo by cloning the repository and running:
-
-```
-  npm install
-  npm start
-```
-
-## Going through an example
-
-<!-- prettier-ignore-start -->
-```jsx
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
   validationRules, // adds validation rule support and isValid signal to fields
@@ -73,35 +49,17 @@ const fields = createFields<MyFormData>((form) => {
   });
 });
 
+console.log("(App) Created field collection", fields);
+
 export const MyForm: React.FC = () => {
   return (
     <SignalForm fields={fields}>
       <MyTextInput field={fields.simpleField} />
       <MyTextInput field={fields.validatedField} />
       <MyTextInput field={fields.secretField} />
+      {/* <MyTextInput field={fields.numberField} /> */}
+      {/* <MyTextInput field={fields.booleanField} /> */}
       <FormStateManager fields={fields} />
     </SignalForm>
   );
 };
-
-
-// Bring your own input components.
-const MyTextInput: React.FC<{ field: TextField }> = ({ field }) => {
-  // Get the field signals and callbacks.
-  // Note: you get the basics and the extensions you choose above.
-  const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
-
-  return (
-    <input
-      value={value}
-      onChange={(e) => setValue(e.eventTarget.value)}
-      /* other props */
-    />
-  );
-};
-```
-<!-- prettier-ignore-end -->
-
-## Extensions
-
-...

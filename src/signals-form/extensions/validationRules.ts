@@ -15,7 +15,7 @@ interface ValidationFieldProperties {
   isValid: boolean;
 }
 
-export const validationExtension: SignalFormExtension<
+export const validationRules: SignalFormExtension<
   ValidationFieldContextExtension,
   ValidationFieldProperties
 > = {
