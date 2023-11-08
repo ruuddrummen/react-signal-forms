@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Button, Container } from "@mui/material";
+import { useSignal } from "@preact/signals-react";
+import React from "react";
+import "./App.css";
+import { MyForm } from "./MyForm/MyForm";
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App: React.FC = () => {
+  const formKey = useSignal(Math.random().toString());
+
+  const reload = () => {
+    formKey.value = Math.random().toString();
+  };
+
+  const reset = () => {
+    localStorage.clear();
+    reload();
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Container className="App">
+      <h2>
+        React Signals Form <Button onClick={reload}>Reload</Button>
+        <Button color="primary" onClick={reset}>
+          Reset
+        </Button>
+      </h2>
+      <MyForm key={formKey.value} />
+    </Container>
+  );
+};
 
-export default App
+export default App;
