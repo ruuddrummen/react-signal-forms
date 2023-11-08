@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 export function forAllKeysOf<T extends {}>(
   obj: T,
   test: (key: keyof T) => boolean
@@ -32,15 +30,3 @@ export function ensureNotNull<T>(
 
   return value != null;
 }
-
-export const useRenderCount = () => {
-  const count = useRef(1);
-
-  useEffect(() => {
-    count.current++;
-  });
-
-  return count;
-};
-
-export type KeyOf<TForm> = keyof TForm & string;
