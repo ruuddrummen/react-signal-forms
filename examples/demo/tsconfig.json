@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -21,16 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    /* Aliasing to signal-forms */
     "paths": {
-      "signal-forms": ["../../src/signal-forms"],
-      "signal-forms/*": ["../../src/signal-forms/*"]
+      "signal-forms": ["../../src"],
+      "signal-forms/*": ["../../src/*"]
     }
   },
   "include": ["src"],
-  "references": [
-    { "path": "./tsconfig.node.json" }
-    // {
-    //   "path": "../../tsconfig.json"
-    // }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
