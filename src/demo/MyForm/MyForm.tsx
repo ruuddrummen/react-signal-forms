@@ -1,15 +1,19 @@
-import { FormStateManager } from "@/signal-forms/helpers/FormStateManager";
-import { MyTextInput } from "./MyTextInput";
-import { createSignalForm, createFields } from "@/signal-forms";
+import { FormStateViewer } from "@/demo/MyForm/FormStateViewer";
+import { FormValues, createFields, createSignalForm } from "@/signal-forms";
 import {
-  validationRules,
   applicabilityRules,
-  validIf,
   applicableIf,
   isRequired,
+  validIf,
+  validationRules,
 } from "@/signal-forms/extensions";
-import { MySwitch } from "./MySwitchInput";
+import { Stack } from "@mui/material";
 import { MyNumberInput } from "./MyNumberInput";
+import { SubmitButton } from "./MySubmitButton";
+import { MySwitch } from "./MySwitchInput";
+import { MyTextInput } from "./MyTextInput";
+import { SubmitBackdrop } from "./SubmitBackdrop";
+import { useLocalStorageStore } from "./localStorageStore";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
@@ -72,15 +76,32 @@ const fields = createFields<MyFormData>((form) => {
 console.log("(App) Created field collection", fields);
 
 export const MyForm: React.FC = () => {
+  const store = useLocalStorageStore();
+
+  const storeValues = async (values: FormValues) => {
+    await store.setValues(values);
+  };
+
   return (
-    <SignalForm fields={fields}>
-      <MyTextInput field={fields.simpleField} />
-      <MyTextInput field={fields.requiredField} />
-      <MyTextInput field={fields.validatedField} />
-      <MyTextInput field={fields.secretField} />
-      <MyNumberInput field={fields.numberField} />
-      <MySwitch field={fields.booleanField} />
-      <FormStateManager fields={fields} />
+    <SignalForm
+      fields={fields}
+      initialValues={store.getValues()}
+      onSubmit={storeValues}
+    >
+      <SubmitBackdrop>
+        <Stack padding={2}>
+          <MyTextInput field={fields.simpleField} />
+          <MyTextInput field={fields.requiredField} />
+          <MyTextInput field={fields.validatedField} />
+          <MyTextInput field={fields.secretField} />
+          <MyNumberInput field={fields.numberField} />
+          <MySwitch field={fields.booleanField} />
+        </Stack>
+      </SubmitBackdrop>
+      <Stack direction={"row"} justifyContent={"end"} margin={2}>
+        <SubmitButton />
+      </Stack>
+      <FormStateViewer fields={fields} />
     </SignalForm>
   );
 };

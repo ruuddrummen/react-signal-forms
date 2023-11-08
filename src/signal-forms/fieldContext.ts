@@ -16,7 +16,7 @@ export interface IFieldContext<TValue = any> {
 }
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
-  private __valueSignal: Signal<TValue>;
+  __valueSignal: Signal<TValue>;
   private __extensions: FieldContextExtensions;
 
   constructor(value: TValue) {
