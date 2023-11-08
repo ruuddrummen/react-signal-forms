@@ -11,7 +11,7 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "demo": "cd ./examples/demo;npm run dev"
+    "demo": "cd ./demo;npm run dev"
   },
   "eslintConfig": {
     "extends": [

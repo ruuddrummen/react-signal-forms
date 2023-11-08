@@ -22,8 +22,8 @@
 
     /* Aliasing to signal-forms */
     "paths": {
-      "signal-forms": ["../../src"],
-      "signal-forms/*": ["../../src/*"]
+      "signal-forms": ["../src"],
+      "signal-forms/*": ["../src/*"]
     }
   },
   "include": ["src"],
