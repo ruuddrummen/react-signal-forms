@@ -19,13 +19,18 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "paths": {
+      "signal-forms": ["../../src/signal-forms"],
+      "signal-forms/*": ["../../src/signal-forms"]
+    }
   },
   "include": ["src"],
   "references": [
     { "path": "./tsconfig.node.json" },
     {
-      "path": "../../"
+      "path": "../../tsconfig.json"
     }
   ]
 }

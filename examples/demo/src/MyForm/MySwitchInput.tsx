@@ -1,7 +1,7 @@
-import { BooleanField } from "@/signal-forms";
-import { useRenderCount } from "@/utils";
 import { FormControl, FormControlLabel, Switch } from "@mui/material";
 import React from "react";
+import { BooleanField } from "signal-forms";
+import { useRenderCount } from "../utils";
 import { useFieldSignals } from "./MyForm";
 
 interface FormInputProps {

@@ -1,12 +1,12 @@
-import { FormValues, createFields, createSignalForm } from "@/signal-forms";
+import { Stack } from "@mui/material";
+import { FormValues, createFields, createSignalForm } from "signal-forms";
 import {
   applicabilityRules,
   applicableIf,
   isRequired,
   validIf,
   validationRules,
-} from "@/signal-forms/extensions";
-import { Stack } from "@mui/material";
+} from "signal-forms/extensions";
 import { FormStateViewer } from "./FormStateViewer";
 import { MyNumberInput } from "./MyNumberInput";
 import { SubmitButton } from "./MySubmitButton";
