@@ -1,14 +1,15 @@
 # React Signal Forms
 
+> **Note.** This library is brand new and under heavy development. We're only just getting started. 
+
 A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy and lightweight to develop both simple and large complex forms.
+- Lightweight to develop both simple and large complex forms.
 - Only calculates and renders what is necessary by leveraging signals.
 - Strongly typed with typescript.
-- Built from the ground with an extension model.
+- Easy to use, easy to extend. Built from the ground with an extension model.
   - Pick and choose what you need.
-  - Easy to plugin your own.
-  - Transparent user experience.
+  - Plug in your own.
 - And many more smart and useful quotes.
 
 ## Getting started (soon)
@@ -16,7 +17,13 @@ A forms library which aims to provide a high performance modular forms experienc
 To get started install the package with npm:
 
 ```
-  npm install react-signal-forms
+npm install react-signal-forms
+```
+
+## Your first form
+
+```ts
+// Coming soon.
 ```
 
 ## Running the demo
@@ -24,8 +31,8 @@ To get started install the package with npm:
 If you want to explore the library without any setup, you can run [the demo](./demo/) by cloning the repository and running:
 
 ```
-  npm run ci-demo
-  npm run demo
+npm run ci-demo
+npm run demo
 ```
 
 ## Going through an example
@@ -117,4 +124,8 @@ const MyTextInput: React.FC<{ field: TextField }> = ({ field }) => {
 
 ## Extensions
 
-This is how the extension model works: `Coming soon...`
+This is how the extension model works:
+
+```ts
+Coming soon...
+```
