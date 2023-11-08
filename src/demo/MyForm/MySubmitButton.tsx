@@ -1,19 +1,19 @@
-import { useFormContext } from "@/signal-forms";
-import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { useFormSignals } from "@/signal-forms";
 import { useRenderCount } from "@/utils";
+import { Button } from "@mui/material";
 
 export const SubmitButton: React.FC = () => {
-  const { submit, isSubmitting, peekValues } = useFormContext();
+  const { submit, isSubmitting, peekValues } = useFormSignals();
   const renderCount = useRenderCount();
 
   return (
-    <>
-      <Button onClick={() => submit(peekValues())}>
-        Submit (rendered {renderCount.current} times)
-      </Button>
-      <Backdrop sx={{ color: "#fff" }} open={isSubmitting}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => submit(peekValues())}
+      disabled={isSubmitting}
+    >
+      Save (rendered {renderCount.current} times)
+    </Button>
   );
 };

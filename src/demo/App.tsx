@@ -7,20 +7,22 @@ import { MyForm } from "./MyForm/MyForm";
 export const App: React.FC = () => {
   const formKey = useSignal(Math.random().toString());
 
-  const refresh = () => {
+  const reload = () => {
     formKey.value = Math.random().toString();
   };
 
   const reset = () => {
     localStorage.clear();
-    refresh();
+    reload();
   };
 
   return (
     <Container className="App">
       <h2>
-        React Signals Form <Button onClick={refresh}>Refresh</Button>
-        <Button onClick={reset}>Reset</Button>
+        React Signals Form <Button onClick={reload}>Reload</Button>
+        <Button color="primary" onClick={reset}>
+          Reset
+        </Button>
       </h2>
       <MyForm key={formKey.value} />
     </Container>

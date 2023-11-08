@@ -12,6 +12,9 @@ import { MySwitch } from "./MySwitchInput";
 import { MyNumberInput } from "./MyNumberInput";
 import { useStore } from "./localStorage";
 import { SubmitButton } from "./MySubmitButton";
+import { Box, Container, Stack, withStyles } from "@mui/material";
+import { createRef, useRef } from "react";
+import { SubmitBackdrop } from "./SubmitBackdrop";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
@@ -86,13 +89,23 @@ export const MyForm: React.FC = () => {
       initialValues={store.getValues()}
       onSubmit={storeValues}
     >
-      <MyTextInput field={fields.simpleField} />
-      <MyTextInput field={fields.requiredField} />
-      <MyTextInput field={fields.validatedField} />
-      <MyTextInput field={fields.secretField} />
-      <MyNumberInput field={fields.numberField} />
-      <MySwitch field={fields.booleanField} />
-      <SubmitButton />
+      <Stack
+        padding={2}
+        sx={{
+          position: "relative", // for backdrop
+        }}
+      >
+        <MyTextInput field={fields.simpleField} />
+        <MyTextInput field={fields.requiredField} />
+        <MyTextInput field={fields.validatedField} />
+        <MyTextInput field={fields.secretField} />
+        <MyNumberInput field={fields.numberField} />
+        <MySwitch field={fields.booleanField} />
+        <Stack direction={"row"} justifyContent={"end"}>
+          <SubmitButton />
+        </Stack>
+        <SubmitBackdrop />
+      </Stack>
       <FormStateViewer fields={fields} />
     </SignalForm>
   );

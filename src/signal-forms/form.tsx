@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { PropsWithRef, useMemo } from "react";
 import {
   MergeFieldContextProperties,
   SignalFormExtension,
