@@ -3,9 +3,11 @@ import { FormValues } from "@/signal-forms";
 export function useLocalStorageStore() {
   return {
     getValues: () => {
-      return JSON.parse(
+      const values = JSON.parse(
         localStorage.getItem("FormState") ?? "{}"
       ) as FormValues;
+      console.log("Loaded values from localStorage", values);
+      return values;
     },
 
     setValues: async (values: FormValues) => {

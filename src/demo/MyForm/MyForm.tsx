@@ -88,22 +88,18 @@ export const MyForm: React.FC = () => {
       initialValues={store.getValues()}
       onSubmit={storeValues}
     >
-      <Stack
-        padding={2}
-        sx={{
-          position: "relative", // for backdrop
-        }}
-      >
-        <MyTextInput field={fields.simpleField} />
-        <MyTextInput field={fields.requiredField} />
-        <MyTextInput field={fields.validatedField} />
-        <MyTextInput field={fields.secretField} />
-        <MyNumberInput field={fields.numberField} />
-        <MySwitch field={fields.booleanField} />
-        <Stack direction={"row"} justifyContent={"end"}>
-          <SubmitButton />
+      <SubmitBackdrop>
+        <Stack padding={2}>
+          <MyTextInput field={fields.simpleField} />
+          <MyTextInput field={fields.requiredField} />
+          <MyTextInput field={fields.validatedField} />
+          <MyTextInput field={fields.secretField} />
+          <MyNumberInput field={fields.numberField} />
+          <MySwitch field={fields.booleanField} />
         </Stack>
-        <SubmitBackdrop />
+      </SubmitBackdrop>
+      <Stack direction={"row"} justifyContent={"end"} margin={2}>
+        <SubmitButton />
       </Stack>
       <FormStateViewer fields={fields} />
     </SignalForm>
