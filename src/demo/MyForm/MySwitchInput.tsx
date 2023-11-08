@@ -18,7 +18,7 @@ export const MySwitch: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <FormControl margin="normal" error={!isValid}>
+    <FormControl margin="normal" error={!isValid} fullWidth>
       <FormControlLabel
         control={<Switch />}
         label={`${field.label} (rendered ${renderCount.current} times)`}

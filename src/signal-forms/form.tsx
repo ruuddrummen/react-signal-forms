@@ -6,11 +6,17 @@ import {
 import { IFieldContext } from "./fieldContext";
 import { FieldBase, FieldCollection } from "./fields";
 import { useFormSignals, useFormContextProvider } from "./formContext";
+import { FormValues } from "./types";
 
 interface SignalsFormProps {
   fields: FieldCollection;
-  extensions: Array<SignalFormExtension<any, any>>;
   children: React.ReactNode;
+  initialValues?: any;
+  onSubmit?: (values: FormValues) => Promise<void>;
+}
+
+interface SignalsFormInnerProps extends SignalsFormProps {
+  extensions: Array<SignalFormExtension<any, any>>;
 }
 
 export function createSignalForm<
@@ -18,23 +24,16 @@ export function createSignalForm<
 >(
   ...extensions: TExtensions
 ): {
-  SignalForm: React.ComponentType<{
-    fields: FieldCollection;
-    children: React.ReactNode;
-  }>;
+  SignalForm: React.ComponentType<SignalsFormProps>;
   useFieldSignals: <TValue>(
     field: FieldBase<TValue>
   ) => IFieldContext<TValue> & MergeFieldContextProperties<TExtensions>;
 } {
   return {
-    SignalForm: ({ fields, children }) => {
+    SignalForm: (props) => {
       const SignalFormComponent = useMemo(() => {
-        return (
-          <SignalForm fields={fields} extensions={extensions}>
-            {children}
-          </SignalForm>
-        );
-      }, [children, fields]);
+        return <SignalForm {...props} extensions={extensions} />;
+      }, []);
 
       return SignalFormComponent;
     },
@@ -52,15 +51,22 @@ export function createSignalForm<
   };
 }
 
-const SignalForm: React.FC<SignalsFormProps> = ({
+const SignalForm: React.FC<SignalsFormInnerProps> = ({
   fields,
+  initialValues,
   extensions,
+  onSubmit,
   children,
 }) => {
   const { ContextProvider, formContext } = useFormContextProvider(
     fields,
-    extensions
+    extensions,
+    onSubmit
   );
+
+  if (initialValues != null) {
+    formContext.current.setValues(initialValues);
+  }
 
   return (
     <ContextProvider value={formContext.current}>{children}</ContextProvider>

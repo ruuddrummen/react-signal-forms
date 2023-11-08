@@ -1,13 +1,17 @@
 import { createContext, useContext, useRef } from "react";
-import { FieldCollection } from ".";
+import { FieldCollection, FormValues } from ".";
 import { SignalFormExtension } from "./extensions/types";
 import { FieldContext, FieldContextCollection } from "./fieldContext";
 import { Signal, signal } from "@preact/signals-react";
-import { alwaysFalseSignal } from "@/signals";
+
+const noop = () => ({} as any);
 
 const ReactFormContext = createContext<IFormContext>({
   fields: {},
   isSubmitting: false,
+  peekValues: noop,
+  setValues: noop,
+  submit: noop,
 });
 
 export const useFormSignals = () => useContext(ReactFormContext);
@@ -15,14 +19,18 @@ export const useFormSignals = () => useContext(ReactFormContext);
 export interface IFormContext<TForm = any> {
   fields: FieldContextCollection<TForm>;
   isSubmitting: boolean;
+  peekValues(): FormValues;
+  setValues(values: FormValues): void;
+  submit(values: FormValues): Promise<void>;
 }
 
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any>>
+  extensions: Array<SignalFormExtension<any, any>>,
+  onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = useRef<IFormContext>(
-    createFormContext(fields, extensions)
+    createFormContext(fields, extensions, onSubmit)
   );
 
   return {
@@ -33,9 +41,10 @@ export function useFormContextProvider(
 
 function createFormContext(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any>>
+  extensions: Array<SignalFormExtension<any, any>>,
+  onSubmit?: (values: FormValues) => Promise<void>
 ) {
-  const formContext = new FormContext(fields, extensions);
+  const formContext = new FormContext(fields, extensions, onSubmit);
 
   console.log("(Form) Created field signals", formContext);
 
@@ -44,6 +53,7 @@ function createFormContext(
 
 class FormContext implements IFormContext {
   private __isSubmittingSignal: Signal<boolean>;
+  private __onSubmit: ((values: FormValues) => Promise<void>) | undefined;
   fields: FieldContextCollection<any>;
 
   get isSubmitting() {
@@ -52,9 +62,11 @@ class FormContext implements IFormContext {
 
   constructor(
     fields: FieldCollection,
-    extensions: Array<SignalFormExtension<any, any>>
+    extensions: Array<SignalFormExtension<any, any>>,
+    onSubmit?: (values: FormValues) => Promise<void>
   ) {
     this.__isSubmittingSignal = signal(false);
+    this.__onSubmit = onSubmit;
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, currentName) => {
@@ -80,4 +92,33 @@ class FormContext implements IFormContext {
       });
     });
   }
+
+  peekValues = () => {
+    return Object.keys(this.fields).reduce<FormValues>((values, current) => {
+      const field = this.fields[current] as FieldContext;
+      values[current] = field.__valueSignal.peek();
+
+      return values;
+    }, {});
+  };
+
+  setValues = (values: FormValues<any>): void => {
+    Object.keys(values).forEach((key) => {
+      const field = this.fields[key];
+
+      if (field != null) {
+        field.setValue(values[key]);
+      }
+    });
+  };
+
+  submit = async (values: FormValues<any>): Promise<void> => {
+    if (this.__onSubmit == null) {
+      throw new Error("Missing value for SignalForm.onSubmit prop.");
+    }
+
+    this.__isSubmittingSignal.value = true;
+    await this.__onSubmit(values);
+    this.__isSubmittingSignal.value = false;
+  };
 }
