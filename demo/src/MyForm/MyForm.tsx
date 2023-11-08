@@ -1,12 +1,11 @@
-import { FormValues, createFields, createSignalForm } from "@/signal-forms";
+import { Stack } from "@mui/material";
 import {
   applicabilityRules,
   applicableIf,
   isRequired,
-  validIf,
   validationRules,
-} from "@/signal-forms/extensions";
-import { Stack } from "@mui/material";
+} from "signal-forms/extensions";
+import { FormValues, createFields, createSignalForm } from "signal-forms/index";
 import { FormStateViewer } from "./FormStateViewer";
 import { MyNumberInput } from "./MyNumberInput";
 import { SubmitButton } from "./MySubmitButton";
@@ -50,7 +49,7 @@ const fields = createFields<MyFormData>((form) => {
     field.label = "Field with validation - try typing SECRET";
     field.rules = [
       // A custom validation rule.
-      validIf(({ value }) => value?.startsWith("SECRET")),
+      // validIf(({ value }) => value?.startsWith("SECRET")),
     ];
   });
 

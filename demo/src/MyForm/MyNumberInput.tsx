@@ -1,7 +1,7 @@
-import { NumberField } from "@/signal-forms";
-import { useRenderCount } from "@/utils";
 import { FormControl, TextField as MuiTextField } from "@mui/material";
 import React, { ChangeEvent } from "react";
+import { NumberField } from "signal-forms";
+import { useRenderCount } from "../utils";
 import { useFieldSignals } from "./MyForm";
 
 interface FormInputProps {
