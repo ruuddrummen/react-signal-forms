@@ -1,4 +1,4 @@
-import { KeyOf } from "../utils";
+import { KeyOf } from "./utils";
 
 export interface FieldBase<TValue> {
   name: string;
