@@ -12,7 +12,8 @@ export type FieldContextCollection<TForm = any> = {
 
 export interface IFieldContext<TValue = any> {
   value: TValue;
-  setValue: (value: TValue) => void;
+  setValue(value: TValue): void;
+  peekValue(): TValue;
 }
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
@@ -29,7 +30,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   }
 
   peekValue = () => {
-    this.__valueSignal.peek();
+    return this.__valueSignal.peek();
   };
 
   setValue = (value: TValue) => {
