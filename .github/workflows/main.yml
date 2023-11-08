@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
@@ -22,5 +23,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: cd ./demo;npm ci
-      - run: cd ./demo;npm run build
+      - run: |
+          cd ./demo
+          npm ci
+      - run: |
+          cd ./demo
+          npm run build
