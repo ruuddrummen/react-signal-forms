@@ -16,7 +16,7 @@ export interface IFieldContext<TValue = any> {
 }
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
-  __valueSignal: Signal<TValue>;
+  private __valueSignal: Signal<TValue>;
   private __extensions: FieldContextExtensions;
 
   constructor(value: TValue) {
@@ -27,6 +27,10 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   get value() {
     return this.__valueSignal.value;
   }
+
+  peekValue = () => {
+    this.__valueSignal.peek();
+  };
 
   setValue = (value: TValue) => {
     this.__valueSignal.value = value;

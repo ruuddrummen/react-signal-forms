@@ -1,8 +1,8 @@
+import { Signal, signal } from "@preact/signals-react";
 import { createContext, useContext, useRef } from "react";
 import { FieldCollection, FormValues } from ".";
 import { SignalFormExtension } from "./extensions/types";
 import { FieldContext, FieldContextCollection } from "./fieldContext";
-import { Signal, signal } from "@preact/signals-react";
 
 const noop = () => ({} as any);
 
@@ -96,7 +96,7 @@ class FormContext implements IFormContext {
   peekValues = () => {
     return Object.keys(this.fields).reduce<FormValues>((values, current) => {
       const field = this.fields[current] as FieldContext;
-      values[current] = field.__valueSignal.peek();
+      values[current] = field.peekValue();
 
       return values;
     }, {});
