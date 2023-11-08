@@ -1,6 +1,6 @@
-import { alwaysTrueSignal } from "@/signals";
-import { KeyOf } from "@/utils";
 import { Signal, computed } from "@preact/signals-react";
+import { alwaysTrueSignal } from "../../signals";
+import { KeyOf } from "../../utils";
 import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
 import { FieldContextExtension, SignalFormExtension } from "./types";

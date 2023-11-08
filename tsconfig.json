@@ -18,7 +18,9 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "composite": true
+    "composite": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": ["src"]
 }

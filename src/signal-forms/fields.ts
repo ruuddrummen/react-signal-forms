@@ -1,4 +1,4 @@
-import { KeyOf } from "@/utils";
+import { KeyOf } from "../utils";
 
 export interface FieldBase<TValue> {
   name: string;
@@ -17,7 +17,7 @@ export type BooleanField = FieldBase<boolean | null>;
 
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface FieldRule<TForm, Key extends KeyOf<TForm>> {
+export interface FieldRule<TForm, _Key extends KeyOf<TForm>> {
   extension: string;
 }
 

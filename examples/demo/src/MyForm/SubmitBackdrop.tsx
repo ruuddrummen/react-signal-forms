@@ -1,8 +1,8 @@
 import { Backdrop, CircularProgress, Stack, Typography } from "@mui/material";
-import { PropsWithChildren } from "react";
+import { ReactNode } from "react";
 import { useFormSignals } from "signal-forms";
 
-export const SubmitBackdrop: React.FC<PropsWithChildren<{}>> = ({
+export const SubmitBackdrop: React.FC<{ children?: ReactNode | undefined }> = ({
   children,
 }) => {
   const form = useFormSignals();

@@ -23,14 +23,14 @@
 
     "paths": {
       "signal-forms": ["../../src/signal-forms"],
-      "signal-forms/*": ["../../src/signal-forms"]
+      "signal-forms/*": ["../../src/signal-forms/*"]
     }
   },
   "include": ["src"],
   "references": [
-    { "path": "./tsconfig.node.json" },
-    {
-      "path": "../../tsconfig.json"
-    }
+    { "path": "./tsconfig.node.json" }
+    // {
+    //   "path": "../../tsconfig.json"
+    // }
   ]
 }
