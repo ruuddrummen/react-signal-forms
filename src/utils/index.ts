@@ -1,3 +1,5 @@
+export type KeyOf<TForm> = keyof TForm & string;
+
 export function forAllKeysOf<T extends {}>(
   obj: T,
   test: (key: keyof T) => boolean

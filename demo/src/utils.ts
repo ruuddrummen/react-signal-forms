@@ -9,5 +9,3 @@ export const useRenderCount = () => {
 
   return count;
 };
-
-export type KeyOf<TForm> = keyof TForm & string;
