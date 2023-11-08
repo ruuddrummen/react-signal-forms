@@ -1,4 +1,3 @@
-import { FormStateViewer } from "@/demo/MyForm/FormStateViewer";
 import { FormValues, createFields, createSignalForm } from "@/signal-forms";
 import {
   applicabilityRules,
@@ -8,6 +7,7 @@ import {
   validationRules,
 } from "@/signal-forms/extensions";
 import { Stack } from "@mui/material";
+import { FormStateViewer } from "./FormStateViewer";
 import { MyNumberInput } from "./MyNumberInput";
 import { SubmitButton } from "./MySubmitButton";
 import { MySwitch } from "./MySwitchInput";
