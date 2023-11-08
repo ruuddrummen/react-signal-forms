@@ -1,20 +1,19 @@
 import { FormStateViewer } from "@/demo/MyForm/FormStateViewer";
-import { MyTextInput } from "./MyTextInput";
-import { createSignalForm, createFields, FormValues } from "@/signal-forms";
+import { FormValues, createFields, createSignalForm } from "@/signal-forms";
 import {
-  validationRules,
   applicabilityRules,
-  validIf,
   applicableIf,
   isRequired,
+  validIf,
+  validationRules,
 } from "@/signal-forms/extensions";
-import { MySwitch } from "./MySwitchInput";
+import { Stack } from "@mui/material";
 import { MyNumberInput } from "./MyNumberInput";
-import { useStore } from "./localStorage";
 import { SubmitButton } from "./MySubmitButton";
-import { Box, Container, Stack, withStyles } from "@mui/material";
-import { createRef, useRef } from "react";
+import { MySwitch } from "./MySwitchInput";
+import { MyTextInput } from "./MyTextInput";
 import { SubmitBackdrop } from "./SubmitBackdrop";
+import { useLocalStorageStore } from "./localStorageStore";
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
@@ -77,7 +76,7 @@ const fields = createFields<MyFormData>((form) => {
 console.log("(App) Created field collection", fields);
 
 export const MyForm: React.FC = () => {
-  const store = useStore();
+  const store = useLocalStorageStore();
 
   const storeValues = async (values: FormValues) => {
     await store.setValues(values);

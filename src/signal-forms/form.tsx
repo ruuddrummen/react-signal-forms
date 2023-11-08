@@ -1,11 +1,11 @@
-import { PropsWithRef, useMemo } from "react";
+import { useMemo } from "react";
 import {
   MergeFieldContextProperties,
   SignalFormExtension,
 } from "./extensions/types";
 import { IFieldContext } from "./fieldContext";
 import { FieldBase, FieldCollection } from "./fields";
-import { useFormSignals, useFormContextProvider } from "./formContext";
+import { useFormContextProvider, useFormSignals } from "./formContext";
 import { FormValues } from "./types";
 
 interface SignalsFormProps {
@@ -33,7 +33,7 @@ export function createSignalForm<
     SignalForm: (props) => {
       const SignalFormComponent = useMemo(() => {
         return <SignalForm {...props} extensions={extensions} />;
-      }, []);
+      }, [props]);
 
       return SignalFormComponent;
     },
