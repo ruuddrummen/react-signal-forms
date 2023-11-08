@@ -24,7 +24,7 @@ To get started install the package with npm:
 If you want to explore the library without any setup, you can run [the demo](./demo/) by cloning the repository and running:
 
 ```
-  npm install
+  npm run ci-demo
   npm run demo
 ```
 

@@ -11,7 +11,9 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "demo": "cd ./demo;npm run dev"
+    "demo": "cd ./demo && npm run dev",
+    "ci-demo": "cd ./demo && npm run ci",
+    "build-demo": "cd ./demo && npm run build"
   },
   "eslintConfig": {
     "extends": [
