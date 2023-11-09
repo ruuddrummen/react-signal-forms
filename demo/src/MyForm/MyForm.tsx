@@ -1,20 +1,24 @@
 import { Stack } from "@mui/material";
+import { createFields, createSignalForm } from "signal-forms";
 import {
   applicabilityRules,
   applicableIf,
   isRequired,
+  validIf,
   validationRules,
 } from "signal-forms/extensions";
-import { FormValues, createFields, createSignalForm } from "signal-forms/index";
-import { FormStateViewer } from "./FormStateViewer";
-import { MyNumberInput } from "./MyNumberInput";
-import { SubmitButton } from "./MySubmitButton";
-import { MySwitch } from "./MySwitchInput";
-import { MyTextInput } from "./MyTextInput";
-import { SubmitBackdrop } from "./SubmitBackdrop";
-import { useLocalStorageStore } from "./localStorageStore";
+import {
+  FormStateViewer,
+  MyNumberInput,
+  MySwitch,
+  MyTextInput,
+  SubmitBackdrop,
+  SubmitButton,
+  useLocalStorageStore,
+} from ".";
 
 // Create the form and hook with the extensions you want to use.
+// eslint-disable-next-line react-refresh/only-export-components
 export const { SignalForm, useFieldSignals } = createSignalForm(
   validationRules, // adds validation rule support and field signals.
   applicabilityRules // adds applicability rule support and field signals.
@@ -49,7 +53,7 @@ const fields = createFields<MyFormData>((form) => {
     field.label = "Field with validation - try typing SECRET";
     field.rules = [
       // A custom validation rule.
-      // validIf(({ value }) => value?.startsWith("SECRET")),
+      validIf(({ value }) => value?.startsWith("SECRET")),
     ];
   });
 
@@ -77,15 +81,11 @@ console.log("(App) Created field collection", fields);
 export const MyForm: React.FC = () => {
   const store = useLocalStorageStore();
 
-  const storeValues = async (values: FormValues) => {
-    await store.setValues(values);
-  };
-
   return (
     <SignalForm
       fields={fields}
       initialValues={store.getValues()}
-      onSubmit={storeValues}
+      onSubmit={(values) => store.setValues(values)}
     >
       <SubmitBackdrop>
         <Stack padding={2}>
