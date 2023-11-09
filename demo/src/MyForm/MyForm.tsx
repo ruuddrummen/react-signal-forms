@@ -1,6 +1,10 @@
 import { Stack } from "@mui/material";
-import { createFields } from "signal-forms";
-import { applicableIf, isRequired, validIf } from "signal-forms/extensions";
+import { createFields } from "react-signal-forms";
+import {
+  applicableIf,
+  isRequired,
+  validIf,
+} from "react-signal-forms/extensions";
 import {
   FormStateViewer,
   MyNumberInput,

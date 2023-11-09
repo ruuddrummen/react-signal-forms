@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useFormSignals } from "signal-forms/index";
+import { useFormSignals } from "react-signal-forms";
 import { useRenderCount } from "../utils";
 
 export const SubmitButton: React.FC = () => {

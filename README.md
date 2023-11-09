@@ -2,22 +2,25 @@
 
 > **Note.** This library is brand new and under heavy development. We're only just getting started.
 
-A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
+A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Lightweight to develop both simple and large complex forms.
-- Only calculates and renders what is necessary by leveraging signals.
-- Strongly typed with typescript.
-- Easy to use, easy to extend. Built from the ground with an extension model.
+- Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
   - Pick and choose what you need.
   - Plug in your own.
+- Add rules to your fields.
+  - Like `isRequired()` or `applicableIf(...)`.
+  - Rules have access to your form context and other fields.
+- Only calculates and renders what is necessary by leveraging signals.
+- Bring your own UI libraries and components.
+- Everything is strongly typed with Typescript.
 - And many more smart and useful quotes.
 
-## Getting started (soon)
+## Getting started
 
 To get started install the package with npm:
 
 ```
-npm install react-signal-forms
+npm i react-signal-forms
 ```
 
 ## Your first form

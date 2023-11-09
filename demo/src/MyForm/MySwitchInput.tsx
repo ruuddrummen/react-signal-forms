@@ -1,6 +1,6 @@
 import { FormControl, FormControlLabel, Switch } from "@mui/material";
 import React from "react";
-import { BooleanField } from "signal-forms";
+import { BooleanField } from "react-signal-forms";
 import { useRenderCount } from "../utils";
 import { useFieldSignals } from "./SignalForm";
 

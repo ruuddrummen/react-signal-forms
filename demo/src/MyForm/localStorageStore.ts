@@ -1,4 +1,4 @@
-import { FormValues } from "signal-forms";
+import { FormValues } from "react-signal-forms";
 
 export function useLocalStorageStore() {
   return {
