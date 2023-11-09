@@ -8,7 +8,7 @@ interface FormInputProps {
   field: NumberField;
 }
 
-export const MyNumberInput: React.FC<FormInputProps> = ({ field }) => {
+export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
   const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
 
   const renderCount = useRenderCount();
@@ -30,7 +30,7 @@ export const MyNumberInput: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <FormControl margin="normal">
+    <FormControl margin="normal" fullWidth>
       <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
         type="number"

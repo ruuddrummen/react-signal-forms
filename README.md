@@ -38,7 +38,7 @@ npm run ci-demo
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form root](./demo/src/MyForm/MyForm.tsx).
+If you want to explore the demo code, a good place to start would be [the form root](./demo/src/MyForm.tsx).
 
 ## Extensions
 

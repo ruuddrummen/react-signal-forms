@@ -7,14 +7,14 @@ import {
 } from "react-signal-forms/extensions";
 import {
   FormStateViewer,
-  MyNumberInput,
-  MySwitch,
-  MyTextInput,
+  NumberInput,
   SubmitBackdrop,
   SubmitButton,
+  Switch,
+  TextInput,
   useLocalStorageStore,
-} from ".";
-import { SignalForm } from "./SignalForm";
+} from "./FormComponents";
+import { SignalForm } from "./FormComponents/SignalForm";
 
 // Create a data interface.
 interface MyFormData {
@@ -70,7 +70,7 @@ const fields = createFields<MyFormData>((form) => {
 
 console.log("(App) Created field collection", fields);
 
-export const MyForm: React.FC = () => {
+export const MyOldForm: React.FC = () => {
   const store = useLocalStorageStore();
 
   return (
@@ -81,12 +81,12 @@ export const MyForm: React.FC = () => {
     >
       <SubmitBackdrop>
         <Stack padding={2}>
-          <MyTextInput field={fields.simpleField} />
-          <MyTextInput field={fields.requiredField} />
-          <MyTextInput field={fields.validatedField} />
-          <MyTextInput field={fields.secretField} />
-          <MyNumberInput field={fields.numberField} />
-          <MySwitch field={fields.booleanField} />
+          <TextInput field={fields.simpleField} />
+          <TextInput field={fields.requiredField} />
+          <TextInput field={fields.validatedField} />
+          <TextInput field={fields.secretField} />
+          <NumberInput field={fields.numberField} />
+          <Switch field={fields.booleanField} />
         </Stack>
       </SubmitBackdrop>
       <Stack direction={"row"} justifyContent={"end"} margin={2}>

@@ -2,7 +2,7 @@ import { Button, Container } from "@mui/material";
 import { useSignal } from "@preact/signals-react";
 import React from "react";
 import "./App.css";
-import { MyForm } from "./MyForm/MyForm";
+import { MyForm } from "./MyForm";
 
 export const App: React.FC = () => {
   const formKey = useSignal(Math.random().toString());
@@ -17,7 +17,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <Container className="App">
+    <Container className="App" maxWidth="md">
       <h2>
         React Signals Form <Button onClick={reload}>Reload</Button>
         <Button color="primary" onClick={reset}>
