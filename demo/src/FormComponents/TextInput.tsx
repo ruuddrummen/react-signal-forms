@@ -1,14 +1,14 @@
-import { FormControl, FormControlLabel, Switch } from "@mui/material";
+import { FormControl, TextField as MuiTextField } from "@mui/material";
 import React from "react";
-import { BooleanField } from "react-signal-forms";
+import { TextField } from "react-signal-forms";
 import { useRenderCount } from "../utils";
 import { useFieldSignals } from "./SignalForm";
 
 interface FormInputProps {
-  field: BooleanField;
+  field: TextField;
 }
 
-export const MySwitch: React.FC<FormInputProps> = ({ field }) => {
+export const TextInput: React.FC<FormInputProps> = ({ field }) => {
   const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
 
   const renderCount = useRenderCount();
@@ -18,12 +18,12 @@ export const MySwitch: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <FormControl margin="normal" error={!isValid}>
-      <FormControlLabel
-        control={<Switch />}
+    <FormControl margin="normal" fullWidth>
+      <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
-        checked={value ?? false}
-        onChange={(_e, checked) => setValue(checked)}
+        value={value ?? ""}
+        onChange={(e) => setValue(e.currentTarget.value)}
+        error={!isValid}
       />
     </FormControl>
   );
