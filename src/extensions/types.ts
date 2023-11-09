@@ -12,13 +12,13 @@ export interface SignalFormExtension<
   TFieldContextProperties
 > {
   name: string;
-  createFieldExtension: (
+  createFieldExtension(
     field: Field,
     formContext: IFormContext
-  ) => TFieldContextExtension;
-  createFieldProperties: (
+  ): TFieldContextExtension;
+  createFieldProperties(
     extension: TFieldContextExtension
-  ) => PropertyDescriptors<TFieldContextProperties>;
+  ): PropertyDescriptors<TFieldContextProperties>;
 }
 
 // Recursively merge the types of the second type parameters, which describes the field context properties.

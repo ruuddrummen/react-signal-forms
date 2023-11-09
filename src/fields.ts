@@ -26,7 +26,7 @@ export type FieldCollection<TForm = any> = {
 };
 
 export function createFields<TForm>(
-  configure: (fieldsBuilder: FieldCollectionBuilder<TForm>) => void
+  configure: (fieldsBuilder: IFieldCollectionBuilder<TForm>) => void
 ): FieldCollection<TForm> {
   const fieldCollectionBuilder = new FieldCollectionBuilder<TForm>();
   configure(fieldCollectionBuilder);
@@ -34,7 +34,20 @@ export function createFields<TForm>(
   return fieldCollectionBuilder.build();
 }
 
-class FieldCollectionBuilder<TForm> {
+interface IFieldCollectionBuilder<TForm> {
+  field<TKey extends KeyOf<TForm>>(
+    name: TKey,
+    configure: (fieldBuilder: IFieldBuilder<TForm, TKey>) => void
+  ): void;
+}
+
+interface IFieldBuilder<TForm, TKey extends KeyOf<TForm>> {
+  label: string | null;
+  defaultValue: TForm[TKey] | null;
+  rules: Array<FieldRule<TForm, TKey>>;
+}
+
+class FieldCollectionBuilder<TForm> implements IFieldCollectionBuilder<TForm> {
   fieldBuilders: Array<FieldBuilder<TForm, KeyOf<TForm>>> = [];
 
   field<TKey extends KeyOf<TForm>>(
