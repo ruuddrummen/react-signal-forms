@@ -1,12 +1,6 @@
 import { Stack } from "@mui/material";
-import { createFields, createSignalForm } from "signal-forms";
-import {
-  applicabilityRules,
-  applicableIf,
-  isRequired,
-  validIf,
-  validationRules,
-} from "signal-forms/extensions";
+import { createFields } from "signal-forms";
+import { applicableIf, isRequired, validIf } from "signal-forms/extensions";
 import {
   FormStateViewer,
   MyNumberInput,
@@ -16,13 +10,7 @@ import {
   SubmitButton,
   useLocalStorageStore,
 } from ".";
-
-// Create the form and hook with the extensions you want to use.
-// eslint-disable-next-line react-refresh/only-export-components
-export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule support and field signals.
-  applicabilityRules // adds applicability rule support and field signals.
-);
+import { SignalForm } from "./SignalForm";
 
 // Create a data interface.
 interface MyFormData {

@@ -2,7 +2,7 @@ import { FormControl, TextField as MuiTextField } from "@mui/material";
 import React from "react";
 import { TextField } from "signal-forms";
 import { useRenderCount } from "../utils";
-import { useFieldSignals } from "./MyForm";
+import { useFieldSignals } from "./SignalForm";
 
 interface FormInputProps {
   field: TextField;
