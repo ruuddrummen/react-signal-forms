@@ -2,12 +2,12 @@
 
 > **Note.** This library is brand new and under heavy development. We're only just getting started.
 
-A forms library which aims to provide a high performance modular forms experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
+A forms library which aims to provide a high performance modular and extensible forms experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
 - Lightweight to develop both simple and large complex forms.
 - Only calculates and renders what is necessary by leveraging signals.
-- Strongly typed with typescript.
-- Easy to use, easy to extend. Built from the ground with an extension model.
+- Bring your own UI libraries and components.
+- Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
   - Pick and choose what you need.
   - Plug in your own.
 - And many more smart and useful quotes.
