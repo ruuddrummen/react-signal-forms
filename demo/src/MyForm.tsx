@@ -4,7 +4,7 @@ import {
   applicableIf,
   isRequired,
   requiredIf,
-  validIf,
+  validIf3,
 } from "react-signal-forms/extensions";
 import {
   FormStateViewer,
@@ -49,7 +49,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("mustStartWithPrefix", (field) => {
     field.label = "Must start with value of required field";
-    field.rules = [validIf(({ form, value }) => true)];
+    field.rules = [validIf3(({ form, value }) => true)];
   });
 
   form.field("makeFieldRequired", (field) => {
