@@ -2,6 +2,7 @@ import { Divider, Grid, Stack, Typography } from "@mui/material";
 import { createFields } from "react-signal-forms";
 import {
   applicableIf,
+  createValidationRule,
   isRequired,
   requiredIf,
   validIf,
@@ -28,6 +29,11 @@ interface FormData {
   showSecretField: boolean;
   secret: string;
 }
+
+// A simple custom rule.
+const invalidIf = createValidationRule<boolean>(
+  (context, test) => !test(context)
+);
 
 const fields = createFields<FormData>((form) => {
   form.field("text", (field) => {
