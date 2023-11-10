@@ -3,7 +3,11 @@ import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "../signals";
 import { KeyOf } from "../utils";
-import { FieldContextExtension, SignalFormExtension } from "./types";
+import {
+  FieldContextExtension,
+  FieldContextProperties,
+  SignalFormExtension,
+} from "./types";
 
 const EXTENSION_NAME = "applicability";
 
@@ -11,7 +15,7 @@ interface ApplicabilityFieldContextExtension extends FieldContextExtension {
   isApplicableSignal: Signal<boolean>;
 }
 
-interface ApplicabilityFieldProperties {
+interface ApplicabilityFieldProperties extends FieldContextProperties {
   isApplicable: boolean;
 }
 

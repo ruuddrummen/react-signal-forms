@@ -53,9 +53,9 @@ const isEqualTo = createValidationRule<string>(({ form, value }, fieldName) =>
  *   invalidIf(({ form, value }) => boolean)
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const invalidIf = createValidationRule<() => boolean>((context, test) =>
-  !test(context) ? null : "This value is invalid"
-);
+// const invalidIf = createValidationRule<() => boolean>((context, test) =>
+//   !test(context) ? null : "This value is invalid"
+// );
 
 const fields = createFields<FormData>((form) => {
   form.field("text", (field) => {
@@ -140,6 +140,7 @@ export const MyForm = () => {
             <Switch field={fields.boolean} />
           </Grid>
           <GridDivider />
+
           <GridHeader>Validation rules</GridHeader>
           <Grid item xs={6}>
             <TextInput field={fields.alwaysRequired} />
@@ -157,6 +158,7 @@ export const MyForm = () => {
             <TextInput field={fields.canBeRequired} />
           </Grid>
           <GridDivider />
+
           <GridHeader>Applicability rules</GridHeader>
           <Grid item xs={6}>
             <Switch field={fields.showSecretField} />

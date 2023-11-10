@@ -102,7 +102,7 @@ class FormContext implements IFormContext {
     }, {});
   };
 
-  setValues = (values: FormValues<any>): void => {
+  setValues = (values: FormValues): void => {
     Object.keys(values).forEach((key) => {
       const field = this.fields[key];
 
@@ -112,7 +112,7 @@ class FormContext implements IFormContext {
     });
   };
 
-  submit = async (values: FormValues<any>): Promise<void> => {
+  submit = async (values: FormValues): Promise<void> => {
     if (this.__onSubmit == null) {
       throw new Error("Missing value for SignalForm.onSubmit prop.");
     }

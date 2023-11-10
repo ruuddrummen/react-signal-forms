@@ -46,6 +46,13 @@ export const validationRules: SignalFormExtension<
   },
 };
 
+const defaultContextExtension: ValidationFieldContextExtension = {
+  signal: signal({
+    isValid: true,
+    errors: [],
+  }),
+};
+
 function createExtension(
   field: Field,
   formContext: IFormContext
@@ -54,31 +61,26 @@ function createExtension(
   const rules = (field.rules?.filter(isValidationRule) ??
     []) as ValidationFieldRule[];
 
-  if (rules.length > 0) {
-    return {
-      signal: computed(() => {
-        console.log(`(${field.name}) Checking validation rules`);
-
-        const results = rules.map((r) =>
-          r.execute({ value: fieldContext.value, form: formContext })
-        );
-
-        const errors = results.filter((e) => typeof e === "string") as string[];
-
-        return {
-          isValid: errors.length === 0,
-          errors: errors,
-        };
-      }),
-    };
-  } else {
-    return {
-      signal: signal({
-        isValid: true,
-        errors: [],
-      }),
-    };
+  if (rules.length === 0) {
+    return defaultContextExtension;
   }
+
+  return {
+    signal: computed(() => {
+      console.log(`(${field.name}) Checking validation rules`);
+
+      const results = rules.map((r) =>
+        r.execute({ value: fieldContext.value, form: formContext })
+      );
+
+      const errors = results.filter((e) => typeof e === "string") as string[];
+
+      return {
+        isValid: errors.length === 0,
+        errors: errors,
+      };
+    }),
+  };
 }
 
 export function createValidationRule<TArgs = void>(
