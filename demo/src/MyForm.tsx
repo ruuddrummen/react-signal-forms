@@ -39,6 +39,11 @@ const minLength = createValidationRule<number>(
     typeof context.value === "string" && context.value.length >= length
 );
 
+// TODO. Get the field name with intellisense or context.
+const isEqualTo = createValidationRule<string>(
+  ({ form, value }, fieldName) => value === form.fields[fieldName].value
+);
+
 /**
  * A custom validation rule with an argument function. In this case the resulting
  * rule can be used like this:
@@ -47,11 +52,6 @@ const minLength = createValidationRule<number>(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const invalidIf = createValidationRule<() => boolean>(
   (context, test) => !test(context)
-);
-
-// TODO. Get the field name with intellisense or context.
-const isEqualTo = createValidationRule<string>(
-  ({ form, value }, fieldName) => value === form.fields[fieldName].value
 );
 
 const fields = createFields<FormData>((form) => {
