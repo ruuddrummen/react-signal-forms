@@ -4,7 +4,7 @@ import {
   applicableIf,
   isRequired,
   requiredIf,
-  validIf3,
+  validIf,
 } from "react-signal-forms/extensions";
 import {
   FormStateViewer,
@@ -22,7 +22,7 @@ interface FormData {
   number: number;
   boolean: boolean;
   alwaysRequired: string;
-  mustStartWithPrefix: string;
+  mustBeEqualToOtherField: string;
   makeFieldRequired: boolean;
   canBeRequired: string;
   showSecretField: boolean;
@@ -47,9 +47,11 @@ const fields = createFields<FormData>((form) => {
     field.rules = [isRequired()];
   });
 
-  form.field("mustStartWithPrefix", (field) => {
-    field.label = "Must start with value of required field";
-    field.rules = [validIf3(({ form, value }) => true)];
+  form.field("mustBeEqualToOtherField", (field) => {
+    field.label = "Must be equal to required field";
+    field.rules = [
+      validIf(({ form, value }) => value == form.fields.alwaysRequired.value),
+    ];
   });
 
   form.field("makeFieldRequired", (field) => {
@@ -110,6 +112,9 @@ export const MyForm = () => {
           <GridHeader>Validation</GridHeader>
           <Grid item xs={12}>
             <TextInput field={fields.alwaysRequired} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextInput field={fields.mustBeEqualToOtherField} />
           </Grid>
           <Grid item xs={6}>
             <Switch field={fields.makeFieldRequired} />
