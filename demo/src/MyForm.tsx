@@ -37,14 +37,14 @@ interface FormData {
 const minLength = createValidationRule<number>((context, length) =>
   typeof context.value === "string" && context.value.length >= length
     ? null
-    : { error: `Must be at least ${length} characters long` }
+    : `Must be at least ${length} characters long`
 );
 
 // TODO. Get the field name with intellisense or context.
 const isEqualTo = createValidationRule<string>(({ form, value }, fieldName) =>
   value === form.fields[fieldName].value
     ? null
-    : { error: `Must be equal to "${form.fields[fieldName].value}"` }
+    : `Must be equal to "${form.fields[fieldName].value}"`
 );
 
 /**
@@ -54,7 +54,7 @@ const isEqualTo = createValidationRule<string>(({ form, value }, fieldName) =>
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const invalidIf = createValidationRule<() => boolean>((context, test) =>
-  !test(context) ? null : { error: "This value is invalid" }
+  !test(context) ? null : "This value is invalid"
 );
 
 const fields = createFields<FormData>((form) => {

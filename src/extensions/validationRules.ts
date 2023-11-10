@@ -63,9 +63,7 @@ function createExtension(
           r.execute({ value: fieldContext.value, form: formContext })
         );
 
-        const errors = results
-          .map((r) => r?.error)
-          .filter((e) => e != null) as string[];
+        const errors = results.filter((e) => typeof e === "string") as string[];
 
         return {
           isValid: errors.length === 0,
@@ -113,22 +111,20 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
   context: RuleContext<TForm, TKey>
 ) => ValidationTestResult;
 
-type ValidationTestResult = null | {
-  error: string | null;
-};
+type ValidationTestResult = null | string;
 
 export const validIf = createValidationRule<() => boolean>((context, test) =>
-  test(context) ? null : { error: null }
+  test(context) ? null : "This value is not valid"
 );
 
 export const isRequired = createValidationRule((context) =>
   context.value != null && context.value !== ""
     ? null
-    : { error: "This field is required" }
+    : "This field is required"
 );
 
 export const requiredIf = createValidationRule<() => boolean>((context, test) =>
   !test(context) || (context.value != null && context.value !== "")
     ? null
-    : { error: "This field is required" }
+    : "This field is required"
 );
