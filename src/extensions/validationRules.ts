@@ -2,22 +2,20 @@ import { Signal, computed } from "@preact/signals-react";
 import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
 import { alwaysTrueSignal } from "../signals";
+import { FormValues } from "../types";
 import { KeyOf } from "../utils";
-import { FieldContextExtension, SignalFormExtension } from "./types";
+import {
+  FieldRuleFunction,
+  RuleArguments,
+  RuleContext,
+  SignalFormExtension,
+} from "./types";
 
 const EXTENSION_NAME = "validation";
 
-interface ValidationFieldContextExtension extends FieldContextExtension {
-  isValidSignal: Signal<boolean>;
-}
-
-interface ValidationFieldProperties {
-  isValid: boolean;
-}
-
 export const validationRules: SignalFormExtension<
-  ValidationFieldContextExtension,
-  ValidationFieldProperties
+  { isValidSignal: Signal<boolean> },
+  { isValid: boolean }
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
@@ -55,46 +53,6 @@ function createValidationSignal(
   }
 }
 
-interface ValidationFieldRule<
-  TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
-> extends FieldRule<TForm, TKey> {
-  execute: ValidationTest<TForm, TKey>;
-}
-
-function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
-  rule: FieldRule<TForm, TKey>
-): rule is ValidationFieldRule<TForm, TKey> {
-  return rule.extension === EXTENSION_NAME;
-}
-
-type RuleContext<
-  TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
-> = {
-  value: TForm[TKey];
-  form: IFormContext<TForm>;
-};
-
-type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
-  context: RuleContext<TForm, TKey>
-) => boolean;
-
-/**
- * If TArgs == void - i.e. the rule has no arguments - return void;
- * if TArgs is a function, return a function with rule context parameter;
- * else return TArgs.
- */
-type RuleArguments<
-  TArgs,
-  TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
-> = void extends TArgs
-  ? void
-  : TArgs extends () => infer ReturnType
-  ? (context: RuleContext<TForm, TKey>) => ReturnType
-  : TArgs;
-
 export function createValidationRule<TArgs = void>(
   execute: (context: RuleContext, args: RuleArguments<TArgs>) => boolean
 ): FieldRuleFunction<TArgs> {
@@ -106,6 +64,21 @@ export function createValidationRule<TArgs = void>(
 
   return result as FieldRuleFunction<TArgs>;
 }
+
+function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
+  return rule.extension === EXTENSION_NAME;
+}
+
+interface ValidationFieldRule<
+  TForm = FormValues,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>
+> extends FieldRule<TForm, TKey> {
+  execute: ValidationTest<TForm, TKey>;
+}
+
+type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
+  context: RuleContext<TForm, TKey>
+) => boolean;
 
 export const validIf = createValidationRule<() => boolean>((context, test) =>
   test(context)
@@ -119,9 +92,3 @@ export const requiredIf = createValidationRule<() => boolean>(
   (context, test) =>
     !test(context) || (context.value != null && context.value !== "")
 );
-
-type FieldRuleFunction<TArgs> = <TForm, TKey extends KeyOf<TForm>>(
-  args: RuleArguments<TArgs, TForm, TKey>
-) => FieldRule<TForm, TKey>;
-
-type FormValues = Record<string, unknown>;
