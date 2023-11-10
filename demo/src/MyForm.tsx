@@ -5,7 +5,6 @@ import {
   createValidationRule,
   isRequired,
   requiredIf,
-  validIf,
 } from "react-signal-forms/extensions";
 import {
   FormStateViewer,
@@ -36,7 +35,8 @@ interface FormData {
  * arguments you can provide when using the rule. In this case the length.
  */
 const minLength = createValidationRule<number>(
-  ({ value }, length) => typeof value === "string" && value.length > length
+  (context, length) =>
+    typeof context.value === "string" && context.value.length >= length
 );
 
 /**
@@ -47,6 +47,11 @@ const minLength = createValidationRule<number>(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const invalidIf = createValidationRule<() => boolean>(
   (context, test) => !test(context)
+);
+
+// TODO. Get the field name with intellisense or context.
+const isEqualTo = createValidationRule<string>(
+  ({ form, value }, fieldName) => value === form.fields[fieldName].value
 );
 
 const fields = createFields<FormData>((form) => {
@@ -69,9 +74,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("mustBeEqualToOtherField", (field) => {
     field.label = "Must be equal to required field";
-    field.rules = [
-      validIf(({ form, value }) => value == form.fields.alwaysRequired.value),
-    ];
+    field.rules = [isEqualTo("alwaysRequired")];
   });
 
   form.field("makeFieldRequired", (field) => {
@@ -122,7 +125,7 @@ export const MyForm = () => {
       onSubmit={store.setValues}
     >
       <SubmitBackdrop>
-        <Grid container padding={2} alignItems="center">
+        <Grid container padding={2} columnSpacing={2} alignItems="center">
           <GridHeader>Just inputs</GridHeader>
           <Grid item xs={12}>
             <TextInput field={fields.text} />
@@ -135,8 +138,11 @@ export const MyForm = () => {
           </Grid>
           <GridDivider />
           <GridHeader>Validation</GridHeader>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextInput field={fields.alwaysRequired} />
+          </Grid>
+          <Grid item xs={6}>
+            <TextInput field={fields.hasMinimumLength} />
           </Grid>
           <Grid item xs={12}>
             <TextInput field={fields.mustBeEqualToOtherField} />
