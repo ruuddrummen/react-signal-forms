@@ -142,10 +142,10 @@ export const MyForm = () => {
             <TextInput field={fields.alwaysRequired} />
           </Grid>
           <Grid item xs={6}>
-            <TextInput field={fields.hasMinimumLength} />
+            <TextInput field={fields.mustBeEqualToOtherField} />
           </Grid>
           <Grid item xs={12}>
-            <TextInput field={fields.mustBeEqualToOtherField} />
+            <TextInput field={fields.hasMinimumLength} />
           </Grid>
           <Grid item xs={6}>
             <Switch field={fields.makeFieldRequired} />

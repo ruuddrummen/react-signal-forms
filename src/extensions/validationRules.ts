@@ -82,7 +82,9 @@ type ValidationTest<
 > = (context: RuleContext<TForm, TKey>) => boolean;
 
 /**
- * If TArgs == void - i.e. there are no arguments - the arguments function is also void.
+ * If TArgs == void - i.e. the rule has no arguments - return void;
+ * if TArgs is a function, return a function with rule context parameter;
+ * else return TArgs.
  */
 type RuleArguments<TArgs, TForm, TKey extends KeyOf<TForm>> = void extends TArgs
   ? void
