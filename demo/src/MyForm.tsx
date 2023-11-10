@@ -1,6 +1,11 @@
-import { Divider, Grid, Stack } from "@mui/material";
+import { Divider, Grid, Stack, Typography } from "@mui/material";
 import { createFields } from "react-signal-forms";
-import { applicableIf, validIf } from "react-signal-forms/extensions";
+import {
+  applicableIf,
+  createValidationRule,
+  requiredIf,
+  requiredIf2,
+} from "react-signal-forms/extensions";
 import {
   NumberInput,
   SignalForm,
@@ -21,7 +26,9 @@ interface FormData {
   secretField: string;
 }
 
-// todo: const requiredIf = createRule(...)
+const localRequiredIf = createValidationRule((context, test) => {
+  return !test(context) && context.value != null && context.value !== "";
+});
 
 const fields = createFields<FormData>((form) => {
   form.field("textField", (field) => {
@@ -41,13 +48,16 @@ const fields = createFields<FormData>((form) => {
   });
 
   form.field("requiredField", (field) => {
-    (field.label = "Won't rerender while valid"),
+    (field.label = "Only rerenders if value or isValid changes"),
       (field.rules = [
-        // todo: requiredIf(...)
-        validIf(
-          ({ context, value }) =>
-            context.fields.makeFieldRequired.value !== true ||
-            (value != null && value !== "")
+        requiredIf(
+          ({ context }) => context.fields.makeFieldRequired.value === true
+        ),
+        requiredIf2(
+          ({ context }) => context.fields.makeFieldRequired.value === true
+        ),
+        localRequiredIf(
+          ({ context }) => context.fields.makeFieldRequired.value === true
         ),
       ]);
   });
@@ -64,9 +74,13 @@ const fields = createFields<FormData>((form) => {
   });
 });
 
-const GridDivider = () => (
+interface GridHeaderProps {
+  children: string;
+}
+
+const GridHeader = ({ children }: GridHeaderProps) => (
   <Grid item xs={12}>
-    <Divider />
+    <Typography variant="h6">{children}</Typography>
   </Grid>
 );
 
@@ -80,7 +94,8 @@ export const MyForm = () => {
       onSubmit={store.setValues}
     >
       <SubmitBackdrop>
-        <Grid container spacing={2} alignItems="center" alignContent="start">
+        <Grid container padding={2} alignItems="center">
+          <GridHeader>Just inputs</GridHeader>
           <Grid item xs={12}>
             <TextInput field={fields.textField} />
           </Grid>
@@ -91,6 +106,7 @@ export const MyForm = () => {
             <Switch field={fields.booleanField} />
           </Grid>
           <GridDivider />
+          <GridHeader>Validation</GridHeader>
           <Grid item xs={6}>
             <Switch field={fields.makeFieldRequired} />
           </Grid>
@@ -98,6 +114,7 @@ export const MyForm = () => {
             <TextInput field={fields.requiredField} />
           </Grid>
           <GridDivider />
+          <GridHeader>Applicability</GridHeader>
           <Grid item xs={6}>
             <Switch field={fields.showSecretField} />
           </Grid>
@@ -112,3 +129,9 @@ export const MyForm = () => {
     </SignalForm>
   );
 };
+
+const GridDivider = () => (
+  <Grid item xs={12} marginBottom={2}>
+    <Divider />
+  </Grid>
+);

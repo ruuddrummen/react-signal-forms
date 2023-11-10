@@ -1,6 +1,6 @@
 # React Signal Forms
 
-> **Note.** This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change.  We're only just getting started.
+> **Note.** This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change. We're only just getting started.
 
 A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
@@ -45,5 +45,5 @@ If you want to explore the demo code, a good place to start would be [the form r
 This is how the extension model works:
 
 ```ts
-Coming soon...
+// Coming soon...
 ```
