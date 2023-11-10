@@ -2,11 +2,12 @@ import { Divider, Grid, Stack, Typography } from "@mui/material";
 import { createFields } from "react-signal-forms";
 import {
   applicableIf,
-  createValidationRule,
+  isRequired,
   requiredIf,
-  requiredIf2,
+  validIf,
 } from "react-signal-forms/extensions";
 import {
+  FormStateViewer,
   NumberInput,
   SignalForm,
   SubmitBackdrop,
@@ -17,56 +18,56 @@ import {
 } from "./FormComponents";
 
 interface FormData {
-  textField: string;
-  numberField: number;
-  booleanField: boolean;
+  text: string;
+  number: number;
+  boolean: boolean;
+  alwaysRequired: string;
+  mustStartWithPrefix: string;
   makeFieldRequired: boolean;
-  requiredField: string;
+  canBeRequired: string;
   showSecretField: boolean;
-  secretField: string;
+  secret: string;
 }
 
-const localRequiredIf = createValidationRule((context, test) => {
-  return !test(context) && context.value != null && context.value !== "";
-});
-
 const fields = createFields<FormData>((form) => {
-  form.field("textField", (field) => {
+  form.field("text", (field) => {
     field.label = "A text field";
   });
 
-  form.field("numberField", (field) => {
+  form.field("number", (field) => {
     field.label = "A number field";
   });
 
-  form.field("booleanField", (field) => {
+  form.field("boolean", (field) => {
     field.label = "A boolean field";
+  });
+
+  form.field("alwaysRequired", (field) => {
+    field.label = "Required field";
+    field.rules = [isRequired()];
+  });
+
+  form.field("mustStartWithPrefix", (field) => {
+    field.label = "Must start with value of required field";
+    field.rules = [validIf(({ form, value }) => true)];
   });
 
   form.field("makeFieldRequired", (field) => {
     field.label = "Make next field required";
   });
 
-  form.field("requiredField", (field) => {
-    (field.label = "Only rerenders if value or isValid changes"),
-      (field.rules = [
-        requiredIf(
-          ({ context }) => context.fields.makeFieldRequired.value === true
-        ),
-        requiredIf2(
-          ({ context }) => context.fields.makeFieldRequired.value === true
-        ),
-        localRequiredIf(
-          ({ context }) => context.fields.makeFieldRequired.value === true
-        ),
-      ]);
+  form.field("canBeRequired", (field) => {
+    field.label = "Only rerenders if value or isValid changes";
+    field.rules = [
+      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
+    ];
   });
 
   form.field("showSecretField", (field) => {
     field.label = "Show secret field";
   });
 
-  form.field("secretField", (field) => {
+  form.field("secret", (field) => {
     field.label = "My value is cleared when I'm hidden";
     field.rules = [
       applicableIf(({ fields }) => fields.showSecretField.value === true),
@@ -97,21 +98,24 @@ export const MyForm = () => {
         <Grid container padding={2} alignItems="center">
           <GridHeader>Just inputs</GridHeader>
           <Grid item xs={12}>
-            <TextInput field={fields.textField} />
+            <TextInput field={fields.text} />
           </Grid>
           <Grid item xs={12}>
-            <NumberInput field={fields.numberField} />
+            <NumberInput field={fields.number} />
           </Grid>
           <Grid item xs={12}>
-            <Switch field={fields.booleanField} />
+            <Switch field={fields.boolean} />
           </Grid>
           <GridDivider />
           <GridHeader>Validation</GridHeader>
+          <Grid item xs={12}>
+            <TextInput field={fields.alwaysRequired} />
+          </Grid>
           <Grid item xs={6}>
             <Switch field={fields.makeFieldRequired} />
           </Grid>
           <Grid item xs={6}>
-            <TextInput field={fields.requiredField} />
+            <TextInput field={fields.canBeRequired} />
           </Grid>
           <GridDivider />
           <GridHeader>Applicability</GridHeader>
@@ -119,13 +123,14 @@ export const MyForm = () => {
             <Switch field={fields.showSecretField} />
           </Grid>
           <Grid item xs={6}>
-            <TextInput field={fields.secretField} />
+            <TextInput field={fields.secret} />
           </Grid>
         </Grid>
       </SubmitBackdrop>
       <Stack direction={"row"} justifyContent={"end"} margin={2}>
         <SubmitButton />
       </Stack>
+      <FormStateViewer fields={fields} />
     </SignalForm>
   );
 };
