@@ -32,7 +32,8 @@ interface FormData {
 
 /**
  * A custom minimum length rule. The type parameter describes the
- * arguments you can provide when using the rule. In this case the length.
+ * arguments you can provide when using the rule. In this case the
+ * required length.
  */
 const minLength = createValidationRule<number>((context, length) =>
   typeof context.value === "string" && context.value.length >= length

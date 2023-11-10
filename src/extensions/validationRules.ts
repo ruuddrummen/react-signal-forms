@@ -83,6 +83,15 @@ function createExtension(
   };
 }
 
+/**
+ * Creates a validation rule function, which can be used in the
+ * `createFields` field builders.
+ * @param execute Executes the rule. Should return null if the
+ * field is valid, or an error message if it is not.
+ * @template TArgs The type of the arguments when using the rule.
+ * Can be `void`, `T` or `() => T` for any `T`. Default is `void`.
+ * @returns A validation rule function.
+ */
 export function createValidationRule<TArgs = void>(
   execute: (
     context: RuleContext,
