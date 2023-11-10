@@ -31,15 +31,22 @@ interface FormData {
   secret: string;
 }
 
-// A simple custom rule.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const invalidIf = createValidationRule<boolean>(
-  (context, test) => !test(context)
+/**
+ * A custom minimum length rule. The type parameter describes the
+ * arguments you can provide when using the rule. In this case the length.
+ */
+const minLength = createValidationRule<number>(
+  ({ value }, length) => typeof value === "string" && value.length > length
 );
 
-const minLength = createValidationRule<number>(
-  (context, length) =>
-    typeof context.value === "string" && context.value.length > length(context)
+/**
+ * A custom validation rule with an argument function. In this case the resulting
+ * rule can be used like this:
+ *   invalidIf(({ form, value }) => boolean)
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const invalidIf = createValidationRule<() => boolean>(
+  (context, test) => !test(context)
 );
 
 const fields = createFields<FormData>((form) => {
@@ -80,7 +87,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("hasMinimumLength", (field) => {
     field.label = "At least 6 characters long";
-    field.rules = [minLength(() => 6)];
+    field.rules = [minLength(6)];
   });
 
   form.field("showSecretField", (field) => {

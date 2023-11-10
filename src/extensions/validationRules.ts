@@ -84,20 +84,20 @@ type ValidationTest<
 /**
  * If TArgs == void - i.e. there are no arguments - the arguments function is also void.
  */
-type ArgumentsFunction<
-  TArgs,
-  TForm,
-  TKey extends KeyOf<TForm>
-> = void extends TArgs ? void : (context: RuleContext<TForm, TKey>) => TArgs;
+type RuleArguments<TArgs, TForm, TKey extends KeyOf<TForm>> = void extends TArgs
+  ? void
+  : TArgs extends () => infer R
+  ? (context: RuleContext<TForm, TKey>) => R
+  : TArgs;
 
 export function createValidationRule<TArgs = void>(
   execute: (
     context: RuleContext,
-    argsFn: ArgumentsFunction<TArgs, FormValues, string>
+    argsFn: RuleArguments<TArgs, FormValues, string>
   ) => boolean
 ): FieldRuleFunction<TArgs> {
   const result = <TForm, TKey extends KeyOf<TForm>>(
-    argsFn: ArgumentsFunction<TArgs, TForm, TKey>
+    argsFn: RuleArguments<TArgs, TForm, TKey>
   ) =>
     ({
       extension: EXTENSION_NAME,
@@ -107,7 +107,7 @@ export function createValidationRule<TArgs = void>(
   return result as FieldRuleFunction<TArgs>;
 }
 
-export const validIf = createValidationRule<boolean>((context, test) =>
+export const validIf = createValidationRule<() => boolean>((context, test) =>
   test(context)
 );
 
@@ -115,13 +115,13 @@ export const isRequired = createValidationRule(
   (context) => context.value != null && context.value !== ""
 );
 
-export const requiredIf = createValidationRule<boolean>(
+export const requiredIf = createValidationRule<() => boolean>(
   (context, test) =>
     !test(context) || (context.value != null && context.value !== "")
 );
 
 type FieldRuleFunction<TArgs> = <TForm, TKey extends KeyOf<TForm>>(
-  args: ArgumentsFunction<TArgs, TForm, TKey>
+  args: RuleArguments<TArgs, TForm, TKey>
 ) => FieldRule<TForm, TKey>;
 
 type FormValues = Record<string, unknown>;
