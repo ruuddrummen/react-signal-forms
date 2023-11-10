@@ -9,7 +9,8 @@ interface FormInputProps {
 }
 
 export const TextInput: React.FC<FormInputProps> = ({ field }) => {
-  const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
+  const { value, setValue, isApplicable, isValid, errors } =
+    useFieldSignals(field);
 
   const renderCount = useRenderCount();
 
@@ -24,6 +25,7 @@ export const TextInput: React.FC<FormInputProps> = ({ field }) => {
         value={value ?? ""}
         onChange={(e) => setValue(e.currentTarget.value)}
         error={!isValid}
+        helperText={errors[0]}
       />
     </FormControl>
   );

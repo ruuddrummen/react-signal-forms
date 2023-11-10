@@ -1,10 +1,11 @@
-import { Signal, computed } from "@preact/signals-react";
+import { Signal, computed, signal } from "@preact/signals-react";
 import { Field, FieldRule } from "../fields";
 import { IFormContext } from "../formContext";
-import { alwaysTrueSignal } from "../signals";
 import { FormValues } from "../types";
 import { KeyOf } from "../utils";
 import {
+  FieldContextExtension,
+  FieldContextProperties,
   FieldRuleFunction,
   RuleArguments,
   RuleContext,
@@ -13,48 +14,80 @@ import {
 
 const EXTENSION_NAME = "validation";
 
+interface ValidationFieldContextExtension extends FieldContextExtension {
+  signal: Signal<{
+    isValid: boolean;
+    errors: string[];
+  }>;
+}
+
+interface ValidationFieldContextProperties extends FieldContextProperties {
+  isValid: boolean;
+  errors: string[];
+}
+
 export const validationRules: SignalFormExtension<
-  { isValidSignal: Signal<boolean> },
-  { isValid: boolean }
+  ValidationFieldContextExtension,
+  ValidationFieldContextProperties
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
-    return {
-      isValidSignal: createValidationSignal(field, formContext),
-    };
+    return createExtension(field, formContext);
   },
   createFieldProperties(extension) {
     return {
       isValid: {
-        get: () => extension.isValidSignal.value,
+        get: () => extension.signal.value.isValid,
+      },
+      errors: {
+        get: () => extension.signal.value.errors,
       },
     };
   },
 };
 
-function createValidationSignal(
+function createExtension(
   field: Field,
   formContext: IFormContext
-): Signal<boolean> {
+): ValidationFieldContextExtension {
   const fieldContext = formContext.fields[field.name];
   const rules = (field.rules?.filter(isValidationRule) ??
-    []) as Array<ValidationFieldRule>;
+    []) as ValidationFieldRule[];
 
   if (rules.length > 0) {
-    return computed(() => {
-      console.log(`(${field.name}) Checking validation rule`);
+    return {
+      signal: computed(() => {
+        console.log(`(${field.name}) Checking validation rules`);
 
-      return rules.every((r) =>
-        r.execute({ value: fieldContext.value, form: formContext })
-      );
-    });
+        const results = rules.map((r) =>
+          r.execute({ value: fieldContext.value, form: formContext })
+        );
+
+        const errors = results
+          .map((r) => r?.error)
+          .filter((e) => e != null) as string[];
+
+        return {
+          isValid: errors.length === 0,
+          errors: errors,
+        };
+      }),
+    };
   } else {
-    return alwaysTrueSignal;
+    return {
+      signal: signal({
+        isValid: true,
+        errors: [],
+      }),
+    };
   }
 }
 
 export function createValidationRule<TArgs = void>(
-  execute: (context: RuleContext, args: RuleArguments<TArgs>) => boolean
+  execute: (
+    context: RuleContext,
+    args: RuleArguments<TArgs>
+  ) => ValidationTestResult
 ): FieldRuleFunction<TArgs> {
   const result = (args: RuleArguments<TArgs>) =>
     ({
@@ -78,17 +111,24 @@ interface ValidationFieldRule<
 
 type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
   context: RuleContext<TForm, TKey>
-) => boolean;
+) => ValidationTestResult;
+
+type ValidationTestResult = null | {
+  error: string | null;
+};
 
 export const validIf = createValidationRule<() => boolean>((context, test) =>
-  test(context)
+  test(context) ? null : { error: null }
 );
 
-export const isRequired = createValidationRule(
-  (context) => context.value != null && context.value !== ""
+export const isRequired = createValidationRule((context) =>
+  context.value != null && context.value !== ""
+    ? null
+    : { error: "This field is required" }
 );
 
-export const requiredIf = createValidationRule<() => boolean>(
-  (context, test) =>
-    !test(context) || (context.value != null && context.value !== "")
+export const requiredIf = createValidationRule<() => boolean>((context, test) =>
+  !test(context) || (context.value != null && context.value !== "")
+    ? null
+    : { error: "This field is required" }
 );
