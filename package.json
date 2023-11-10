@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.34",
-    "@types/react-dom": "^18.2.14",
+    "concurrently": "^8.2.2",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
@@ -53,6 +53,7 @@
     "tsc": "tsc",
     "build": "tsc --noEmit false",
     "demo": "cd ./demo && npm run dev",
+    "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
     "ci-demo": "cd ./demo && npm run ci",
     "build-demo": "cd ./demo && npm run build"
   },
