@@ -109,16 +109,6 @@ const fields = createFields<FormData>((form) => {
   });
 });
 
-interface GridHeaderProps {
-  children: string;
-}
-
-const GridHeader = ({ children }: GridHeaderProps) => (
-  <Grid item xs={12}>
-    <Typography variant="h6">{children}</Typography>
-  </Grid>
-);
-
 export const MyForm = () => {
   const store = useLocalStorageStore();
 
@@ -176,6 +166,16 @@ export const MyForm = () => {
     </SignalForm>
   );
 };
+
+interface GridHeaderProps {
+  children: string;
+}
+
+const GridHeader = ({ children }: GridHeaderProps) => (
+  <Grid item xs={12}>
+    <Typography variant="h6">{children}</Typography>
+  </Grid>
+);
 
 const GridDivider = () => (
   <Grid item xs={12} marginBottom={2}>

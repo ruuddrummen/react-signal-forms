@@ -28,7 +28,10 @@ export interface SignalFormExtension<
   ): PropertyDescriptors<TFieldContextProperties>;
 }
 
-// Recursively merge the types of the second type parameters, which describes the field context properties.
+/**
+ * Recursively merges the types of the second type parameters, which
+ * describes the field context properties.
+ **/
 type MergeFieldContextProperties<T extends SignalFormExtension<any, any>[]> =
   T extends [firstItem: SignalFormExtension<any, infer B>, ...rest: infer R]
     ? R extends SignalFormExtension<any, any>[]
@@ -52,9 +55,10 @@ export type PropertyDescriptors<T> = {
 };
 
 /**
- * If TArgs == void - i.e. the rule has no arguments - return void;
- * if TArgs is a function, return a function with rule context parameter;
- * else return TArgs.
+ * Describes the type of a rule functions' arguments.
+ * If `TArgs == void` - i.e. the rule has no arguments - returns `void`;
+ * if `TArgs` is a function, returns a function with a `RuleContext` parameter;
+ * else returns `TArgs`.
  */
 export type RuleArguments<
   TArgs,

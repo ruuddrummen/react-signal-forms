@@ -122,6 +122,10 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
   context: RuleContext<TForm, TKey>
 ) => ValidationTestResult;
 
+/**
+ * Describes a validation result, which is an error message if
+ * a field is invalid, or `null` if the field is valid.
+ */
 type ValidationTestResult = null | string;
 
 export const validIf = createValidationRule<() => boolean>((context, test) =>
