@@ -26,13 +26,20 @@ interface FormData {
   mustBeEqualToOtherField: string;
   makeFieldRequired: boolean;
   canBeRequired: string;
+  hasMinimumLength: string;
   showSecretField: boolean;
   secret: string;
 }
 
 // A simple custom rule.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const invalidIf = createValidationRule<boolean>(
   (context, test) => !test(context)
+);
+
+const minLength = createValidationRule<number>(
+  (context, length) =>
+    typeof context.value === "string" && context.value.length > length(context)
 );
 
 const fields = createFields<FormData>((form) => {
@@ -69,6 +76,11 @@ const fields = createFields<FormData>((form) => {
     field.rules = [
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ];
+  });
+
+  form.field("hasMinimumLength", (field) => {
+    field.label = "At least 6 characters long";
+    field.rules = [minLength(() => 6)];
   });
 
   form.field("showSecretField", (field) => {

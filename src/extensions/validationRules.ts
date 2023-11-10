@@ -68,7 +68,10 @@ function isValidationRule<TForm, TKey extends KeyOf<TForm>>(
   return rule.extension === EXTENSION_NAME;
 }
 
-type RuleContext<TForm, TKey extends KeyOf<TForm>> = {
+type RuleContext<
+  TForm = FormValues,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>
+> = {
   value: TForm[TKey];
   form: IFormContext<TForm>;
 };
@@ -88,9 +91,9 @@ type ArgumentsFunction<
 > = void extends TArgs ? void : (context: RuleContext<TForm, TKey>) => TArgs;
 
 export function createValidationRule<TArgs = void>(
-  execute: <TForm, TKey extends KeyOf<TForm>>(
-    context: RuleContext<TForm, TKey>,
-    argsFn: ArgumentsFunction<TArgs, TForm, TKey>
+  execute: (
+    context: RuleContext,
+    argsFn: ArgumentsFunction<TArgs, FormValues, string>
   ) => boolean
 ): FieldRuleFunction<TArgs> {
   const result = <TForm, TKey extends KeyOf<TForm>>(
@@ -98,7 +101,7 @@ export function createValidationRule<TArgs = void>(
   ) =>
     ({
       extension: EXTENSION_NAME,
-      execute: (context) => execute(context as any, argsFn),
+      execute: (context) => execute(context as any, argsFn as any),
     } as ValidationFieldRule);
 
   return result as FieldRuleFunction<TArgs>;
@@ -108,7 +111,7 @@ export const validIf = createValidationRule<boolean>((context, test) =>
   test(context)
 );
 
-export const isRequired = createValidationRule<void>(
+export const isRequired = createValidationRule(
   (context) => context.value != null && context.value !== ""
 );
 
