@@ -76,34 +76,32 @@ type RuleContext<
   form: IFormContext<TForm>;
 };
 
-type ValidationTest<
-  TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
-> = (context: RuleContext<TForm, TKey>) => boolean;
+type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
+  context: RuleContext<TForm, TKey>
+) => boolean;
 
 /**
  * If TArgs == void - i.e. the rule has no arguments - return void;
  * if TArgs is a function, return a function with rule context parameter;
  * else return TArgs.
  */
-type RuleArguments<TArgs, TForm, TKey extends KeyOf<TForm>> = void extends TArgs
+type RuleArguments<
+  TArgs,
+  TForm = FormValues,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>
+> = void extends TArgs
   ? void
-  : TArgs extends () => infer R
-  ? (context: RuleContext<TForm, TKey>) => R
+  : TArgs extends () => infer ReturnType
+  ? (context: RuleContext<TForm, TKey>) => ReturnType
   : TArgs;
 
 export function createValidationRule<TArgs = void>(
-  execute: (
-    context: RuleContext,
-    argsFn: RuleArguments<TArgs, FormValues, string>
-  ) => boolean
+  execute: (context: RuleContext, args: RuleArguments<TArgs>) => boolean
 ): FieldRuleFunction<TArgs> {
-  const result = <TForm, TKey extends KeyOf<TForm>>(
-    argsFn: RuleArguments<TArgs, TForm, TKey>
-  ) =>
+  const result = (args: RuleArguments<TArgs>) =>
     ({
       extension: EXTENSION_NAME,
-      execute: (context) => execute(context as any, argsFn as any),
+      execute: (context) => execute(context as any, args as any),
     } as ValidationFieldRule);
 
   return result as FieldRuleFunction<TArgs>;
