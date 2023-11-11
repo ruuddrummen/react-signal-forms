@@ -1,21 +1,20 @@
-import { FormControl, TextField as MuiTextField } from "@mui/material";
-import React from "react";
-import { TextField } from "react-signal-forms";
-import { useRenderCount } from "../utils";
-import { useFieldSignals } from "./SignalForm";
+import { FormControl, TextField as MuiTextField } from "@mui/material"
+import { TextField } from "react-signal-forms"
+import { useRenderCount } from "../utils"
+import { useFieldSignals } from "./SignalForm"
 
 interface FormInputProps {
-  field: TextField;
+  field: TextField
 }
 
-export const TextInput: React.FC<FormInputProps> = ({ field }) => {
+export const TextInput = ({ field }: FormInputProps) => {
   const { value, setValue, isApplicable, isValid, errors } =
-    useFieldSignals(field);
+    useFieldSignals(field)
 
-  const renderCount = useRenderCount();
+  const renderCount = useRenderCount()
 
   if (!isApplicable) {
-    return null;
+    return null
   }
 
   return (
@@ -28,5 +27,5 @@ export const TextInput: React.FC<FormInputProps> = ({ field }) => {
         helperText={errors[0]}
       />
     </FormControl>
-  );
-};
+  )
+}
