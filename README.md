@@ -25,8 +25,62 @@ npm i react-signal-forms
 
 ## Your first form
 
-```ts
-// Coming soon.
+Start by initializing your form component and field hook, including the extensions you want to use.
+
+```tsx
+export const { SignalForm, useFieldSignals } = createSignalForm(
+  validationRules, // adds validation rule handling and field signals.
+  applicabilityRules // adds applicability rule handling and field signals.
+)
+```
+
+Create field specifications for your form data:
+
+```tsx
+const fields = createFields<YourDataInterface>((form) => {
+  //                        ^ All specifications and rules will be strongly typed based on your data interface.
+
+  form.field("myField", (field) => {
+    field.label = "My field"
+    field.defaultValue = "Demo"
+
+    // Add rules to your field. Here are some examples:
+    field.rules = [
+      required(),
+      minLength(6),
+      requiredIf(({ form }) => form.fields.otherField.value === true),
+      applicableIf(({ form })) => form.field.otherField.value === true)
+    ]
+  })
+
+})
+```
+
+You can also create your own rules, more on that in [Extensions](#extensions).
+
+Add the `useFieldSignals` to your inputs:
+
+```tsx
+const MyInput = () => {
+  const { value, setValue, isValid, errors, isApplicable, ...otherSignals } =
+    useFieldSignals()
+
+  // Handle things like `isApplicable`.
+
+  <input value={value} onChange={e => setValue(e.currentTarget.value)} {...otherProps} />
+}
+```
+
+You are now set to compose your form:
+
+```tsx
+const MyForm = () => {
+  return (
+    <SignalForm fields={fields} initialValues={...} onSubmit={...}>
+      <MyInput field={field.myField} />
+    </SignalForm>
+  )
+}
 ```
 
 ## Running the demo

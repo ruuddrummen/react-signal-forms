@@ -6,6 +6,6 @@ import {
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules,
-  applicabilityRules // adds applicability rule support and field signals.
+  validationRules, // adds validation rule handling and field signals.
+  applicabilityRules // adds applicability rule handling and field signals.
 );
