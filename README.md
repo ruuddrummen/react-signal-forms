@@ -45,6 +45,8 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
 )
 ```
 
+> ⚠️ Touched signals are coming soon.
+
 Create field specifications for your form data:
 
 ```tsx
@@ -71,6 +73,8 @@ const fields = createFields<YourDataInterface>((form) => {
 
 })
 ```
+
+> ⚠️ `defaultValue` will be implemented soon.
 
 > ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plug in your own. More on that in [Extensions](#extensions).
 
