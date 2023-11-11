@@ -1,3 +1,4 @@
 export * from "./applicabilityRules"
 export * from "./defaultExtensions"
-export * from "./validationRules"
+export * from "./validation/extension"
+export * from "./validation/rules"

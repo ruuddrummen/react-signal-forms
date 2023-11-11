@@ -1,14 +1,14 @@
 import { Signal, computed, signal } from "@preact/signals-react"
-import { Field, FieldRule } from "../fields"
-import { IFormContext } from "../formContext"
-import { FormValues } from "../types"
-import { KeyOf } from "../utils"
+import { Field, FieldRule } from "../../fields"
+import { IFormContext } from "../../formContext"
+import { FormValues } from "../../types"
+import { KeyOf } from "../../utils"
 import {
   FieldRuleFunction,
   RuleArguments,
   RuleContext,
   SignalFormExtension,
-} from "./types"
+} from "../types"
 
 const EXTENSION_NAME = "validation"
 
@@ -78,12 +78,19 @@ function createFieldExtension(
 }
 
 /**
- * Creates a validation rule function, which can be used in the
+ * Creates a validation rule function which can be used in the
  * `createFields` field builders.
- * @param execute Executes the rule. Should return null if the
+ * @param execute Executes the rule. Should return `null` if the
  * field is valid, or an error message if it is not.
  * @template TArgs The type of the arguments when using the rule.
  * Can be `void`, `T` or `() => T` for any `T`. Default is `void`.
+ *
+ * If set to `void`, the rule can be used without arguments, such as `required()`.
+ *
+ * If set to `T` it can be used as `rule(args: T)`, such as `minLength(6)`.
+ *
+ * If set to `() => T` it can be used as `rule(ruleContext => T)`,
+ * where `ruleContext` describes form and field states. For example: `requiredIf(context => boolean)`.
  * @returns A validation rule function.
  */
 export function createValidationRule<TArgs = void>(
@@ -121,25 +128,6 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  * a field is invalid, or `null` if the field is valid.
  */
 type ValidationTestResult = null | string
-
-export const required = createValidationRule((context) =>
-  context.value != null && context.value !== ""
-    ? null
-    : "This field is required"
-)
-
-export const requiredIf = createValidationRule<() => boolean>(
-  (context, test) =>
-    !test(context) || (context.value != null && context.value !== "")
-      ? null
-      : "This field is required"
-)
-
-export const minLength = createValidationRule<number>((context, length) =>
-  typeof context.value === "string" && context.value.length >= length
-    ? null
-    : `Must be at least ${length} characters long`
-)
 
 // TODO: Get the field name with intellisense or context.
 export const isEqualToField = createValidationRule<string>(
