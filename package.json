@@ -2,8 +2,7 @@
   "name": "react-signal-forms",
   "description": "A forms library focusing on performance and modular extensibility.",
   "author": "<r.drummen@hotmail.com>",
-  "version": "0.1.3",
-  "homepage": "https://github.com/ruuddrummen/react-signal-forms",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ruuddrummen/react-signal-forms"
@@ -11,24 +10,25 @@
   "license": "MIT",
   "keywords": [
     "react",
-    "hooks",
-    "react-hooks",
+    "typescript",
     "signals",
+    "context",
+    "react-context",
     "form",
     "forms",
     "extensions",
     "modular",
     "form-rules",
     "form-validation",
-    "validation",
-    "typescript"
+    "validation"
   ],
   "dependencies": {
     "@preact/signals-react": "^1.3.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.34",
-    "@types/react-dom": "^18.2.14",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
@@ -52,8 +52,9 @@
   "scripts": {
     "tsc": "tsc",
     "build": "tsc --noEmit false",
+    "ci": "npm ci && cd ./demo && npm ci",
     "demo": "cd ./demo && npm run dev",
-    "ci-demo": "cd ./demo && npm run ci",
+    "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
     "build-demo": "cd ./demo && npm run build"
   },
   "eslintConfig": {

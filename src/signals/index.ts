@@ -1,3 +1,3 @@
-export * from "./patch";
-export * from "./alwaysTrue";
-export * from "./alwaysFalse";
+export * from "./patch"
+export * from "./alwaysTrue"
+export * from "./alwaysFalse"

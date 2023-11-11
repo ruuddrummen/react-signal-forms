@@ -1,10 +1,10 @@
-import { Button } from "@mui/material";
-import { useFormSignals } from "react-signal-forms";
-import { useRenderCount } from "../utils";
+import { Button } from "@mui/material"
+import { useFormSignals } from "react-signal-forms"
+import { useRenderCount } from "../utils"
 
 export const SubmitButton: React.FC = () => {
-  const { submit, isSubmitting, peekValues } = useFormSignals();
-  const renderCount = useRenderCount();
+  const { submit, isSubmitting, peekValues } = useFormSignals()
+  const renderCount = useRenderCount()
 
   return (
     <Button
@@ -15,5 +15,5 @@ export const SubmitButton: React.FC = () => {
     >
       Save (rendered {renderCount.current} times)
     </Button>
-  );
-};
+  )
+}

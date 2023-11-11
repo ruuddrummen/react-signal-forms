@@ -1,10 +1,10 @@
-import { Grid } from "@mui/material";
-import React from "react";
-import { FieldCollection, useFormSignals } from "react-signal-forms";
+import { Grid } from "@mui/material"
+import React from "react"
+import { FieldCollection, useFormSignals } from "react-signal-forms"
 export const FormStateViewer: React.FC<{ fields: FieldCollection }> = ({
   fields,
 }) => {
-  const formContext = useFormSignals();
+  const formContext = useFormSignals()
 
   return (
     <Grid container style={{ textAlign: "left" }}>
@@ -15,5 +15,5 @@ export const FormStateViewer: React.FC<{ fields: FieldCollection }> = ({
         <pre>formContext.fields: {JSON.stringify(formContext, null, 2)}</pre>
       </Grid>
     </Grid>
-  );
-};
+  )
+}

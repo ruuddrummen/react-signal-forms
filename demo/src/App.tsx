@@ -1,32 +1,32 @@
-import { Button, Container } from "@mui/material";
-import { useSignal } from "@preact/signals-react";
-import React from "react";
-import "./App.css";
-import { MyForm } from "./MyForm";
+import { Button, Container, Typography } from "@mui/material"
+import { useSignal } from "@preact/signals-react"
+import React from "react"
+import "./App.css"
+import { MyForm } from "./MyForm"
 
 export const App: React.FC = () => {
-  const formKey = useSignal(Math.random().toString());
+  const formKey = useSignal(1)
 
   const reload = () => {
-    formKey.value = Math.random().toString();
-  };
+    formKey.value++
+  }
 
   const reset = () => {
-    localStorage.clear();
-    reload();
-  };
+    localStorage.clear()
+    reload()
+  }
 
   return (
     <Container className="App" maxWidth="md">
-      <h2>
-        React Signals Form <Button onClick={reload}>Reload</Button>
+      <Typography variant="h2">
+        React Signals Form <Button onClick={reload}>Reload form</Button>
         <Button color="primary" onClick={reset}>
-          Reset
+          Reset stored values
         </Button>
-      </h2>
+      </Typography>
       <MyForm key={formKey.value} />
     </Container>
-  );
-};
+  )
+}
 
-export default App;
+export default App

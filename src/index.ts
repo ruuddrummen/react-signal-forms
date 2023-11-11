@@ -1,4 +1,4 @@
-export { createSignalForm } from "./form";
+export { createSignalForm } from "./form"
 
 export type {
   BooleanField,
@@ -6,10 +6,10 @@ export type {
   NumberField,
   TextField,
   FieldRule,
-} from "./fields";
+} from "./fields"
 
-export { createFields } from "./fields";
+export { createFields } from "./fields"
 
-export { useFormSignals } from "./formContext";
+export { useFormSignals } from "./formContext"
 
-export type { FormValues } from "./types";
+export type { FormValues } from "./types"

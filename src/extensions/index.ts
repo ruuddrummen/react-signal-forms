@@ -1,2 +1,2 @@
-export * from "./applicabilityRules";
-export * from "./validationRules";
+export * from "./applicabilityRules"
+export * from "./validationRules"
