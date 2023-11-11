@@ -1,5 +1,5 @@
 import { touchedExtension } from "./planned/touched"
-import { validationRulesExtension } from "./validationRules"
+import { validationRulesExtension } from "./validation/extension"
 
 export const defaultExtensions = [
   validationRulesExtension,
