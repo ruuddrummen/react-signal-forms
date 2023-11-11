@@ -34,7 +34,7 @@ npm i react-signal-forms
 If you want to explore the library without any setup, you can run [the demo](./demo/) by cloning the repository and running:
 
 ```
-npm run ci-demo
+npm run ci
 npm run demo
 ```
 
