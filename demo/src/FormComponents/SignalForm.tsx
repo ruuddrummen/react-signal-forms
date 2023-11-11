@@ -1,11 +1,11 @@
 import { createSignalForm } from "react-signal-forms"
 import {
-  applicabilityRules,
-  validationRules,
+  applicabilityRulesExtension,
+  defaultExtensions,
 } from "react-signal-forms/extensions"
 
 // Create the form and hook with the extensions you want to use.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule handling and field signals.
-  applicabilityRules // adds applicability rule handling and field signals.
+  ...defaultExtensions, // includes validation rules and touched signals.
+  applicabilityRulesExtension // adds applicability rules and field signals.
 )

@@ -40,8 +40,8 @@ Start by initializing your form component and field hook, including the extensio
 
 ```tsx
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule handling and field signals.
-  applicabilityRules // adds applicability rule handling and field signals.
+  ...defaultExtensions, // includes validation rules and touched signals.
+  applicabilityRulesExtension // adds applicability rules and field signals.
 )
 ```
 

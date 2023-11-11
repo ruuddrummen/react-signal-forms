@@ -18,7 +18,7 @@ type ApplicabilityFieldProperties = {
 /**
  * Adds applicability rule handling and field signals.
  */
-export const applicabilityRules: SignalFormExtension<
+export const applicabilityRulesExtension: SignalFormExtension<
   ApplicabilityFieldContextExtension,
   ApplicabilityFieldProperties
 > = {

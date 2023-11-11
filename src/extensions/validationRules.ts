@@ -24,7 +24,7 @@ type ValidationFieldContextProperties = {
 /**
  * Adds validation rule handling and field signals.
  */
-export const validationRules: SignalFormExtension<
+export const validationRulesExtension: SignalFormExtension<
   ValidationFieldContextExtension,
   ValidationFieldContextProperties
 > = {
