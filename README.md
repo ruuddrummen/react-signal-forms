@@ -1,6 +1,6 @@
 # React Signal Forms
 
-> **Note.** This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, we're only just getting started. The docs will be updated as development progresses.
+> ⚠️ This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
 A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
@@ -72,7 +72,7 @@ const fields = createFields<YourDataInterface>((form) => {
 })
 ```
 
-> **Note.** For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plugin your own. More on that in [Extensions](#extensions).
+> ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plugin your own. More on that in [Extensions](#extensions).
 
 Add the `useFieldSignals` hook to your inputs:
 
@@ -114,7 +114,7 @@ const MyForm = () => {
 
 Form features - e.g. validation and applicability rules - are implemented in separated extensions. The goal behind this idea is to make the form implementation both scalable and extensible. In most simpler cases though, the native extensions should be enough to get you going.
 
-If you have specific needs or complex scenario's, you have some options:
+If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
 - Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extensions for instance provides a `createValidationRule` function for this purpose. You can find some examples in [the demo](./demo/src/MyForm.tsx).
 - Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.
