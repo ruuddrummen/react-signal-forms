@@ -52,9 +52,9 @@
   "scripts": {
     "tsc": "tsc",
     "build": "tsc --noEmit false",
+    "ci": "npm ci && cd ./demo && npm ci",
     "demo": "cd ./demo && npm run dev",
     "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
-    "ci-demo": "cd ./demo && npm run ci",
     "build-demo": "cd ./demo && npm run build"
   },
   "eslintConfig": {
