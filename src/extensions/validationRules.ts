@@ -4,8 +4,6 @@ import { IFormContext } from "../formContext";
 import { FormValues } from "../types";
 import { KeyOf } from "../utils";
 import {
-  FieldContextExtension,
-  FieldContextProperties,
   FieldRuleFunction,
   RuleArguments,
   RuleContext,
@@ -14,25 +12,28 @@ import {
 
 const EXTENSION_NAME = "validation";
 
-interface ValidationFieldContextExtension extends FieldContextExtension {
+type ValidationFieldContextExtension = {
   signal: Signal<{
     isValid: boolean;
     errors: string[];
   }>;
-}
+};
 
-interface ValidationFieldContextProperties extends FieldContextProperties {
+type ValidationFieldContextProperties = {
   isValid: boolean;
   errors: string[];
-}
+};
 
+/**
+ * Adds validation rule handling and field signals.
+ */
 export const validationRules: SignalFormExtension<
   ValidationFieldContextExtension,
   ValidationFieldContextProperties
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
-    return createExtension(field, formContext);
+    return createFieldExtension(field, formContext);
   },
   createFieldProperties(extension) {
     return {
@@ -53,7 +54,7 @@ const defaultContextExtension: ValidationFieldContextExtension = {
   }),
 };
 
-function createExtension(
+function createFieldExtension(
   field: Field,
   formContext: IFormContext
 ): ValidationFieldContextExtension {
@@ -128,10 +129,6 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  */
 type ValidationTestResult = null | string;
 
-export const validIf = createValidationRule<() => boolean>((context, test) =>
-  test(context) ? null : "This value is not valid"
-);
-
 export const isRequired = createValidationRule((context) =>
   context.value != null && context.value !== ""
     ? null
@@ -142,4 +139,18 @@ export const requiredIf = createValidationRule<() => boolean>((context, test) =>
   !test(context) || (context.value != null && context.value !== "")
     ? null
     : "This field is required"
+);
+
+export const minLength = createValidationRule<number>((context, length) =>
+  typeof context.value === "string" && context.value.length >= length
+    ? null
+    : `Must be at least ${length} characters long`
+);
+
+// TODO: Get the field name with intellisense or context.
+export const isEqualTo = createValidationRule<string>(
+  ({ form, value }, fieldName) =>
+    value === form.fields[fieldName].value
+      ? null
+      : `Must be equal to "${form.fields[fieldName].value}"`
 );

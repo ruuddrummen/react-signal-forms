@@ -3,8 +3,8 @@ import { createFields } from "react-signal-forms";
 import {
   applicableIf,
   createValidationRule,
+  isEqualTo,
   isRequired,
-  requiredIf,
 } from "react-signal-forms/extensions";
 import {
   FormStateViewer,
@@ -31,9 +31,9 @@ interface FormData {
 }
 
 /**
- * A custom minimum length rule. The type parameter describes the
- * arguments you can provide when using the rule. In this case the
- * required length.
+ * Add your own rules with `createValidationRule<TArgs>(...)`. The type
+ * parameter describes the arguments you can provide when using the rule.
+ * In this case the required length.
  */
 const minLength = createValidationRule<number>((context, length) =>
   typeof context.value === "string" && context.value.length >= length
@@ -41,22 +41,15 @@ const minLength = createValidationRule<number>((context, length) =>
     : `Must be at least ${length} characters long`
 );
 
-// TODO. Get the field name with intellisense or context.
-const isEqualTo = createValidationRule<string>(({ form, value }, fieldName) =>
-  value === form.fields[fieldName].value
-    ? null
-    : `Must be equal to "${form.fields[fieldName].value}"`
-);
-
 /**
- * A custom validation rule with an argument function. In this case the resulting
- * rule can be used like this:
- *   invalidIf(({ form, value }) => boolean)
+ * A validation rule can also have `() => T` as type parameter, in which case it can be used as
+ * `rule(context: RuleContext) => T`.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const invalidIf = createValidationRule<() => boolean>((context, test) =>
-//   !test(context) ? null : "This value is invalid"
-// );
+const requiredIf = createValidationRule<() => boolean>((context, test) =>
+  !test(context) || (context.value != null && context.value !== "")
+    ? null
+    : "This field is required"
+);
 
 const fields = createFields<FormData>((form) => {
   form.field("text", (field) => {
