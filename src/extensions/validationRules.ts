@@ -35,7 +35,7 @@ export const validationRules: SignalFormExtension<
   createFieldProperties(extension) {
     return {
       isValid: {
-        get: () => extension.errorsSignal.value.length > 0,
+        get: () => extension.errorsSignal.value.length === 0,
       },
       errors: {
         get: () => extension.errorsSignal.value,

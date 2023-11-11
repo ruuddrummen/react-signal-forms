@@ -17,13 +17,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": true
 
     /* Aliasing to signal-forms */
-    "paths": {
-      "react-signal-forms": ["../src"],
-      "react-signal-forms/extensions": ["../src/extensions"]
-    }
+    // "paths": {
+    //   "react-signal-forms": ["../src"],
+    //   "react-signal-forms/extensions": ["../src/extensions"]
+    // }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
