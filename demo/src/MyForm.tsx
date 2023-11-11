@@ -3,7 +3,7 @@ import { createFields } from "react-signal-forms"
 import {
   applicableIf,
   createValidationRule,
-  isEqualTo,
+  isEqualToField,
   required,
 } from "react-signal-forms/extensions"
 import {
@@ -71,7 +71,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("mustBeEqualToOtherField", (field) => {
     field.label = "Must be equal to required field"
-    field.rules = [isEqualTo("alwaysRequired")]
+    field.rules = [isEqualToField("alwaysRequired")]
   })
 
   form.field("makeFieldRequired", (field) => {

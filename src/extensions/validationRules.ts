@@ -142,7 +142,7 @@ export const minLength = createValidationRule<number>((context, length) =>
 )
 
 // TODO: Get the field name with intellisense or context.
-export const isEqualTo = createValidationRule<string>(
+export const isEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
     value === form.fields[fieldName].value
       ? null
