@@ -1,3 +1,3 @@
-import { signal } from "@preact/signals-react";
+import { signal } from "@preact/signals-react"
 
-export const alwaysFalseSignal = signal(false);
+export const alwaysFalseSignal = signal(false)

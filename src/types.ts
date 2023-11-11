@@ -1,1 +1,1 @@
-export type FormValues = Record<string, unknown>;
+export type FormValues = Record<string, unknown>

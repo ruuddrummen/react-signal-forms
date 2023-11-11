@@ -1,31 +1,31 @@
-import { Field, FieldRule } from "../fields";
-import { IFormContext } from "../formContext";
-import { FormValues } from "../types";
-import { KeyOf } from "../utils";
+import { Field, FieldRule } from "../fields"
+import { IFormContext } from "../formContext"
+import { FormValues } from "../types"
+import { KeyOf } from "../utils"
 
 /**
  * Base interface for extensions to field signals.
  */
-export type FieldContextExtension = {};
-export type FieldContextExtensions = Record<string, FieldContextExtension>;
+export type FieldContextExtension = {}
+export type FieldContextExtensions = Record<string, FieldContextExtension>
 
-export type FieldContextProperties = Record<string, unknown>;
+export type FieldContextProperties = Record<string, unknown>
 
 /**
  * Interface for describing a signal form extension.
  */
 export interface SignalFormExtension<
   TFieldContextExtension extends FieldContextExtension,
-  TFieldContextProperties extends FieldContextProperties
+  TFieldContextProperties extends FieldContextProperties,
 > {
-  name: string;
+  name: string
   createFieldExtension(
     field: Field,
     formContext: IFormContext
-  ): TFieldContextExtension;
+  ): TFieldContextExtension
   createFieldProperties(
     extension: TFieldContextExtension
-  ): PropertyDescriptors<TFieldContextProperties>;
+  ): PropertyDescriptors<TFieldContextProperties>
 }
 
 /**
@@ -37,22 +37,22 @@ type MergeFieldContextProperties<T extends SignalFormExtension<any, any>[]> =
     ? R extends SignalFormExtension<any, any>[]
       ? B & MergeFieldContextProperties<R>
       : never
-    : {};
+    : {}
 
-type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 
 export type ExpandFieldContextProperties<
-  T extends SignalFormExtension<any, any>[]
-> = Expand<MergeFieldContextProperties<T>>;
+  T extends SignalFormExtension<any, any>[],
+> = Expand<MergeFieldContextProperties<T>>
 
 interface PropertyDescriptor<T> {
-  get?(): T;
-  set?(v: T): void;
+  get?(): T
+  set?(v: T): void
 }
 
 export type PropertyDescriptors<T> = {
-  [K in keyof T]: PropertyDescriptor<T[K]>;
-};
+  [K in keyof T]: PropertyDescriptor<T[K]>
+}
 
 /**
  * Describes the type of a rule functions' arguments.
@@ -63,21 +63,21 @@ export type PropertyDescriptors<T> = {
 export type RuleArguments<
   TArgs,
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
+  TKey extends KeyOf<TForm> = KeyOf<TForm>,
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
   ? (context: RuleContext<TForm, TKey>) => ReturnType
-  : TArgs;
+  : TArgs
 
 export type FieldRuleFunction<TArgs> = <TForm, TKey extends KeyOf<TForm>>(
   args: RuleArguments<TArgs, TForm, TKey>
-) => FieldRule<TForm, TKey>;
+) => FieldRule<TForm, TKey>
 
 export type RuleContext<
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
+  TKey extends KeyOf<TForm> = KeyOf<TForm>,
 > = {
-  value: TForm[TKey];
-  form: IFormContext<TForm>;
-};
+  value: TForm[TKey]
+  form: IFormContext<TForm>
+}

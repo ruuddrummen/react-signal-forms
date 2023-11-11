@@ -2,9 +2,9 @@ import {
   FieldContextExtension,
   FieldContextProperties,
   SignalFormExtension,
-} from "../types";
+} from "../types"
 
-const EXTENSION_NAME = "diffChanges";
+const EXTENSION_NAME = "diffChanges"
 
 /**
  * Enables presentation of differences compared to previous values, and
@@ -16,9 +16,9 @@ export const diffChanges: SignalFormExtension<
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(_field, _formContext) {
-    return {};
+    return {}
   },
   createFieldProperties(_extension) {
-    return {};
+    return {}
   },
-};
+}

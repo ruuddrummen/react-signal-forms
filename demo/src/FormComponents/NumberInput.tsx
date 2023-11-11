@@ -1,31 +1,31 @@
-import { FormControl, TextField as MuiTextField } from "@mui/material";
-import React, { ChangeEvent } from "react";
-import { NumberField } from "react-signal-forms";
-import { useRenderCount } from "../utils";
-import { useFieldSignals } from "./SignalForm";
+import { FormControl, TextField as MuiTextField } from "@mui/material"
+import React, { ChangeEvent } from "react"
+import { NumberField } from "react-signal-forms"
+import { useRenderCount } from "../utils"
+import { useFieldSignals } from "./SignalForm"
 
 interface FormInputProps {
-  field: NumberField;
+  field: NumberField
 }
 
 export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
-  const { value, setValue, isApplicable, isValid } = useFieldSignals(field);
+  const { value, setValue, isApplicable, isValid } = useFieldSignals(field)
 
-  const renderCount = useRenderCount();
+  const renderCount = useRenderCount()
 
   if (!isApplicable) {
-    return null;
+    return null
   }
 
   function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void {
-    const value = event.currentTarget.value;
+    const value = event.currentTarget.value
 
     if (value !== "" && !isNaN(+value)) {
-      setValue(parseFloat(value));
+      setValue(parseFloat(value))
     } else {
-      setValue(null);
+      setValue(null)
     }
   }
 
@@ -39,5 +39,5 @@ export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
         error={!isValid}
       />
     </FormControl>
-  );
-};
+  )
+}
