@@ -116,5 +116,5 @@ Form features - e.g. validation and applicability rules - are implemented in sep
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extensions for instance provides a `createValidationRule` function for this purpose. You can find some examples in [the demo](./demo/src/MyForm.tsx).
+- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find some examples in [the demo](./demo/src/MyForm.tsx).
 - Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.

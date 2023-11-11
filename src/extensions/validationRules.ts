@@ -122,7 +122,7 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  */
 type ValidationTestResult = null | string
 
-export const isRequired = createValidationRule((context) =>
+export const required = createValidationRule((context) =>
   context.value != null && context.value !== ""
     ? null
     : "This field is required"

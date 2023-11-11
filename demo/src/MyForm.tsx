@@ -4,7 +4,7 @@ import {
   applicableIf,
   createValidationRule,
   isEqualTo,
-  isRequired,
+  required,
 } from "react-signal-forms/extensions"
 import {
   FormStateViewer,
@@ -66,7 +66,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("alwaysRequired", (field) => {
     field.label = "Required field"
-    field.rules = [isRequired()]
+    field.rules = [required()]
   })
 
   form.field("mustBeEqualToOtherField", (field) => {
@@ -87,7 +87,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("hasMinimumLength", (field) => {
     field.label = "At least 6 characters long"
-    field.rules = [minLength(6)]
+    field.rules = [required(), minLength(6)]
   })
 
   form.field("showSecretField", (field) => {
