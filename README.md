@@ -72,7 +72,7 @@ const fields = createFields<YourDataInterface>((form) => {
 })
 ```
 
-> ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plugin your own. More on that in [Extensions](#extensions).
+> ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plug in your own. More on that in [Extensions](#extensions).
 
 Add the `useFieldSignals` hook to your inputs:
 

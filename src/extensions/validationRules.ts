@@ -13,10 +13,7 @@ import {
 const EXTENSION_NAME = "validation"
 
 type ValidationFieldContextExtension = {
-  signal: Signal<{
-    isValid: boolean
-    errors: string[]
-  }>
+  errorsSignal: Signal<string[]>
 }
 
 type ValidationFieldContextProperties = {
@@ -38,21 +35,20 @@ export const validationRules: SignalFormExtension<
   createFieldProperties(extension) {
     return {
       isValid: {
-        get: () => extension.signal.value.isValid,
+        get: () => extension.errorsSignal.value.length > 0,
       },
       errors: {
-        get: () => extension.signal.value.errors,
+        get: () => extension.errorsSignal.value,
       },
     }
   },
 }
 
 const defaultContextExtension: ValidationFieldContextExtension = {
-  signal: signal({
-    isValid: true,
-    errors: [],
-  }),
+  errorsSignal: signal([]),
 }
+
+const emptyErrors: string[] = []
 
 function createFieldExtension(
   field: Field,
@@ -67,7 +63,7 @@ function createFieldExtension(
   }
 
   return {
-    signal: computed(() => {
+    errorsSignal: computed(() => {
       console.log(`(${field.name}) Checking validation rules`)
 
       const results = rules.map((r) =>
@@ -76,10 +72,7 @@ function createFieldExtension(
 
       const errors = results.filter((e) => typeof e === "string") as string[]
 
-      return {
-        isValid: errors.length === 0,
-        errors: errors,
-      }
+      return errors.length > 0 ? errors : emptyErrors
     }),
   }
 }
@@ -103,7 +96,7 @@ export function createValidationRule<TArgs = void>(
     ({
       extension: EXTENSION_NAME,
       execute: (context) => execute(context as any, args as any),
-    }) as ValidationFieldRule
+    } as ValidationFieldRule)
 
   return result as FieldRuleFunction<TArgs>
 }
@@ -114,7 +107,7 @@ function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
 
 interface ValidationFieldRule<
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>
 > extends FieldRule<TForm, TKey> {
   execute: ValidationTest<TForm, TKey>
 }
@@ -135,11 +128,10 @@ export const isRequired = createValidationRule((context) =>
     : "This field is required"
 )
 
-export const requiredIf = createValidationRule<() => boolean>(
-  (context, test) =>
-    !test(context) || (context.value != null && context.value !== "")
-      ? null
-      : "This field is required"
+export const requiredIf = createValidationRule<() => boolean>((context, test) =>
+  !test(context) || (context.value != null && context.value !== "")
+    ? null
+    : "This field is required"
 )
 
 export const minLength = createValidationRule<number>((context, length) =>

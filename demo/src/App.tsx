@@ -5,10 +5,10 @@ import "./App.css"
 import { MyForm } from "./MyForm"
 
 export const App: React.FC = () => {
-  const formKey = useSignal(Math.random().toString())
+  const formKey = useSignal(1)
 
   const reload = () => {
-    formKey.value = Math.random().toString()
+    formKey.value++
   }
 
   const reset = () => {

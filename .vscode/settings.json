@@ -6,6 +6,5 @@
   "editor.linkedEditing": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
-  },
-  "prettier.semi": false
+  }
 }
