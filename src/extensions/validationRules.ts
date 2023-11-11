@@ -96,7 +96,7 @@ export function createValidationRule<TArgs = void>(
     ({
       extension: EXTENSION_NAME,
       execute: (context) => execute(context as any, args as any),
-    } as ValidationFieldRule)
+    }) as ValidationFieldRule
 
   return result as FieldRuleFunction<TArgs>
 }
@@ -107,7 +107,7 @@ function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
 
 interface ValidationFieldRule<
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>
+  TKey extends KeyOf<TForm> = KeyOf<TForm>,
 > extends FieldRule<TForm, TKey> {
   execute: ValidationTest<TForm, TKey>
 }
@@ -128,10 +128,11 @@ export const isRequired = createValidationRule((context) =>
     : "This field is required"
 )
 
-export const requiredIf = createValidationRule<() => boolean>((context, test) =>
-  !test(context) || (context.value != null && context.value !== "")
-    ? null
-    : "This field is required"
+export const requiredIf = createValidationRule<() => boolean>(
+  (context, test) =>
+    !test(context) || (context.value != null && context.value !== "")
+      ? null
+      : "This field is required"
 )
 
 export const minLength = createValidationRule<number>((context, length) =>

@@ -20,7 +20,7 @@ export type BooleanField = FieldBase<boolean | null>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface FieldRule<
   TForm = FormValues,
-  _Key extends KeyOf<TForm> = KeyOf<TForm>
+  _Key extends KeyOf<TForm> = KeyOf<TForm>,
 > {
   extension: string
 }
