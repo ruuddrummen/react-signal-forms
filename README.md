@@ -8,7 +8,7 @@ A forms library which aims to provide a high performance modular and extensible 
   - Pick and choose what you need.
   - Plug in your own.
 - Add rules to your fields.
-  - Like `isRequired()` or `applicableIf(...)`.
+  - Like `required()` or `applicableIf(...)`.
   - Rules have access to your form context and other fields.
 - Only calculates and renders what is necessary by leveraging signals.
 - Bring your own UI libraries and components.
