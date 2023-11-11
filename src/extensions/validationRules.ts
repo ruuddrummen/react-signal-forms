@@ -24,7 +24,7 @@ type ValidationFieldContextProperties = {
 /**
  * Adds validation rule handling and field signals.
  */
-export const validationRules: SignalFormExtension<
+export const validationRulesExtension: SignalFormExtension<
   ValidationFieldContextExtension,
   ValidationFieldContextProperties
 > = {
@@ -122,7 +122,7 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  */
 type ValidationTestResult = null | string
 
-export const isRequired = createValidationRule((context) =>
+export const required = createValidationRule((context) =>
   context.value != null && context.value !== ""
     ? null
     : "This field is required"
@@ -142,7 +142,7 @@ export const minLength = createValidationRule<number>((context, length) =>
 )
 
 // TODO: Get the field name with intellisense or context.
-export const isEqualTo = createValidationRule<string>(
+export const isEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
     value === form.fields[fieldName].value
       ? null

@@ -8,7 +8,7 @@ A forms library which aims to provide a high performance modular and extensible 
   - Pick and choose what you need.
   - Plug in your own.
 - Add rules to your fields.
-  - Like `isRequired()` or `applicableIf(...)`.
+  - Like `required()` or `applicableIf(...)`.
   - Rules have access to your form context and other fields.
 - Only calculates and renders what is necessary by leveraging signals.
 - Bring your own UI libraries and components.
@@ -40,10 +40,12 @@ Start by initializing your form component and field hook, including the extensio
 
 ```tsx
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  validationRules, // adds validation rule handling and field signals.
-  applicabilityRules // adds applicability rule handling and field signals.
+  ...defaultExtensions, // includes validation rules and touched signals.
+  applicabilityRulesExtension // adds applicability rules and field signals.
 )
 ```
+
+> ⚠️ Touched signals are coming soon.
 
 Create field specifications for your form data:
 
@@ -71,6 +73,8 @@ const fields = createFields<YourDataInterface>((form) => {
 
 })
 ```
+
+> ⚠️ `defaultValue` will be implemented soon.
 
 > ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plug in your own. More on that in [Extensions](#extensions).
 
@@ -116,5 +120,5 @@ Form features - e.g. validation and applicability rules - are implemented in sep
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extensions for instance provides a `createValidationRule` function for this purpose. You can find some examples in [the demo](./demo/src/MyForm.tsx).
+- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find some examples in [the demo](./demo/src/MyForm.tsx).
 - Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.
