@@ -1,6 +1,6 @@
 # React Signal Forms
 
-> **Note.** This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change. We're only just getting started.
+> **Note.** This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, we're only just getting started. The docs will be updated as development progresses.
 
 A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
@@ -38,7 +38,8 @@ Create field specifications for your form data:
 
 ```tsx
 const fields = createFields<YourDataInterface>((form) => {
-  //                        ^ All specifications and rules will be strongly typed based on your data interface.
+  //                        ^ All specifications and rules will be strongly
+  //                          typed based on your data interface.
 
   form.field("myField", (field) => {
     field.label = "My field"
@@ -56,7 +57,7 @@ const fields = createFields<YourDataInterface>((form) => {
 })
 ```
 
-You can also create your own rules, more on that in [Extensions](#extensions).
+For now there are only a few extensions and rules. More will be coming, and you will also be able create and plugin your own extensions and rules. More on that in [Extensions](#extensions).
 
 Add the `useFieldSignals` to your inputs:
 
@@ -76,7 +77,11 @@ You are now set to compose your form:
 ```tsx
 const MyForm = () => {
   return (
-    <SignalForm fields={fields} initialValues={...} onSubmit={...}>
+    <SignalForm
+      fields={fields}
+      initialValues={valuesFromStore}
+      onSubmit={handleSubmit}
+    >
       <MyInput field={field.myField} />
     </SignalForm>
   )
@@ -94,10 +99,11 @@ npm run demo
 
 If you want to explore the demo code, a good place to start would be [the form root](./demo/src/MyForm.tsx).
 
-## Extensions
+## Extensions (WIP)
 
-This is how the extension model works:
+Form features (e.g. validation and applicability rules) are implemented in separated extensions. The goal behind this idea is to make the form implementation both scalable and extensible. In most simpler cases though, the native extensions should be enough to get you going.
 
-```ts
-// Coming soon...
-```
+If you have specific needs or complex scenario's, you have some options:
+
+- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extensions for instance provides a `createValidationRule` function for this purpose. You can find some of these in [the demo](./demo/src/MyForm.tsx).
+- Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface.
