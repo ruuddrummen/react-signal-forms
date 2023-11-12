@@ -38,14 +38,14 @@ export function createFields<TForm>(
   return fieldCollectionBuilder.build()
 }
 
-interface IFieldCollectionBuilder<TForm> {
+export interface IFieldCollectionBuilder<TForm> {
   field<TKey extends KeyOf<TForm>>(
     name: TKey,
     configure: (fieldBuilder: IFieldBuilder<TForm, TKey>) => void
   ): void
 }
 
-interface IFieldBuilder<TForm, TKey extends KeyOf<TForm>> {
+export interface IFieldBuilder<TForm, TKey extends KeyOf<TForm>> {
   label: string | null
   defaultValue: TForm[TKey] | null
   rules: Array<FieldRule<TForm, TKey>>
