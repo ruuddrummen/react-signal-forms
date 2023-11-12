@@ -25,10 +25,10 @@ interface FormData {
   number: number
   boolean: boolean
 
-  hasMinimumLength: string
-
   alwaysRequired: string
   mustBeEqualToOtherField: string
+
+  hasMinimumLength: string
 
   makeFieldRequired: boolean
   canBeRequired: string
@@ -66,6 +66,11 @@ const fields = createFields<FormData>((form) => {
     field.rules = [mustBeEqualToField("alwaysRequired")]
   })
 
+  form.field("hasMinimumLength", (field) => {
+    field.label = "At least 6 characters long"
+    field.rules = [required(), minLength(6)]
+  })
+
   form.field("makeFieldRequired", (field) => {
     field.label = "Make next field required"
   })
@@ -75,11 +80,6 @@ const fields = createFields<FormData>((form) => {
     field.rules = [
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ]
-  })
-
-  form.field("hasMinimumLength", (field) => {
-    field.label = "At least 6 characters long"
-    field.rules = [required(), minLength(6)]
   })
 
   form.field("showSecretField", (field) => {
@@ -107,8 +107,8 @@ const fields = createFields<FormData>((form) => {
       required(),
       minLength(5),
       validIf(({ value }) => ({
-        testResult: value?.endsWith("complicated") ?? false,
-        errorMessage: "Value must end with 'complicated'",
+        testResult: value?.endsWith("signals") ?? false,
+        errorMessage: "Value must end with 'signals'",
       })),
     ]
   })
@@ -183,7 +183,6 @@ export const MyForm = () => {
       <Stack
         direction="row"
         justifyContent="end"
-        alignContent="center"
         alignItems="center"
         margin={2}
         spacing={2}
