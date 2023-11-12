@@ -60,7 +60,8 @@
     "demo": "cd ./demo && npm run dev",
     "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
     "build-demo": "cd ./demo && npm run build",
-    "postversion": "npm run ci && npm run build && git push && git push --tags"
+    "preversion": "npm run ci && npm run build",
+    "postversion": "git push && git push --tags"
   },
   "eslintConfig": {
     "extends": [
