@@ -1,5 +1,6 @@
 name-template: "v$RESOLVED_VERSION 🚀"
 tag-template: "v$RESOLVED_VERSION"
+
 categories:
   - title: "📢 Breaking changes"
     labels:
@@ -16,14 +17,16 @@ categories:
   - title: "🧰 Maintenance"
     label:
       - "chore"
-  - title: "Documentation"
+  - title: "📃 Documentation"
     label:
       - "docs"
       - "documentation"
+
 exclude-labels:
   - "skip changelog"
 change-template: "- $TITLE, by @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+
 version-resolver:
   major:
     labels:
@@ -54,7 +57,7 @@ autolabeler:
       - "/chore\/.+/"
   - label: "documentation"
     branch:
-      - "/docs{0,1}\/.+/"
+      - "/docs\/.+/"
 
 template: |
   $CHANGES
