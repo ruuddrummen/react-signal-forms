@@ -2,9 +2,11 @@ import { Divider, Grid, Stack, Typography } from "@mui/material"
 import { createFields } from "react-signal-forms"
 import {
   applicableIf,
-  createValidationRule,
+  minLength,
   mustBeEqualToField,
   required,
+  requiredIf,
+  validIf,
 } from "react-signal-forms/rules"
 import {
   FormStateViewer,
@@ -16,40 +18,27 @@ import {
   TextInput,
   useLocalStorageStore,
 } from "./FormComponents"
+import { FormValidationIndicator } from "./FormValidationIndicator"
 
 interface FormData {
   text: string
   number: number
   boolean: boolean
+
+  hasMinimumLength: string
+
   alwaysRequired: string
   mustBeEqualToOtherField: string
+
   makeFieldRequired: boolean
   canBeRequired: string
-  hasMinimumLength: string
+
   showSecretField: boolean
   secret: string
+
+  makeComplicatedFieldApplicable: boolean
+  complicatedField: string
 }
-
-/**
- * Add your own rules with `createValidationRule<TArgs>(...)`. The type
- * parameter describes the arguments you can provide when using the rule.
- * In this case the required length.
- */
-const minLength = createValidationRule<number>((context, length) =>
-  typeof context.value === "string" && context.value.length >= length
-    ? null
-    : `Must be at least ${length} characters long`
-)
-
-/**
- * A validation rule can also have `() => T` as type parameter, in which case it can be used as
- * `rule(context: RuleContext) => T`.
- */
-const requiredIf = createValidationRule<() => boolean>((context, test) =>
-  !test(context) || (context.value != null && context.value !== "")
-    ? null
-    : "This field is required"
-)
 
 const fields = createFields<FormData>((form) => {
   form.field("text", (field) => {
@@ -98,10 +87,29 @@ const fields = createFields<FormData>((form) => {
   })
 
   form.field("secret", (field) => {
-    field.label = "My value is cleared when I'm hidden"
+    field.label = "Value is cleared when not applicable"
     field.defaultValue = "Default value"
     field.rules = [
       applicableIf(({ fields }) => fields.showSecretField.value === true),
+    ]
+  })
+
+  form.field("makeComplicatedFieldApplicable", (field) => {
+    field.label = "Make the field applicable"
+  })
+
+  form.field("complicatedField", (field) => {
+    field.label = "Only validated if applicable"
+    field.rules = [
+      applicableIf(
+        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
+      ),
+      required(),
+      minLength(5),
+      validIf(({ value }) => ({
+        testResult: value?.endsWith("complicated") ?? false,
+        errorMessage: "Value must end with 'complicated'",
+      })),
     ]
   })
 })
@@ -154,21 +162,44 @@ export const MyForm = () => {
           <Grid item xs={6}>
             <TextInput field={fields.secret} />
           </Grid>
+
+          <GridDivider />
+          <GridHeader>Combining rules</GridHeader>
+          <Grid item xs={12}>
+            <Paragraph>
+              Rules can be combined. Priority on error messages is based on the
+              order in which the rules are specified. Also, validation rules are
+              not applied if a field is not applicable.
+            </Paragraph>
+          </Grid>
+          <Grid item xs={6}>
+            <Switch field={fields.makeComplicatedFieldApplicable} />
+          </Grid>
+          <Grid item xs={6}>
+            <TextInput field={fields.complicatedField} />
+          </Grid>
         </Grid>
       </SubmitBackdrop>
-      <Stack direction={"row"} justifyContent={"end"} margin={2}>
-        <SubmitButton />
+      <Stack
+        direction="row"
+        justifyContent="end"
+        alignContent="center"
+        alignItems="center"
+        margin={2}
+        spacing={2}
+      >
+        <FormValidationIndicator /> <SubmitButton />
       </Stack>
       <FormStateViewer fields={fields} />
     </SignalForm>
   )
 }
 
-interface GridHeaderProps {
+interface StringChild {
   children: string
 }
 
-const GridHeader = ({ children }: GridHeaderProps) => (
+const GridHeader = ({ children }: StringChild) => (
   <Grid item xs={12}>
     <Typography variant="h6">{children}</Typography>
   </Grid>
@@ -178,4 +209,8 @@ const GridDivider = () => (
   <Grid item xs={12} marginBottom={2}>
     <Divider />
   </Grid>
+)
+
+const Paragraph = ({ children }: StringChild) => (
+  <Typography paragraph>{children}</Typography>
 )

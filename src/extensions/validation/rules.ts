@@ -37,6 +37,22 @@ export const mustBeEqualToField = createValidationRule<string>(
       : `Must be equal to "${form.fields[fieldName].value}"`
 )
 
+type ValidIfArgs = {
+  testResult: boolean
+  errorMessage: string
+}
+
+/**
+ * Runs any given validation rule, with any given error message to return if the rule fails.
+ */
+export const validIf = createValidationRule<() => ValidIfArgs>(
+  (context, args) => {
+    const argsResult = args(context)
+
+    return argsResult.testResult ? null : argsResult.errorMessage
+  }
+)
+
 /**
  * Creates a validation rule function which can be used in the
  * `createFields` field builders.
