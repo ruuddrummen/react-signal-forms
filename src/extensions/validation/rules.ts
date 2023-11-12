@@ -5,12 +5,18 @@ import {
   ValidationTestResult,
 } from "./extension"
 
+/**
+ * Returns an error if the field has no value.
+ */
 export const required = createValidationRule((context) =>
-  context.value != null && context.value !== ""
+  context.value !== null && context.value !== ""
     ? null
     : "This field is required"
 )
 
+/**
+ * Returns an error if the test succeeds and the field has no value.
+ */
 export const requiredIf = createValidationRule<() => boolean>(
   (context, test) =>
     !test(context) || (context.value != null && context.value !== "")

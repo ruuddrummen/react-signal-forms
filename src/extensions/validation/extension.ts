@@ -18,6 +18,9 @@ export type ValidationFieldContextProperties = {
 
 /**
  * Adds validation rule handling and field signals.
+ *
+ * **Note:** if a field has value `undefined`, it is considered not applicable
+ * and exempt from all validation rules.
  */
 export const validationRulesExtension: SignalFormExtension<
   ValidationFieldContextExtension,
@@ -59,6 +62,10 @@ function createFieldExtension(
 
   return {
     errorsSignal: computed(() => {
+      if (fieldContext.peekValue() === undefined) {
+        return emptyErrors
+      }
+
       console.log(`(${field.name}) Checking validation rules`)
 
       const results = rules.map((r) =>
