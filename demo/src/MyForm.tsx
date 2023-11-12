@@ -5,7 +5,7 @@ import {
   createValidationRule,
   mustBeEqualToField,
   required,
-} from "react-signal-forms/extensions"
+} from "react-signal-forms/rules"
 import {
   FormStateViewer,
   NumberInput,

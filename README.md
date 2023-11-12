@@ -7,13 +7,12 @@ A forms library which aims to provide a high performance modular and extensible 
 - Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
   - Pick and choose what you need.
   - Plug in your own.
-- Add rules to your fields.
+- Add built-in context aware rules to your fields or create your own.
   - Like `required()` or `applicableIf(...)`.
-  - Rules have access to your form context and other fields.
 - Only calculates and renders what is necessary by leveraging signals.
+- Field specifications and rules are separated from UI.
 - Bring your own UI libraries and components.
 - Everything is strongly typed with Typescript.
-- And many more smart and useful quotes.
 
 ## Getting started
 
@@ -39,10 +38,14 @@ If you want to explore the demo code, a good place to start would be [the form r
 Start by initializing your form component and field hook, including the extensions you want to use.
 
 ```tsx
+// Add extensions, replace extensions, or plug in your own.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  ...defaultExtensions, // includes validation rules and touched signals.
-  applicabilityRulesExtension // adds applicability rules and field signals.
+  ...defaultExtensions, // the defaults, includes validation rules and touched signals.
+  extensions.applicabilityRules // adds applicability rules and field signals.
 )
+
+// Or just stick to the defaults (planned).
+export const { SignalForm, useFieldSignals } = createSignalForm()
 ```
 
 > ⚠️ Touched signals are coming soon.
