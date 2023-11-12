@@ -22,3 +22,10 @@ export const minLength = createValidationRule<number>((context, length) =>
     ? null
     : `Must be at least ${length} characters long`
 )
+
+export const mustBeEqualToField = createValidationRule<string>(
+  ({ form, value }, fieldName) =>
+    value === form.fields[fieldName].value
+      ? null
+      : `Must be equal to "${form.fields[fieldName].value}"`
+)

@@ -128,11 +128,3 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  * a field is invalid, or `null` if the field is valid.
  */
 type ValidationTestResult = null | string
-
-// TODO: Get the field name with intellisense or context.
-export const isEqualToField = createValidationRule<string>(
-  ({ form, value }, fieldName) =>
-    value === form.fields[fieldName].value
-      ? null
-      : `Must be equal to "${form.fields[fieldName].value}"`
-)
