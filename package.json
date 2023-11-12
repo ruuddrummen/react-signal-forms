@@ -2,7 +2,7 @@
   "name": "react-signal-forms",
   "description": "A forms library focusing on performance and modular extensibility.",
   "author": "<r.drummen@hotmail.com>",
-  "version": "0.2.4-alpha.2",
+  "version": "0.2.4-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/ruuddrummen/react-signal-forms"
