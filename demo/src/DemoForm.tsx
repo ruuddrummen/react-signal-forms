@@ -54,6 +54,7 @@ const requiredIf = createValidationRule<() => boolean>((context, test) =>
 const fields = createFields<FormData>((form) => {
   form.field("text", (field) => {
     field.label = "A text field"
+    field.defaultValue = "Welcome to the demo"
   })
 
   form.field("number", (field) => {
@@ -98,6 +99,7 @@ const fields = createFields<FormData>((form) => {
 
   form.field("secret", (field) => {
     field.label = "My value is cleared when I'm hidden"
+    field.defaultValue = "Default value"
     field.rules = [
       applicableIf(({ fields }) => fields.showSecretField.value === true),
     ]

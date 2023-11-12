@@ -69,8 +69,8 @@ class FormContext implements IFormContext {
     this.__onSubmit = onSubmit
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
-      (prev, currentName) => {
-        prev[currentName] = new FieldContext(null)
+      (prev, key) => {
+        prev[key] = new FieldContext(fields[key].defaultValue ?? null)
 
         return prev
       },

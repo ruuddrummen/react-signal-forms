@@ -16,7 +16,9 @@ export type ApplicabilityFieldProperties = {
 }
 
 /**
- * Adds applicability rule handling and field signals.
+ * Adds applicability rule handling and field signals. The value of fields which are not
+ * applicable is set to `undefined`. When a field becomes applicable its value is set to
+ * its default value, or `null` if no default value is specified.
  */
 export const applicabilityRulesExtension: SignalFormExtension<
   ApplicabilityFieldContextExtension,
@@ -45,19 +47,21 @@ function createApplicabilitySignal(
   const fieldContext = formContext.fields[field.name]
 
   if (rules.length > 0) {
-    const signal = computed(() => {
+    const isApplicableSignal = computed(() => {
       console.log(`(${field.name}) Checking applicability rule`)
       return rules.every((r) => r.execute(formContext))
     })
 
-    signal.subscribe((value) => {
+    isApplicableSignal.subscribe((value) => {
       if (!value) {
         console.log(`(${field.name}) Clearing field value`)
-        fieldContext.setValue(null)
+        fieldContext.setValue(undefined)
+      } else if (fieldContext.peekValue() === undefined) {
+        fieldContext.setValue(field.defaultValue ?? null)
       }
     })
 
-    return signal
+    return isApplicableSignal
   } else {
     return alwaysTrueSignal
   }
