@@ -10,7 +10,7 @@ A forms library which aims to provide a high performance modular and extensible 
 - Add built-in context aware rules to your fields or create your own.
   - Like `required()` or `applicableIf(...)`.
 - Only calculates and renders what is necessary by leveraging signals.
-- Field specifications and rules are separated from UI.
+- Field and rule specifications are separated from UI.
 - Bring your own UI libraries and components.
 - Everything is strongly typed with Typescript.
 
