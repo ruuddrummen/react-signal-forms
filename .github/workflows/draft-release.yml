@@ -1,6 +1,11 @@
 name: Draft release
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+
   push:
     branches:
       - main
@@ -27,5 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@v5
+        with:
+          version: ${{ github.event.inputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
