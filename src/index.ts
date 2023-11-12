@@ -3,9 +3,9 @@ export { createSignalForm } from "./form"
 export type {
   BooleanField,
   FieldCollection,
+  FieldRule,
   NumberField,
   TextField,
-  FieldRule,
 } from "./fields"
 
 export { createFields } from "./fields"

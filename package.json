@@ -26,10 +26,13 @@
     "@preact/signals-react": "^1.3.6"
   },
   "devDependencies": {
+    "@testing-library/react": "^14.1.0",
     "@types/react": "^18.2.34",
     "concurrently": "^8.2.2",
+    "jsdom": "^22.1.0",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^1.0.0-beta.4"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17 || ^18"
@@ -54,13 +57,14 @@
     }
   },
   "scripts": {
-    "tsc": "tsc",
-    "build": "tsc --noEmit false",
     "ci": "npm ci && cd ./demo && npm ci",
+    "dev": "concurrently --kill-others \"cd ./demo && npm run tsc-watch\" \"cd ./demo && npm run dev\"",
     "demo": "cd ./demo && npm run dev",
-    "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
+    "test": "vitest --typecheck",
+    "build": "tsc --noEmit false",
     "build-demo": "cd ./demo && npm run build",
-    "preversion": "npm run ci && npm run build",
+    "tsc": "tsc",
+    "preversion": "npm ci && vitest run --typecheck",
     "postversion": "git push && git push --tags"
   },
   "eslintConfig": {

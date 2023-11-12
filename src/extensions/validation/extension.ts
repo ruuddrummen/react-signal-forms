@@ -11,7 +11,7 @@ type ValidationFieldContextExtension = {
   errorsSignal: Signal<string[]>
 }
 
-type ValidationFieldContextProperties = {
+export type ValidationFieldContextProperties = {
   isValid: boolean
   errors: string[]
 }
