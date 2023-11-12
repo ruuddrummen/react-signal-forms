@@ -10,7 +10,7 @@ const EXTENSION_NAME = "diffChanges"
  * Enables presentation of differences compared to previous values, and
  * reverting changes made since the last commit.
  */
-export const diffChanges: SignalFormExtension<
+export const diffChangesExtension: SignalFormExtension<
   FieldContextExtension,
   FieldContextProperties
 > = {

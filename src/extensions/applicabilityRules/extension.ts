@@ -1,11 +1,11 @@
 import { Signal, computed } from "@preact/signals-react"
-import { Field, FieldRule } from "../fields"
-import { IFormContext } from "../formContext"
-import { alwaysTrueSignal } from "../signals"
-import { KeyOf } from "../utils"
-import { SignalFormExtension } from "./types"
+import { Field, FieldRule } from "../../fields"
+import { IFormContext } from "../../formContext"
+import { alwaysTrueSignal } from "../../signals"
+import { KeyOf } from "../../utils"
+import { SignalFormExtension } from "../types"
 
-const EXTENSION_NAME = "applicability"
+export const EXTENSION_NAME = "applicability"
 
 type ApplicabilityFieldContextExtension = {
   isApplicableSignal: Signal<boolean>
@@ -63,18 +63,9 @@ function createApplicabilitySignal(
   }
 }
 
-interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
+export interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
   extends FieldRule<TForm, TKey> {
   execute: (context: IFormContext<TForm>) => boolean
-}
-
-export function applicableIf<TForm, TKey extends KeyOf<TForm>>(
-  test: (context: IFormContext<TForm>) => boolean
-): FieldRule<TForm, TKey> {
-  return {
-    execute: (context: IFormContext<TForm>) => test(context),
-    extension: EXTENSION_NAME,
-  } as ApplicabilityFieldRule<TForm, TKey>
 }
 
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(

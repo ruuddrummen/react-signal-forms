@@ -47,6 +47,10 @@
     "./extensions": {
       "types": "./dist/extensions/index.d.ts",
       "default": "./dist/extensions/index.js"
+    },
+    "./rules": {
+      "types": "./dist/rules.d.ts",
+      "default": "./dist/rules.js"
     }
   },
   "scripts": {

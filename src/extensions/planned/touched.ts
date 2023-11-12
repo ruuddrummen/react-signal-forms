@@ -9,7 +9,7 @@ const EXTENSION_NAME = "touched"
 /**
  * Enables keeping track of fields being touched or not.
  */
-export const touchedExtension: SignalFormExtension<
+export const touchedFieldsExtension: SignalFormExtension<
   FieldContextExtension,
   FieldContextProperties
 > = {

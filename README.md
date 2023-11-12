@@ -7,13 +7,12 @@ A forms library which aims to provide a high performance modular and extensible 
 - Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
   - Pick and choose what you need.
   - Plug in your own.
-- Add rules to your fields.
+- Add built-in context aware rules to your fields or create your own.
   - Like `required()` or `applicableIf(...)`.
-  - Rules have access to your form context and other fields.
 - Only calculates and renders what is necessary by leveraging signals.
+- Field and rule specifications are separated from UI.
 - Bring your own UI libraries and components.
 - Everything is strongly typed with Typescript.
-- And many more smart and useful quotes.
 
 ## Getting started
 
@@ -32,17 +31,21 @@ npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form root](./demo/src/MyForm.tsx).
+If you want to explore the demo code, a good place to start would be [the demo form](./demo/src/DemoForm.tsx).
 
 ## Your first form
 
 Start by initializing your form component and field hook, including the extensions you want to use.
 
 ```tsx
+// Add extensions, replace extensions, or plug in your own.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  ...defaultExtensions, // includes validation rules and touched signals.
-  applicabilityRulesExtension // adds applicability rules and field signals.
+  ...defaultExtensions, // the defaults, includes validation rules and touched signals.
+  extensions.applicabilityRules // adds applicability rules and field signals.
 )
+
+// Or just stick to the defaults (planned).
+export const { SignalForm, useFieldSignals } = createSignalForm()
 ```
 
 > ⚠️ Touched signals are coming soon.
@@ -120,5 +123,5 @@ Form features - e.g. validation and applicability rules - are implemented in sep
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [the demo](./demo/src/MyForm.tsx) and in [validation/rules.ts](./src/extensions/validation/rules.ts).
+- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [the demo](./demo/src/DemoForm.tsx) and in [validation/rules.ts](./src/extensions/validation/rules.ts).
 - Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.

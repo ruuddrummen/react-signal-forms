@@ -2,7 +2,7 @@ import { Button, Container, Typography } from "@mui/material"
 import { useSignal } from "@preact/signals-react"
 import React from "react"
 import "./App.css"
-import { MyForm } from "./MyForm"
+import { MyForm } from "./DemoForm"
 
 export const App: React.FC = () => {
   const formKey = useSignal(1)
@@ -18,8 +18,8 @@ export const App: React.FC = () => {
 
   return (
     <Container className="App" maxWidth="md">
-      <Typography variant="h2">
-        React Signals Form <Button onClick={reload}>Reload form</Button>
+      <Typography variant="h2" textAlign="center">
+        React Signal Forms <Button onClick={reload}>Reload form</Button>
         <Button color="primary" onClick={reset}>
           Reset stored values
         </Button>

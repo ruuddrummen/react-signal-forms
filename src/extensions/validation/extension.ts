@@ -3,14 +3,9 @@ import { Field, FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { FormValues } from "../../types"
 import { KeyOf } from "../../utils"
-import {
-  FieldRuleFunction,
-  RuleArguments,
-  RuleContext,
-  SignalFormExtension,
-} from "../types"
+import { RuleContext, SignalFormExtension } from "../types"
 
-const EXTENSION_NAME = "validation"
+export const EXTENSION_NAME = "validation"
 
 type ValidationFieldContextExtension = {
   errorsSignal: Signal<string[]>
@@ -77,42 +72,11 @@ function createFieldExtension(
   }
 }
 
-/**
- * Creates a validation rule function which can be used in the
- * `createFields` field builders.
- * @param execute Executes the rule. Should return `null` if the
- * field is valid, or an error message if it is not.
- * @template TArgs The type of the arguments when using the rule.
- * Can be `void`, `T` or `() => T` for any `T`. Default is `void`.
- *
- * If set to `void`, the rule can be used without arguments, such as `required()`.
- *
- * If set to `T` it can be used as `rule(args: T)`, such as `minLength(6)`.
- *
- * If set to `() => T` it can be used as `rule(ruleContext => T)`,
- * where `ruleContext` describes form and field states. For example: `requiredIf(context => boolean)`.
- * @returns A validation rule function.
- */
-export function createValidationRule<TArgs = void>(
-  execute: (
-    context: RuleContext,
-    args: RuleArguments<TArgs>
-  ) => ValidationTestResult
-): FieldRuleFunction<TArgs> {
-  const result = (args: RuleArguments<TArgs>) =>
-    ({
-      extension: EXTENSION_NAME,
-      execute: (context) => execute(context as any, args as any),
-    }) as ValidationFieldRule
-
-  return result as FieldRuleFunction<TArgs>
-}
-
 function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
   return rule.extension === EXTENSION_NAME
 }
 
-interface ValidationFieldRule<
+export interface ValidationFieldRule<
   TForm = FormValues,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
 > extends FieldRule<TForm, TKey> {
@@ -127,12 +91,4 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  * Describes a validation result, which is an error message if
  * a field is invalid, or `null` if the field is valid.
  */
-type ValidationTestResult = null | string
-
-// TODO: Get the field name with intellisense or context.
-export const isEqualToField = createValidationRule<string>(
-  ({ form, value }, fieldName) =>
-    value === form.fields[fieldName].value
-      ? null
-      : `Must be equal to "${form.fields[fieldName].value}"`
-)
+export type ValidationTestResult = null | string
