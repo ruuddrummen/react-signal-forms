@@ -64,9 +64,9 @@
     "test": "vitest --typecheck",
     "ci": "npm ci && cd ./demo && npm ci",
     "demo": "cd ./demo && npm run dev",
-    "dev": "concurrently --kill-others \"npm run test\" \"cd ./demo && npm run tsc-watch\" \"cd ./demo && npm run dev\"",
+    "dev": "concurrently --kill-others \"cd ./demo && npm run tsc-watch\" \"cd ./demo && npm run dev\"",
     "build-demo": "cd ./demo && npm run build",
-    "preversion": "npm run ci && npm run build",
+    "preversion": "npm run ci && npm run test && npm run build",
     "postversion": "git push && git push --tags"
   },
   "eslintConfig": {
