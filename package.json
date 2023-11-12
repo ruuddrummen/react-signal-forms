@@ -2,7 +2,7 @@
   "name": "react-signal-forms",
   "description": "A forms library focusing on performance and modular extensibility.",
   "author": "<r.drummen@hotmail.com>",
-  "version": "0.2.3",
+  "version": "0.2.4-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/ruuddrummen/react-signal-forms"
@@ -59,7 +59,9 @@
     "ci": "npm ci && cd ./demo && npm ci",
     "demo": "cd ./demo && npm run dev",
     "dev": "cd ./demo && concurrently --kill-others \"npm run tsc-watch\" \"npm run dev\"",
-    "build-demo": "cd ./demo && npm run build"
+    "build-demo": "cd ./demo && npm run build",
+    "preversion": "npm run ci && npm run build",
+    "postversion": "git push && git push --tags"
   },
   "eslintConfig": {
     "extends": [
