@@ -57,14 +57,14 @@
     }
   },
   "scripts": {
-    "tsc": "tsc",
-    "build": "tsc --noEmit false",
-    "test": "vitest --typecheck",
     "ci": "npm ci && cd ./demo && npm ci",
-    "demo": "cd ./demo && npm run dev",
     "dev": "concurrently --kill-others \"cd ./demo && npm run tsc-watch\" \"cd ./demo && npm run dev\"",
+    "demo": "cd ./demo && npm run dev",
+    "test": "vitest --typecheck",
+    "build": "tsc --noEmit false",
     "build-demo": "cd ./demo && npm run build",
-    "preversion": "npm run ci && npm run test && npm run build",
+    "tsc": "tsc",
+    "preversion": "npm ci && vitest run --typecheck",
     "postversion": "git push && git push --tags"
   },
   "eslintConfig": {
