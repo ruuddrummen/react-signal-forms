@@ -62,15 +62,16 @@ function createFieldExtension(
 
   return {
     errorsSignal: computed(() => {
-      if (fieldContext.peekValue() === undefined) {
-        return emptyErrors
-      }
-
       console.log(`(${field.name}) Checking validation rules`)
 
+      // Rules must be executed to create subscriptions on the necessary signals.
       const results = rules.map((r) =>
         r.execute({ value: fieldContext.value, form: formContext })
       )
+
+      if (fieldContext.peekValue() === undefined) {
+        return emptyErrors
+      }
 
       const errors = results.filter((e) => typeof e === "string") as string[]
 
