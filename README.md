@@ -31,7 +31,7 @@ npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form root](./demo/src/MyForm.tsx).
+If you want to explore the demo code, a good place to start would be [the demo form](./demo/src/DemoForm.tsx).
 
 ## Your first form
 
@@ -123,5 +123,5 @@ Form features - e.g. validation and applicability rules - are implemented in sep
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [the demo](./demo/src/MyForm.tsx) and in [validation/rules.ts](./src/extensions/validation/rules.ts).
+- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [the demo](./demo/src/DemoForm.tsx) and in [validation/rules.ts](./src/extensions/validation/rules.ts).
 - Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.
