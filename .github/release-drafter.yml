@@ -24,7 +24,7 @@ categories:
 
 exclude-labels:
   - "skip changelog"
-change-template: "- $TITLE, by @$AUTHOR (#$NUMBER)"
+change-template: "- $TITLE (#$NUMBER)" # When there are more collaborators: add @$AUTHOR.
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
 version-resolver:
