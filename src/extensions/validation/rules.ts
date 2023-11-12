@@ -5,12 +5,18 @@ import {
   ValidationTestResult,
 } from "./extension"
 
+/**
+ * Returns an error if the field has no value.
+ */
 export const required = createValidationRule((context) =>
-  context.value != null && context.value !== ""
+  context.value !== null && context.value !== ""
     ? null
     : "This field is required"
 )
 
+/**
+ * Returns an error if the test succeeds and the field has no value.
+ */
 export const requiredIf = createValidationRule<() => boolean>(
   (context, test) =>
     !test(context) || (context.value != null && context.value !== "")
@@ -29,6 +35,22 @@ export const mustBeEqualToField = createValidationRule<string>(
     value === form.fields[fieldName].value
       ? null
       : `Must be equal to "${form.fields[fieldName].value}"`
+)
+
+type ValidIfArgs = {
+  testResult: boolean
+  errorMessage: string
+}
+
+/**
+ * Runs any given validation rule, with any given error message to return if the rule fails.
+ */
+export const validIf = createValidationRule<() => ValidIfArgs>(
+  (context, args) => {
+    const argsResult = args(context)
+
+    return argsResult.testResult ? null : argsResult.errorMessage
+  }
 )
 
 /**
