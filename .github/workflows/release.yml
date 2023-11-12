@@ -6,6 +6,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      # write permission is required to publish github release
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +29,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: version
+      - name: get version from tag
         id: version
         run: |
           tag=${GITHUB_REF/refs\/tags\//}
@@ -36,7 +39,8 @@ jobs:
           echo "version=${version}" >> $GITHUB_OUTPUT
           echo "major=${major}" >> $GITHUB_OUTPUT
 
-      - uses: release-drafter/release-drafter@v5
+      - name: Publish release
+        uses: release-drafter/release-drafter@v5
         with:
           version: ${{ steps.version.outputs.version }}
           publish: true
