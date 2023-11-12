@@ -1,11 +1,7 @@
 import { expectTypeOf, test } from "vitest"
-import {
-  FieldRule,
-  IFieldBuilder,
-  IFieldCollectionBuilder,
-  createFields,
-} from "./fields"
-import { required } from "./rules"
+import { RuleContext } from "./extensions/types"
+import { IFieldBuilder, IFieldCollectionBuilder, createFields } from "./fields"
+import { requiredIf } from "./rules"
 
 interface ITestData {
   textField: string
@@ -18,11 +14,15 @@ test("Test field collection builder types.", () => {
     form.field("textField", (field) => {
       expectTypeOf(field).toMatchTypeOf<IFieldBuilder<ITestData, "textField">>()
 
-      field.rules = [required()]
+      field.rules = [
+        requiredIf((context) => {
+          expectTypeOf(context).toMatchTypeOf<
+            RuleContext<ITestData, "textField">
+          >()
 
-      expectTypeOf(field.rules[0]).toMatchTypeOf<
-        FieldRule<ITestData, "textField">
-      >()
+          return true
+        }),
+      ]
     })
   })
 })

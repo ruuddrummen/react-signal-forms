@@ -11,7 +11,7 @@ type ApplicabilityFieldContextExtension = {
   isApplicableSignal: Signal<boolean>
 }
 
-type ApplicabilityFieldProperties = {
+export type ApplicabilityFieldProperties = {
   isApplicable: boolean
 }
 
