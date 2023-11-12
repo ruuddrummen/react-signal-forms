@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Build and publish
     permissions:
       # write permission is required to publish github release
       contents: write
@@ -29,7 +30,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: get version from tag
+      - name: Get version from tag
         id: version
         run: |
           tag=${GITHUB_REF/refs\/tags\//}
@@ -47,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: force update major tag
+      - name: Force update major tag
         run: |
           git tag v${{ steps.version.outputs.major }} ${{ steps.version.outputs.tag }} -f
           git push origin refs/tags/v${{ steps.version.outputs.major }} -f
