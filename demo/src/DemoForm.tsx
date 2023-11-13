@@ -19,6 +19,7 @@ import {
   TextInput,
   useLocalStorageStore,
 } from "./FormComponents"
+import { SelectInput } from "./FormComponents/SelectInput"
 import { FormValidationIndicator } from "./FormValidationIndicator"
 
 interface FormData {
@@ -58,7 +59,12 @@ const fields = createFields<FormData>((form) => {
   })
 
   form.field<SelectField>("select", (field) => {
-    field.options = []
+    field.options = [
+      {
+        label: "Test label",
+        value: "Test value",
+      },
+    ]
   })
 
   form.field("alwaysRequired", (field) => {
@@ -141,6 +147,9 @@ export const MyForm = () => {
           </Grid>
           <Grid item xs={12}>
             <Switch field={fields.boolean} />
+          </Grid>
+          <Grid item xs={12}>
+            <SelectInput field={fields.select} />
           </Grid>
           <GridDivider />
 
