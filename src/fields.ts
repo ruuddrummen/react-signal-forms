@@ -15,6 +15,13 @@ export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>>
 export type TextField = FieldBase<string | null>
 export type NumberField = FieldBase<number | null>
 export type BooleanField = FieldBase<boolean | null>
+export interface SelectField extends FieldBase<string | null> {
+  options: SelectOption[]
+}
+export type SelectOption = {
+  value: string
+  label: string
+}
 
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,26 +46,38 @@ export function createFields<TForm>(
 }
 
 export interface IFieldCollectionBuilder<TForm> {
-  field<TKey extends KeyOf<TForm>>(
+  field<
+    TField extends FieldBase<TForm[TKey]>,
+    TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  >(
     name: TKey,
-    configure: (fieldBuilder: IFieldBuilder<TForm, TKey>) => void
+    configure: (fieldBuilder: IFieldBuilder<TField, TForm, TKey>) => void
   ): void
 }
 
-export interface IFieldBuilder<TForm, TKey extends KeyOf<TForm>> {
+export type IFieldBuilder<
+  TField extends FieldBase<TForm[TKey]>,
+  TForm,
+  TKey extends KeyOf<TForm>,
+> = {
   label: string | null
   defaultValue: TForm[TKey] | null
   rules: Array<FieldRule<TForm, TKey>>
-}
+} & TField
 
 class FieldCollectionBuilder<TForm> implements IFieldCollectionBuilder<TForm> {
-  fieldBuilders: Array<FieldBuilder<TForm, KeyOf<TForm>>> = []
+  fieldBuilders: Array<
+    FieldBuilder<FieldBase<TForm[KeyOf<TForm>]>, TForm, KeyOf<TForm>>
+  > = []
 
-  field<TKey extends KeyOf<TForm>>(
+  field<
+    TField extends FieldBase<TForm[TKey]>,
+    TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  >(
     name: TKey,
-    configure: (fieldBuilder: FieldBuilder<TForm, TKey>) => void
+    configure: (fieldBuilder: FieldBuilder<TField, TForm, TKey>) => void
   ) {
-    const fieldBuilder = new FieldBuilder<TForm, TKey>(name)
+    const fieldBuilder = new FieldBuilder<TField, TForm, TKey>(name)
     configure(fieldBuilder)
     this.fieldBuilders.push(fieldBuilder)
   }
@@ -76,7 +95,12 @@ class FieldCollectionBuilder<TForm> implements IFieldCollectionBuilder<TForm> {
   }
 }
 
-class FieldBuilder<TForm, TKey extends KeyOf<TForm>> {
+class FieldBuilder<
+  TField extends FieldBase<TForm[TKey]>,
+  TForm,
+  TKey extends KeyOf<TForm>,
+> implements IFieldBuilder<TField, TForm, TKey>
+{
   name: TKey
   label: string | null = null
   defaultValue: TForm[TKey] | null = null

@@ -5,6 +5,7 @@ export type {
   FieldCollection,
   FieldRule,
   NumberField,
+  SelectField,
   TextField,
 } from "./fields"
 

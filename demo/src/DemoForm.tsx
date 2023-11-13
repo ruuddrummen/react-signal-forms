@@ -8,6 +8,7 @@ import {
   requiredIf,
   validIf,
 } from "react-signal-forms/rules"
+import { SelectField } from "../../src/fields"
 import {
   FormStateViewer,
   NumberInput,
@@ -24,6 +25,8 @@ interface FormData {
   text: string
   number: number
   boolean: boolean
+
+  select: string
 
   alwaysRequired: string
   mustBeEqualToOtherField: string
@@ -52,6 +55,10 @@ const fields = createFields<FormData>((form) => {
 
   form.field("boolean", (field) => {
     field.label = "A boolean field"
+  })
+
+  form.field<SelectField>("select", (field) => {
+    field.options = []
   })
 
   form.field("alwaysRequired", (field) => {
