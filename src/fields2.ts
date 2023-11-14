@@ -1,22 +1,19 @@
 import { FormValues } from "."
+import { required } from "./rules"
 import { KeyOf, forEachKeyOf } from "./utils"
 
-export interface Field<
-  TValue,
-  TForm = any,
-  Key extends KeyOf<TForm> = KeyOf<TForm>,
-> {
+export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>> {
   name: string
   label: string | null
-  defaultValue?: TValue
+  defaultValue?: TForm[Key]
   rules?: Array<FieldRule<TForm, Key>>
 }
 
-export type TextField = Field<string>
-export type NumberField = Field<number>
-export type BooleanField = Field<boolean>
+export type TextField = Field
+export type NumberField = Field
+export type BooleanField = Field
 
-export interface SelectField extends Field<string> {
+export interface SelectField extends Field {
   options: SelectItem[]
 }
 
@@ -35,22 +32,33 @@ export interface FieldRule<
 }
 
 export type FieldCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: Field<TForm[Key], TForm, Key>
+  [Key in KeyOf<TForm>]: Field<TForm, Key>
 }
 
-const formFactory = {
-  field<TField extends Field<any>>(properties: Omit<TField, "name">): TField {
+class FormFactory2<TForm> {
+  field<
+    TField extends Field<TForm, Key>,
+    Key extends KeyOf<TForm> = KeyOf<TForm>,
+  >(
+    properties: TField // & Field<TForm, Key>
+  ): TField {
     return properties as TField
-  },
+  }
 }
 
-type FormFactory = typeof formFactory
+// const formFactory = {
+//   field<TField extends Field<any>>(properties: TField): TField {
+//     return properties as TField
+//   },
+// }
 
-export const createForm = <TData>() => ({
-  createFields<TFields extends FieldCollection<TData>>(
-    build: (form: FormFactory) => TFields
-  ): Pick<TFields, KeyOf<TData>> {
-    const fields = build(formFactory)
+// type FormFactory = typeof formFactory
+
+export const createForm = <TForm>() => ({
+  createFields<TFields extends FieldCollection<TForm>>(
+    build: (form: FormFactory2<TForm>) => TFields
+  ): Pick<TFields, KeyOf<TForm>> {
+    const fields = build(new FormFactory2())
 
     // Copy name from fields collection to fields.
     forEachKeyOf(fields, (name) => {
@@ -65,25 +73,27 @@ interface TestData {
   select: string
 }
 
-const fields7 = createForm<TestData>().createFields((form) => {
-  return {
-    select: form.field<SelectField>({
-      label: "test",
-      options: [],
-      rules: [],
-    }),
-    invalid: "",
-  }
-})
+// const fields7 = createForm<TestData>().createFields((form) => {
+//   return {
+//     select: form.field<SelectField>({
+//       name: "select",
+//       label: "test",
+//       options: [],
+//       rules: [],
+//     }),
+//     invalid: "",
+//   }
+// })
 
 const fields8 = createForm<TestData>().createFields((form) => ({
   select: form.field<SelectField>({
+    name: "select",
     label: "test",
     options: [],
-    rules: [],
+    rules: [required()],
   }),
   invalid: "",
 }))
 
-const select7 = fields7.select
+// const select7 = fields7.select
 const select8 = fields8.select

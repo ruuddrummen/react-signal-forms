@@ -126,6 +126,36 @@ const fields = createFields<FormData>((form) => {
   })
 })
 
+interface TestData {
+  select: string
+}
+
+const fields7 = createForm<TestData>().createFields((form) => {
+  return {
+    select: form.field<"select", SelectField>({
+      name: "select",
+      label: "test",
+      options: [],
+      rules: [required()],
+    }),
+    invalid: "",
+  }
+})
+
+const fields8 = createForm<TestData>().createFields((form) => ({
+  select: form.field({
+    name: "select",
+    label: "test",
+    // options: [],
+    rules: [required()],
+  }),
+  invalid: "",
+}))
+
+const rule = fields8.select.rules
+const select7 = fields7.select
+const select8 = fields8.select
+
 const fields2 = createForm<FormData>().createFields((form) => ({
   text: form.field({
     label: "A text field",
