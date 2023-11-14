@@ -1,5 +1,5 @@
 import { FormValues } from "."
-import { KeyOf } from "./utils"
+import { KeyOf, forEachKeyOf } from "./utils"
 
 export interface Field<
   TValue,
@@ -30,7 +30,7 @@ export interface FieldRule<
   extension: string
 }
 
-interface TData {
+interface TestData {
   select: string
 }
 
@@ -38,56 +38,7 @@ export type FieldCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: Field<TForm[Key], TForm, Key>
 }
 
-// iteration 5
-
-interface IFormFactory<TData> {
-  field<TField extends Field<any>, TKey extends keyof TData = keyof TData>(
-    name: TKey,
-    properties: Omit<TField, "name">
-  ): TField
-}
-
-class FormFactory<TData> implements IFormFactory<TData> {
-  field<TKey extends keyof TData, TField extends Field<any>>(
-    name: TKey,
-    properties: Omit<TField, "name">
-  ): TField {
-    return {
-      name,
-      ...properties,
-    } as TField
-  }
-}
-
-const createForm = <TData>() => ({
-  createFields<TFields>(
-    build: (
-      formFactory: IFormFactory<TData>
-    ) => FieldCollection<TData> & TFields
-  ): TFields {
-    const fields = build(new FormFactory<TData>())
-
-    return fields
-  },
-})
-
-const fields5 = createForm<TData>().createFields((form) => {
-  return {
-    select: form.field<SelectField>("select", {
-      label: "test",
-      options: [],
-    }),
-  }
-})
-
 // iteration 6
-
-// interface IFormFactory6<TData> {
-//   field<TField extends Field<any>, TKey extends keyof TData = keyof TData>(
-//     name: TKey,
-//     properties: Omit<TField, "name">
-//   ): TField
-// }
 
 class FormFactory6<TData> {
   // implements IFormFactory6<TData> {
@@ -116,7 +67,7 @@ const createForm6 = <TData>() => ({
   },
 })
 
-const fields6 = createForm6<TData>().createFields((form) => {
+const fields6 = createForm6<TestData>().createFields((form) => {
   return {
     ...form.field<SelectField>("select", {
       label: "test",
@@ -125,3 +76,49 @@ const fields6 = createForm6<TData>().createFields((form) => {
     }),
   }
 })
+
+// iteration 7
+
+export type FieldCollection7<TForm = any> = {
+  [Key in KeyOf<TForm>]: Field<TForm[Key], TForm, Key>
+}
+
+class FormFactory7<TData> {
+  field<TField extends Field<any>>( //, TKey extends keyof TData = keyof TData>(
+    // name: TKey,
+    properties: Omit<TField, "name">
+  ): TField {
+    return {
+      // name,
+      ...properties,
+    } as TField
+  }
+}
+
+const createForm7 = <TData>() => ({
+  createFields<TFields extends FieldCollection7<TData>>(
+    build: (formFactory: FormFactory7<TData>) => TFields
+  ): Pick<TFields, KeyOf<TData>> {
+    const fields = build(new FormFactory7<TData>())
+
+    // Copy name from fields collection to fields.
+    forEachKeyOf(fields, (name) => {
+      fields[name].name = name
+    })
+
+    return fields
+  },
+})
+
+const fields7 = createForm7<TestData>().createFields((form) => {
+  return {
+    select: form.field<SelectField>({
+      label: "test",
+      options: [],
+      rules: [],
+    }),
+    test: "should be invalid",
+  }
+})
+
+const select = fields7.select
