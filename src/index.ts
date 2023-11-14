@@ -1,4 +1,4 @@
-export { createSignalForm } from "./form"
+export { configureSignalForm } from "./form"
 
 export type {
   BooleanField,
@@ -7,9 +7,11 @@ export type {
   NumberField,
   SelectField,
   TextField,
-} from "./fields"
+} from "./fields2"
 
 export { createFields } from "./fields"
+
+export { createForm } from "./fields2"
 
 export { useFormSignals } from "./formContext"
 

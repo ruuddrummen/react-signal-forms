@@ -1,5 +1,5 @@
 import { Divider, Grid, Stack, Typography } from "@mui/material"
-import { createFields } from "react-signal-forms"
+import { SelectField, createFields, createForm } from "react-signal-forms"
 import {
   applicableIf,
   minLength,
@@ -8,7 +8,6 @@ import {
   requiredIf,
   validIf,
 } from "react-signal-forms/rules"
-import { SelectField } from "../../src/fields"
 import {
   FormStateViewer,
   NumberInput,
@@ -126,6 +125,77 @@ const fields = createFields<FormData>((form) => {
     ]
   })
 })
+
+const fields2 = createForm<FormData>().createFields((form) => ({
+  text: form.field({
+    label: "A text field",
+    defaultValue: "Welcome to the demo",
+  }),
+  number: form.field({
+    label: "A number field",
+  }),
+  boolean: form.field({
+    label: "A boolean field",
+  }),
+  select: form.field<SelectField>({
+    label: "",
+    options: [
+      {
+        label: "Test label",
+        value: "Test value",
+      },
+    ],
+  }),
+  alwaysRequired: form.field({
+    label: "Required field",
+    rules: [required()],
+  }),
+  mustBeEqualToOtherField: form.field({
+    label: "Must be equal to required field",
+    // TODO: Get the field name with intellisense or context.
+    rules: [mustBeEqualToField("alwaysRequired")],
+  }),
+  hasMinimumLength: form.field({
+    label: "At least 6 characters long",
+    rules: [required(), minLength(6)],
+  }),
+  makeFieldRequired: form.field({
+    label: "makeFieldRequired",
+  }),
+  canBeRequired: form.field({
+    label: "Only rerenders if value or isValid changes",
+    rules: [
+      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
+    ],
+  }),
+  showSecretField: form.field({
+    label: "Show secret field",
+  }),
+  secret: form.field({
+    label: "Value is cleared when not applicable",
+    defaultValue: "Default value",
+    rules: [
+      applicableIf(({ fields }) => fields.showSecretField.value === true),
+    ],
+  }),
+  makeComplicatedFieldApplicable: form.field({
+    label: "Make the field applicable",
+  }),
+  complicatedField: form.field({
+    label: "Only validated if applicable",
+    rules: [
+      applicableIf(
+        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
+      ),
+      required(),
+      minLength(5),
+      validIf(({ value }) => ({
+        testResult: value?.endsWith("signals") ?? false,
+        errorMessage: "Value must end with 'signals'",
+      })),
+    ],
+  }),
+}))
 
 export const MyForm = () => {
   const store = useLocalStorageStore()

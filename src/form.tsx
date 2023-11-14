@@ -23,7 +23,7 @@ interface SignalsFormInnerProps extends SignalsFormProps {
 //   ? TValue
 //   : never
 
-export function createSignalForm<
+export function configureSignalForm<
   TExtensions extends SignalFormExtension<any, any>[],
 >(
   ...extensions: TExtensions
