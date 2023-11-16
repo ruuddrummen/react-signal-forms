@@ -9,6 +9,7 @@ interface ITestData {
 }
 
 test("Test field collection types.", () => {
+  // TODO: test if this is composable.
   const fields = signalForm<ITestData>().withFields((field) => ({
     ...field("text").as({
       label: "Text field",
