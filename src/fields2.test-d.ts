@@ -4,11 +4,15 @@ import { FieldRule, SelectField, createForm } from "./fields2"
 import { required, validIf } from "./rules"
 
 interface ITestData {
+  text: string
   select: string
 }
 
 test("Test field collection builder types.", () => {
   const fields = createForm<ITestData>().createFields((form) => ({
+    text: form.field({
+      label: "Text field",
+    }),
     select: form.field<SelectField>({
       label: "test",
       options: [],

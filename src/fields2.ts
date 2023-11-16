@@ -15,6 +15,11 @@ export interface SelectField extends FieldBase<string> {
   options: SelectItem[]
 }
 
+export type SelectItem = {
+  value: string
+  label: string
+}
+
 interface FieldRules<TForm, Key extends KeyOf<TForm>> {
   rules?: Array<FieldRule<TForm, Key>>
 }
@@ -25,15 +30,6 @@ export type Field<
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
 > = TFieldBase & {
   rules?: Array<FieldRule<TForm, TKey>>
-}
-
-// export interface Field<TForm, Key extends KeyOf<TForm>>
-//   extends FieldBase<TForm[Key]>,
-//     FieldRules<TForm, Key> {}
-
-export type SelectItem = {
-  value: string
-  label: string
 }
 
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
