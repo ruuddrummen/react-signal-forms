@@ -7,11 +7,6 @@ export interface FieldBase<TValue> {
   defaultValue?: TValue
 }
 
-export interface Field<TForm, Key extends KeyOf<TForm>>
-  extends FieldBase<TForm[Key]> {
-  rules?: Array<FieldRule<TForm, Key>>
-}
-
 export type TextField = FieldBase<string>
 export type NumberField = FieldBase<number>
 export type BooleanField = FieldBase<boolean>
@@ -20,13 +15,28 @@ export interface SelectField extends FieldBase<string> {
   options: SelectItem[]
 }
 
+interface FieldRules<TForm, Key extends KeyOf<TForm>> {
+  rules?: Array<FieldRule<TForm, Key>>
+}
+
+export type Field<
+  TFieldBase extends FieldBase<unknown> = FieldBase<unknown>,
+  TForm = any,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>,
+> = TFieldBase & {
+  rules?: Array<FieldRule<TForm, TKey>>
+}
+
+// export interface Field<TForm, Key extends KeyOf<TForm>>
+//   extends FieldBase<TForm[Key]>,
+//     FieldRules<TForm, Key> {}
+
 export type SelectItem = {
   value: string
   label: string
 }
 
 // Key can be used for type safety in rule implementations, for instance with TForm[Key]
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface FieldRule<
   TForm = FormValues,
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
@@ -35,7 +45,7 @@ export interface FieldRule<
 }
 
 export type FieldCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: FieldBase<TForm[Key]> & Field<TForm, Key>
+  [Key in KeyOf<TForm>]: Field<FieldBase<TForm[Key]>, TForm, Key>
 }
 
 class FormFactory2<TForm> {
@@ -43,9 +53,9 @@ class FormFactory2<TForm> {
     TFieldBase extends FieldBase<TForm[TKey]>,
     TKey extends KeyOf<TForm> = KeyOf<TForm>,
   >(
-    properties: TFieldBase & Field<TForm, TKey>
-  ): TFieldBase & Field<TForm, TKey> {
-    return properties as TFieldBase & Field<TForm, TKey>
+    properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
+  ): Field<TFieldBase, TForm, TKey> {
+    return properties as Field<TFieldBase, TForm, TKey>
   }
 }
 

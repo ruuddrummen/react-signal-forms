@@ -15,7 +15,6 @@ interface ITestData {
 describe("useFieldSignals tests", () => {
   const fields = createForm<ITestData>().createFields((form) => ({
     textField: form.field({
-      name: "Test",
       label: "Label",
     }),
   }))

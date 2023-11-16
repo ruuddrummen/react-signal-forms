@@ -1,6 +1,6 @@
 import { Signal, computed, signal } from "@preact/signals-react"
 import { FieldRule } from "../.."
-import { Field, FieldBase } from "../../fields2"
+import { Field } from "../../fields2"
 import { IFormContext } from "../../formContext"
 import { FormValues } from "../../types"
 import { KeyOf } from "../../utils"
@@ -50,7 +50,7 @@ const defaultContextExtension: ValidationFieldContextExtension = {
 const emptyErrors: string[] = []
 
 function createFieldExtension(
-  field: FieldBase<any> & Field<any, any>,
+  field: Field,
   formContext: IFormContext
 ): ValidationFieldContextExtension {
   const fieldContext = formContext.fields[field.name]

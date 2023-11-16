@@ -1,4 +1,4 @@
-import { expectTypeOf, test } from "vitest"
+import { expect, expectTypeOf, test } from "vitest"
 import { RuleContext } from "./extensions/types"
 import { FieldRule, SelectField, createForm } from "./fields2"
 import { required, validIf } from "./rules"
@@ -10,7 +10,6 @@ interface ITestData {
 test("Test field collection builder types.", () => {
   const fields = createForm<ITestData>().createFields((form) => ({
     select: form.field<SelectField>({
-      name: "select",
       label: "test",
       options: [],
       rules: [
@@ -29,6 +28,8 @@ test("Test field collection builder types.", () => {
     }),
     invalid: "",
   }))
+
+  expect(fields.select.name).toBe("select")
 
   expectTypeOf(fields.select).toMatchTypeOf<SelectField>()
   expectTypeOf(fields.select.rules).toMatchTypeOf<
