@@ -1,4 +1,4 @@
-import { Field, FieldRule } from "../fields"
+import { Field, FieldBase, FieldRule } from "../fields2"
 import { IFormContext } from "../formContext"
 import { FormValues } from "../types"
 import { KeyOf } from "../utils"
@@ -20,7 +20,7 @@ export interface SignalFormExtension<
 > {
   name: string
   createFieldExtension(
-    field: Field,
+    field: FieldBase<any> & Field<any, any>,
     formContext: IFormContext
   ): TFieldContextExtension
   createFieldProperties(

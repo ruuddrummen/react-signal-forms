@@ -1,19 +1,22 @@
 import { FormValues } from "."
-import { required } from "./rules"
 import { KeyOf, forEachKeyOf } from "./utils"
 
-export interface Field<TForm = any, Key extends KeyOf<TForm> = KeyOf<TForm>> {
+export interface FieldBase<TValue> {
   name: string
   label: string | null
-  defaultValue?: TForm[Key]
+  defaultValue?: TValue
+}
+
+export interface Field<TForm, Key extends KeyOf<TForm>>
+  extends FieldBase<TForm[Key]> {
   rules?: Array<FieldRule<TForm, Key>>
 }
 
-export type TextField = Field
-export type NumberField = Field
-export type BooleanField = Field
+export type TextField = FieldBase<string>
+export type NumberField = FieldBase<number>
+export type BooleanField = FieldBase<boolean>
 
-export interface SelectField extends Field {
+export interface SelectField extends FieldBase<string> {
   options: SelectItem[]
 }
 
@@ -32,32 +35,25 @@ export interface FieldRule<
 }
 
 export type FieldCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: Field<TForm, Key>
+  [Key in KeyOf<TForm>]: FieldBase<TForm[Key]> & Field<TForm, Key>
 }
 
 class FormFactory2<TForm> {
   field<
-    TField extends Field<TForm, Key>,
-    Key extends KeyOf<TForm> = KeyOf<TForm>,
+    TFieldBase extends FieldBase<TForm[TKey]>,
+    TKey extends KeyOf<TForm> = KeyOf<TForm>,
   >(
-    properties: TField // & Field<TForm, Key>
-  ): TField {
-    return properties as TField
+    properties: TFieldBase & Field<TForm, TKey>
+  ): TFieldBase & Field<TForm, TKey> {
+    return properties as TFieldBase & Field<TForm, TKey>
   }
 }
-
-// const formFactory = {
-//   field<TField extends Field<any>>(properties: TField): TField {
-//     return properties as TField
-//   },
-// }
-
-// type FormFactory = typeof formFactory
 
 export const createForm = <TForm>() => ({
   createFields<TFields extends FieldCollection<TForm>>(
     build: (form: FormFactory2<TForm>) => TFields
-  ): Pick<TFields, KeyOf<TForm>> {
+  ): TFields {
+    // Pick<TFields, KeyOf<TForm>> {
     const fields = build(new FormFactory2())
 
     // Copy name from fields collection to fields.
@@ -68,32 +64,3 @@ export const createForm = <TForm>() => ({
     return fields
   },
 })
-
-interface TestData {
-  select: string
-}
-
-// const fields7 = createForm<TestData>().createFields((form) => {
-//   return {
-//     select: form.field<SelectField>({
-//       name: "select",
-//       label: "test",
-//       options: [],
-//       rules: [],
-//     }),
-//     invalid: "",
-//   }
-// })
-
-const fields8 = createForm<TestData>().createFields((form) => ({
-  select: form.field<SelectField>({
-    name: "select",
-    label: "test",
-    options: [],
-    rules: [required()],
-  }),
-  invalid: "",
-}))
-
-// const select7 = fields7.select
-const select8 = fields8.select

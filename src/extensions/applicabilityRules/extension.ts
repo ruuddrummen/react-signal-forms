@@ -1,5 +1,6 @@
 import { Signal, computed } from "@preact/signals-react"
-import { Field, FieldRule } from "../../fields"
+import { FieldRule } from "../.."
+import { Field, FieldBase } from "../../fields2"
 import { IFormContext } from "../../formContext"
 import { alwaysTrueSignal } from "../../signals"
 import { KeyOf } from "../../utils"
@@ -40,7 +41,7 @@ export const applicabilityRulesExtension: SignalFormExtension<
 }
 
 function createApplicabilitySignal(
-  field: Field,
+  field: FieldBase<any> & Field<any, any>,
   formContext: IFormContext<any>
 ): Signal<boolean> {
   const rules = field.rules?.filter(isApplicabilityRule) ?? []

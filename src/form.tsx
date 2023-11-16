@@ -4,7 +4,7 @@ import {
   SignalFormExtension,
 } from "./extensions/types"
 import { IFieldContext } from "./fieldContext"
-import { FieldBase, FieldCollection } from "./fields"
+import { FieldBase, FieldCollection } from "./fields2"
 import { useFormContextProvider, useFormSignals } from "./formContext"
 import { FormValues } from "./types"
 
