@@ -1,7 +1,7 @@
 import { FormValues } from "."
 import { KeyOf, forEachKeyOf } from "./utils"
 
-export interface FieldBase<TValue> {
+export interface FieldBase<TValue = unknown> {
   name: string
   label: string | null
   defaultValue?: TValue
@@ -70,3 +70,21 @@ export const createForm = <TForm>() => ({
     return fields
   },
 })
+
+export const signalForm = <TForm>() => ({
+  withFields<TFields extends FieldCollection<TForm>>(
+    build: (field: FieldBuilder<TForm>) => TFields
+  ): TFields {
+    // const fields = build(fieldBuilder)
+
+    throw new Error("Not implemented")
+  },
+})
+
+type FieldBuilder<TForm> = <TKey extends KeyOf<TForm>>(
+  name: TKey
+) => {
+  as: <TFieldBase extends FieldBase<TForm[TKey]>>(
+    properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
+  ) => { [name in TKey]: Field<TForm, TKey, TFieldBase> }
+}

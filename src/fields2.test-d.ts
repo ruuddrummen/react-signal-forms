@@ -1,6 +1,6 @@
 import { expect, expectTypeOf, test } from "vitest"
 import { RuleContext } from "./extensions/types"
-import { FieldRule, SelectField, createForm } from "./fields2"
+import { FieldRule, SelectField, signalForm } from "./fields2"
 import { required, validIf } from "./rules"
 
 interface ITestData {
@@ -9,8 +9,8 @@ interface ITestData {
 }
 
 test("Test field collection types.", () => {
-  const fields = createForm<ITestData>().createFields((form) => ({
-    text: form.field({
+  const fields = signalForm<ITestData>().withFields((field) => ({
+    ...field("text").as({
       label: "Text field",
       rules: [
         required(),
@@ -24,8 +24,9 @@ test("Test field collection types.", () => {
         }),
       ],
     }),
-    select: form.field<SelectField>({
-      label: "test",
+
+    ...field("select").as<SelectField>({
+      label: "Select field",
       options: [],
       rules: [
         required(),
@@ -41,8 +42,42 @@ test("Test field collection types.", () => {
         }),
       ],
     }),
-    invalid: "",
   }))
+
+  // const fields = createForm<ITestData>().createFields((form) => ({
+  //   text: form.field({
+  //     label: "Text field",
+  //     rules: [
+  //       required(),
+  //       validIf((context) => {
+  //         expectTypeOf(context).toMatchTypeOf<RuleContext<ITestData, "text">>()
+
+  //         return {
+  //           testResult: true,
+  //           errorMessage: "",
+  //         }
+  //       }),
+  //     ],
+  //   }),
+  //   select: form.field<SelectField>({
+  //     label: "test",
+  //     options: [],
+  //     rules: [
+  //       required(),
+  //       validIf((context) => {
+  //         expectTypeOf(context).toMatchTypeOf<
+  //           RuleContext<ITestData, "select">
+  //         >()
+
+  //         return {
+  //           testResult: true,
+  //           errorMessage: "",
+  //         }
+  //       }),
+  //     ],
+  //   }),
+  //   invalid: "",
+  // }))
 
   expect(fields.select.name).toBe("select")
 
