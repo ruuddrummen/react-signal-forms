@@ -8,10 +8,21 @@ interface ITestData {
   select: string
 }
 
-test("Test field collection builder types.", () => {
+test("Test field collection types.", () => {
   const fields = createForm<ITestData>().createFields((form) => ({
     text: form.field({
       label: "Text field",
+      rules: [
+        required(),
+        validIf((context) => {
+          expectTypeOf(context).toMatchTypeOf<RuleContext<ITestData, "text">>()
+
+          return {
+            testResult: true,
+            errorMessage: "",
+          }
+        }),
+      ],
     }),
     select: form.field<SelectField>({
       label: "test",

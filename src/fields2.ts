@@ -25,9 +25,9 @@ interface FieldRules<TForm, Key extends KeyOf<TForm>> {
 }
 
 export type Field<
-  TFieldBase extends FieldBase<unknown> = FieldBase<unknown>,
   TForm = any,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  TFieldBase extends FieldBase<TForm[TKey]> = FieldBase<TForm[TKey]>,
 > = TFieldBase & {
   rules?: Array<FieldRule<TForm, TKey>>
 }
@@ -41,7 +41,7 @@ export interface FieldRule<
 }
 
 export type FieldCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: Field<FieldBase<TForm[Key]>, TForm, Key>
+  [Key in KeyOf<TForm>]: Field<TForm, Key, FieldBase<TForm[Key]>>
 }
 
 class FormFactory2<TForm> {
@@ -50,8 +50,8 @@ class FormFactory2<TForm> {
     TKey extends KeyOf<TForm> = KeyOf<TForm>,
   >(
     properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
-  ): Field<TFieldBase, TForm, TKey> {
-    return properties as Field<TFieldBase, TForm, TKey>
+  ): Field<TForm, TKey, TFieldBase> {
+    return properties as Field<TForm, TKey, TFieldBase>
   }
 }
 
