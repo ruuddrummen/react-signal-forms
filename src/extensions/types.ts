@@ -1,4 +1,4 @@
-import { Field, FieldRule } from "../fields2"
+import { Field, FieldRule } from "../fields"
 import { IFormContext } from "../formContext"
 import { FormValues } from "../types"
 import { KeyOf } from "../utils"

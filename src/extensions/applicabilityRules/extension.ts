@@ -1,6 +1,6 @@
 import { Signal, computed } from "@preact/signals-react"
 import { FieldRule } from "../.."
-import { Field } from "../../fields2"
+import { Field } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { alwaysTrueSignal } from "../../signals"
 import { KeyOf } from "../../utils"

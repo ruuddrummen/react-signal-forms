@@ -7,9 +7,9 @@ export type {
   NumberField,
   SelectField,
   TextField,
-} from "./fields2"
+} from "./fields"
 
-export { createForm } from "./fields2"
+export { createForm } from "./fields"
 
 export { useFormSignals } from "./formContext"
 

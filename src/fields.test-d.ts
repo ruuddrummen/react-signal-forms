@@ -1,6 +1,6 @@
 import { expect, expectTypeOf, test } from "vitest"
 import { RuleContext } from "./extensions/types"
-import { FieldRule, SelectField, signalForm } from "./fields2"
+import { FieldRule, SelectField, signalForm } from "./fields"
 import { IFormContext } from "./formContext"
 import { required, validIf } from "./rules"
 
