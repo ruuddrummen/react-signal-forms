@@ -11,4 +11,6 @@ export type {
 
 export { useFormSignals } from "./formContext"
 
+export { signalForm } from "./fields"
+
 export type { FormValues } from "./types"

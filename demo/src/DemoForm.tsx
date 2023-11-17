@@ -1,5 +1,5 @@
 import { Divider, Grid, Stack, Typography } from "@mui/material"
-import { SelectField } from "react-signal-forms"
+import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
   minLength,
@@ -8,7 +8,6 @@ import {
   requiredIf,
   validIf,
 } from "react-signal-forms/rules"
-import { signalForm } from "../../src/fields"
 import {
   FormStateViewer,
   NumberInput,
