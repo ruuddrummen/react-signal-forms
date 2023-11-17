@@ -1,6 +1,8 @@
 import { FormValues } from "."
 import { KeyOf } from "./utils"
 
+// #region Field types
+
 export interface FieldBase<TValue = unknown> {
   name: string
   label: string | null
@@ -20,10 +22,6 @@ export type SelectItem = {
   label: string
 }
 
-interface FieldRules<TForm, Key extends KeyOf<TForm>> {
-  rules?: Array<FieldRule<TForm, Key>>
-}
-
 export type Field<
   TForm = any,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
@@ -32,7 +30,6 @@ export type Field<
   rules?: Array<FieldRule<TForm, TKey>>
 }
 
-// Key can be used for type safety in rule implementations, for instance with TForm[Key]
 export interface FieldRule<
   TForm = FormValues,
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
@@ -44,8 +41,12 @@ export type FieldCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: Field<TForm, Key, FieldBase<TForm[Key]>>
 }
 
+// #endregion
+
+// #region Field builder implementation
+
 export const signalForm = <TForm>() => ({
-  withFields<TFields extends FieldCollection<TForm>>(
+  createFields<TFields extends FieldCollection<TForm>>(
     build: (field: FieldBuilder<TForm>) => TFields
   ): { [Key in KeyOf<TForm>]: TFields[Key] } {
     const fields = build(createFieldBuilder<TForm>())
@@ -105,6 +106,10 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
   } as FieldDescriptor<TForm, TKey, never>
 }
 
+// #endregion
+
+// #region Field builder types
+
 type FieldBuilder<TForm> = {
   <TKey extends KeyOf<TForm>>(
     name: TKey,
@@ -141,3 +146,5 @@ type FieldItem<
 > = {
   [name in TKey]: Field<TForm, TKey, TFieldBase>
 }
+
+// #endregion
