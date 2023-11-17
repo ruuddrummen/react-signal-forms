@@ -1,6 +1,7 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 import { SelectField } from "react-signal-forms"
 import { useFieldSignals } from "."
+import { useRenderCount } from "../utils"
 
 interface SelectInputProps {
   field: SelectField
@@ -8,14 +9,16 @@ interface SelectInputProps {
 
 export const SelectInput = ({ field }: SelectInputProps) => {
   const { value, setValue } = useFieldSignals(field)
+  const renderCount = useRenderCount()
+  const label = `${field.label} (rendered ${renderCount.current} times)`
   const labelId = field.name + "-select-label"
 
   return (
     <FormControl fullWidth>
-      <InputLabel id={labelId}>{field.label}</InputLabel>
+      <InputLabel id={labelId}>{label}</InputLabel>
       <Select
         labelId={labelId}
-        label={field.label}
+        label={label}
         value={value ?? ""}
         onChange={(e) => setValue(e.target.value)}
       >
