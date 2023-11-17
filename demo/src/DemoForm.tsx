@@ -1,5 +1,5 @@
 import { Divider, Grid, Stack, Typography } from "@mui/material"
-import { SelectField, createFields, createForm } from "react-signal-forms"
+import { SelectField } from "react-signal-forms"
 import {
   applicableIf,
   minLength,
@@ -8,6 +8,7 @@ import {
   requiredIf,
   validIf,
 } from "react-signal-forms/rules"
+import { signalForm } from "../../src/fields"
 import {
   FormStateViewer,
   NumberInput,
@@ -43,176 +44,52 @@ interface FormData {
   complicatedField: string
 }
 
-const fields = createFields<FormData>((form) => {
-  form.field("text", (field) => {
-    field.label = "A text field"
-    field.defaultValue = "Welcome to the demo"
-  })
-
-  form.field("number", (field) => {
-    field.label = "A number field"
-  })
-
-  form.field("boolean", (field) => {
-    field.label = "A boolean field"
-  })
-
-  form.field<SelectField>("select", (field) => {
-    field.options = [
-      {
-        label: "Test label",
-        value: "Test value",
-      },
-    ]
-  })
-
-  form.field("alwaysRequired", (field) => {
-    field.label = "Required field"
-    field.rules = [required()]
-  })
-
-  form.field("mustBeEqualToOtherField", (field) => {
-    field.label = "Must be equal to required field"
-
-    // TODO: Get the field name with intellisense or context.
-    field.rules = [mustBeEqualToField("alwaysRequired")]
-  })
-
-  form.field("hasMinimumLength", (field) => {
-    field.label = "At least 6 characters long"
-    field.rules = [required(), minLength(6)]
-  })
-
-  form.field("makeFieldRequired", (field) => {
-    field.label = "Make next field required"
-  })
-
-  form.field("canBeRequired", (field) => {
-    field.label = "Only rerenders if value or isValid changes"
-    field.rules = [
-      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
-    ]
-  })
-
-  form.field("showSecretField", (field) => {
-    field.label = "Show secret field"
-  })
-
-  form.field("secret", (field) => {
-    field.label = "Value is cleared when not applicable"
-    field.defaultValue = "Default value"
-    field.rules = [
-      applicableIf(({ fields }) => fields.showSecretField.value === true),
-    ]
-  })
-
-  form.field("makeComplicatedFieldApplicable", (field) => {
-    field.label = "Make the field applicable"
-  })
-
-  form.field("complicatedField", (field) => {
-    field.label = "Only validated if applicable"
-    field.rules = [
-      applicableIf(
-        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
-      ),
-      required(),
-      minLength(5),
-      validIf(({ value }) => ({
-        testResult: value?.endsWith("signals") ?? false,
-        errorMessage: "Value must end with 'signals'",
-      })),
-    ]
-  })
-})
-
-interface TestData {
-  select: string
-}
-
-const fields7 = createForm<TestData>().createFields((form) => {
-  return {
-    select: form.field<"select", SelectField>({
-      name: "select",
-      label: "test",
-      options: [],
-      rules: [required()],
-    }),
-    invalid: "",
-  }
-})
-
-const fields8 = createForm<TestData>().createFields((form) => ({
-  select: form.field({
-    name: "select",
-    label: "test",
-    // options: [],
-    rules: [required()],
-  }),
-  invalid: "",
-}))
-
-const rule = fields8.select.rules
-const select7 = fields7.select
-const select8 = fields8.select
-
-const fields2 = createForm<FormData>().createFields((form) => ({
-  text: form.field({
-    label: "A text field",
+const fields = signalForm<FormData>().createFields((field) => ({
+  ...field("text", "A text field", {
     defaultValue: "Welcome to the demo",
   }),
-  number: form.field({
-    label: "A number field",
-  }),
-  boolean: form.field({
-    label: "A boolean field",
-  }),
-  select: form.field<SelectField>({
-    label: "",
+  ...field("number", "A number field"),
+  ...field("boolean", "A boolean field"),
+  ...field("select", "A select field").as<SelectField>({
     options: [
       {
-        label: "Test label",
-        value: "Test value",
+        label: "Option 1",
+        value: "Value 1",
+      },
+      {
+        label: "Option 2",
+        value: "Value 2",
+      },
+      {
+        label: "Option 3",
+        value: "Value 3",
       },
     ],
   }),
-  alwaysRequired: form.field({
-    label: "Required field",
+  ...field("alwaysRequired", "Required field", {
     rules: [required()],
   }),
-  mustBeEqualToOtherField: form.field({
-    label: "Must be equal to required field",
-    // TODO: Get the field name with intellisense or context.
+  ...field("mustBeEqualToOtherField", "Must be equal to required field", {
     rules: [mustBeEqualToField("alwaysRequired")],
   }),
-  hasMinimumLength: form.field({
-    label: "At least 6 characters long",
+  ...field("hasMinimumLength", "At least 6 characters long", {
     rules: [required(), minLength(6)],
   }),
-  makeFieldRequired: form.field({
-    label: "makeFieldRequired",
-  }),
-  canBeRequired: form.field({
-    label: "Only rerenders if value or isValid changes",
+  ...field("makeFieldRequired", "Make next field required"),
+  ...field("canBeRequired", "Only rerenders if value or isValid changes", {
     rules: [
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ],
   }),
-  showSecretField: form.field({
-    label: "Show secret field",
-  }),
-  secret: form.field({
-    label: "Value is cleared when not applicable",
+  ...field("showSecretField", "Show secret field"),
+  ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
     rules: [
       applicableIf(({ fields }) => fields.showSecretField.value === true),
     ],
   }),
-  makeComplicatedFieldApplicable: form.field({
-    label: "Make the field applicable",
-  }),
-  complicatedField: form.field({
-    label: "Only validated if applicable",
+  ...field("makeComplicatedFieldApplicable", "Make the field applicable"),
+  ...field("complicatedField", "Only validated if applicable", {
     rules: [
       applicableIf(
         ({ fields }) => fields.makeComplicatedFieldApplicable.value === true

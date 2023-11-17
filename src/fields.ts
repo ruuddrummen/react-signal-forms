@@ -51,6 +51,10 @@ export const signalForm = <TForm>() => ({
   ): { [Key in KeyOf<TForm>]: TFields[Key] } {
     const fields = build(createFieldBuilder<TForm>())
 
+    // Clean up descriptor methods.
+    delete (fields as any).as
+    delete (fields as any).asHidden
+
     return fields
   },
 })
