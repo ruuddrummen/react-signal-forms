@@ -6,7 +6,7 @@ import {
 } from "./extension"
 
 /**
- * Returns an error if the field has no value.
+ * Requires the field to have a value.
  */
 export const required = createValidationRule((context) =>
   context.value !== null && context.value !== ""
@@ -15,7 +15,7 @@ export const required = createValidationRule((context) =>
 )
 
 /**
- * Returns an error if the test succeeds and the field has no value.
+ * Requires the field to have a value if the given test succeeds.
  */
 export const requiredIf = createValidationRule<() => boolean>(
   (context, test) =>
@@ -24,12 +24,18 @@ export const requiredIf = createValidationRule<() => boolean>(
       : "This field is required"
 )
 
+/**
+ * Requires the value to have a minimum given length.
+ */
 export const minLength = createValidationRule<number>((context, length) =>
   typeof context.value === "string" && context.value.length >= length
     ? null
     : `Must be at least ${length} characters long`
 )
 
+/**
+ * Requires the value to be equal to the value of another field.
+ */
 export const mustBeEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
     value === form.fields[fieldName].value
