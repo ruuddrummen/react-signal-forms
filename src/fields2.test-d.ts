@@ -1,40 +1,54 @@
 import { expect, expectTypeOf, test } from "vitest"
 import { RuleContext } from "./extensions/types"
 import { FieldRule, SelectField, signalForm } from "./fields2"
+import { IFormContext } from "./formContext"
 import { required, validIf } from "./rules"
 
 interface ITestData {
-  text: string
-  select: string
+  hiddenField: string
+  textField: string
+  numberField: number
+  selectField: string
 }
 
-test("Test field collection types.", () => {
-  // TODO: test if this is composable.
+test("Test field builder and collection types.", () => {
   const fields = signalForm<ITestData>().withFields((field) => ({
-    ...field("text").as({
-      label: "Text field",
-      rules: [
-        required(),
-        validIf((context) => {
-          expectTypeOf(context).toMatchTypeOf<RuleContext<ITestData, "text">>()
+    ...field("hiddenField").asHidden(),
 
-          return {
-            testResult: true,
-            errorMessage: "",
-          }
-        }),
-      ],
+    ...field("textField", "My text field"),
+
+    ...field("textField", {
+      label: "My text field",
+      defaultValue: "Default value",
     }),
 
-    ...field("select").as<SelectField>({
-      label: "Select field",
+    ...field("numberField", "My number field"),
+
+    ...field("numberField", {
+      label: "My number field",
+      defaultValue: 1,
+    }),
+
+    ...field("selectField", "My select field").as<SelectField>({
+      options: [],
+    }),
+
+    ...field("selectField").as<SelectField>({
+      label: "My select field",
+      options: [],
+    }),
+
+    ...field("selectField").as<SelectField>({
+      label: "My select field",
       options: [],
       rules: [
         required(),
         validIf((context) => {
           expectTypeOf(context).toMatchTypeOf<
-            RuleContext<ITestData, "select">
+            RuleContext<ITestData, "selectField">
           >()
+          expectTypeOf(context.value).toBeString()
+          expectTypeOf(context.form).toMatchTypeOf<IFormContext<ITestData>>()
 
           return {
             testResult: true,
@@ -45,45 +59,10 @@ test("Test field collection types.", () => {
     }),
   }))
 
-  // const fields = createForm<ITestData>().createFields((form) => ({
-  //   text: form.field({
-  //     label: "Text field",
-  //     rules: [
-  //       required(),
-  //       validIf((context) => {
-  //         expectTypeOf(context).toMatchTypeOf<RuleContext<ITestData, "text">>()
+  expect(fields.selectField.name).toBe("selectField")
 
-  //         return {
-  //           testResult: true,
-  //           errorMessage: "",
-  //         }
-  //       }),
-  //     ],
-  //   }),
-  //   select: form.field<SelectField>({
-  //     label: "test",
-  //     options: [],
-  //     rules: [
-  //       required(),
-  //       validIf((context) => {
-  //         expectTypeOf(context).toMatchTypeOf<
-  //           RuleContext<ITestData, "select">
-  //         >()
-
-  //         return {
-  //           testResult: true,
-  //           errorMessage: "",
-  //         }
-  //       }),
-  //     ],
-  //   }),
-  //   invalid: "",
-  // }))
-
-  expect(fields.select.name).toBe("select")
-
-  expectTypeOf(fields.select).toMatchTypeOf<SelectField>()
-  expectTypeOf(fields.select.rules).toMatchTypeOf<
-    FieldRule<ITestData, "select">[] | undefined
+  expectTypeOf(fields.selectField).toMatchTypeOf<SelectField>()
+  expectTypeOf(fields.selectField.rules).toMatchTypeOf<
+    FieldRule<ITestData, "selectField">[] | undefined
   >()
 })
