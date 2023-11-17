@@ -59,6 +59,9 @@ test("Test field builder and collection types.", () => {
     }),
   }))
 
+  console.log("fields:", fields)
+
+  expect(fields.textField.name).toBe("textField")
   expect(fields.selectField.name).toBe("selectField")
 
   expectTypeOf(fields.selectField).toMatchTypeOf<SelectField>()

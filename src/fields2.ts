@@ -1,5 +1,5 @@
 import { FormValues } from "."
-import { KeyOf, forEachKeyOf } from "./utils"
+import { KeyOf } from "./utils"
 
 export interface FieldBase<TValue = unknown> {
   name: string
@@ -44,42 +44,66 @@ export type FieldCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: Field<TForm, Key, FieldBase<TForm[Key]>>
 }
 
-class FormFactory2<TForm> {
-  field<
-    TFieldBase extends FieldBase<TForm[TKey]>,
-    TKey extends KeyOf<TForm> = KeyOf<TForm>,
-  >(
-    properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
-  ): Field<TForm, TKey, TFieldBase> {
-    return properties as Field<TForm, TKey, TFieldBase>
-  }
-}
-
-export const createForm = <TForm>() => ({
-  createFields<TFields extends FieldCollection<TForm>>(
-    build: (form: FormFactory2<TForm>) => TFields
-  ): TFields {
-    // Pick<TFields, KeyOf<TForm>> {
-    const fields = build(new FormFactory2())
-
-    // Copy name from fields collection to fields.
-    forEachKeyOf(fields, (name) => {
-      fields[name].name = name
-    })
+export const signalForm = <TForm>() => ({
+  withFields<TFields extends FieldCollection<TForm>>(
+    build: (field: FieldBuilder<TForm>) => TFields
+  ): { [Key in KeyOf<TForm>]: TFields[Key] } {
+    const fields = build(createFieldBuilder<TForm>())
 
     return fields
   },
 })
 
-export const signalForm = <TForm>() => ({
-  withFields<TFields extends FieldCollection<TForm>>(
-    build: (field: FieldBuilder<TForm>) => TFields
-  ): { [Key in KeyOf<TForm>]: TFields[Key] } {
-    // const fields = build(fieldBuilder)
+const createFieldBuilder = <TForm>() => {
+  const fieldBuilder: FieldBuilder<TForm> = <TKey extends KeyOf<TForm>>(
+    ...args: unknown[]
+  ) => {
+    const name = args[0] as TKey
 
-    throw new Error("Not implemented")
-  },
-})
+    if (typeof args[1] === "string") {
+      // case: (string, string, properties?)
+      const properties = typeof args[2] === "object" ? args[2] : {}
+      const field: Field<TForm, TKey, FieldBase<TForm[TKey]>> = {
+        name,
+        label: args[1],
+        ...(properties as any),
+      }
+
+      return createFieldDescriptor(field)
+    }
+
+    // case: (string, properties?)
+    const properties = typeof args[1] === "object" ? args[1] : {}
+    const field: Field<TForm, TKey, FieldBase<TForm[TKey]>> = {
+      name,
+      ...(properties as any),
+    }
+
+    return createFieldDescriptor(field)
+  }
+
+  return fieldBuilder
+}
+
+function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
+  field: Field<TForm, TKey, FieldBase<TForm[TKey]>>
+): FieldDescriptor<TForm, TKey, never> {
+  return {
+    [field.name]: field,
+    as: <TFieldBase extends FieldBase<TForm[TKey]>>(
+      properties: Field<TForm, TKey, TFieldBase>
+    ) => {
+      return {
+        [field.name]: { ...field, ...properties },
+      }
+    },
+    asHidden: () => {
+      return {
+        [field.name]: field,
+      }
+    },
+  } as FieldDescriptor<TForm, TKey, never>
+}
 
 type FieldBuilder<TForm> = {
   <TKey extends KeyOf<TForm>>(
@@ -105,29 +129,15 @@ type FieldDescriptor<
   [name in TKey]: Field<TForm, TKey, FieldBase<TForm[TKey]>>
 } & {
   as: <TFieldBase extends FieldBase<TForm[TKey]>>(
-    properties: Omit<TFieldBase, "name" | TExcept> & FieldRules<TForm, TKey>
-  ) => { [name in TKey]: Field<TForm, TKey, TFieldBase> }
-  asHidden: () => { [name in TKey]: Field<TForm, TKey, FieldBase<TForm[TKey]>> }
+    properties: Omit<Field<TForm, TKey, TFieldBase>, "name" | TExcept>
+  ) => FieldItem<TForm, TKey, TFieldBase>
+  asHidden: () => FieldItem<TForm, TKey, FieldBase<TForm[TKey]>>
 }
 
-// type FieldDescriptor2<TForm, TKey extends KeyOf<TForm>> = <
-//   TFieldBase extends FieldBase<TForm[TKey]>,
-// >(
-//   properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
-// ) => { [name in TKey]: Field<TForm, TKey, TFieldBase> }
-
-// function createFieldBuilder<TForm>(): FieldBuilder<TForm> {
-//   return function fieldBuilder<TKey extends KeyOf<TForm>>(name: TKey) {
-//     return {
-//       as: function as<TFieldBase extends FieldBase<TForm[TKey]>>(
-//         properties: Omit<TFieldBase, "name"> & FieldRules<TForm, TKey>
-//       ): { [name in TKey]: Field<TForm, TKey, TFieldBase> } {
-//         const field = {
-//           name,
-//           ...properties,
-//         } as Field<TForm, TKey, TFieldBase>
-//         return { [name]: field } as { [name in TKey]: Field<TForm, TKey, TFieldBase> }
-//       },
-//     }
-//   }
-// }
+type FieldItem<
+  TForm,
+  TKey extends KeyOf<TForm>,
+  TFieldBase extends FieldBase<TForm[TKey]>,
+> = {
+  [name in TKey]: Field<TForm, TKey, TFieldBase>
+}
