@@ -1,11 +1,11 @@
 import { render } from "@testing-library/react"
 import React from "react"
 import { describe, expectTypeOf, test } from "vitest"
-import { createForm } from "."
 import { extensions } from "./extensions"
 import { ApplicabilityFieldProperties } from "./extensions/applicabilityRules/extension"
 import { ValidationFieldContextProperties } from "./extensions/validation/extension"
 import { IFieldContext } from "./fieldContext"
+import { signalForm } from "./fields"
 import { configureSignalForm } from "./form"
 
 interface ITestData {
@@ -13,10 +13,8 @@ interface ITestData {
 }
 
 describe("useFieldSignals tests", () => {
-  const fields = createForm<ITestData>().createFields((form) => ({
-    textField: form.field({
-      label: "Label",
-    }),
+  const fields = signalForm<ITestData>().withFields((field) => ({
+    ...field("textField", "Text field"),
   }))
 
   test("should get validation field properties", () => {
