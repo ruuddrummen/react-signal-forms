@@ -25,7 +25,7 @@ export const requiredIf = createValidationRule<() => boolean>(
 )
 
 /**
- * Requires the value to have a minimum given length.
+ * Requires the value to have the given minimum length.
  */
 export const minLength = createValidationRule<number>((context, length) =>
   typeof context.value === "string" && context.value.length >= length
@@ -34,7 +34,7 @@ export const minLength = createValidationRule<number>((context, length) =>
 )
 
 /**
- * Requires the value to be equal to the value of another field.
+ * Requires the value to be equal to the value of the given field.
  */
 export const mustBeEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>

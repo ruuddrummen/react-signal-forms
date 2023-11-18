@@ -1,4 +1,4 @@
-import { FormValues } from "."
+import { FormValues } from "./types"
 import { KeyOf } from "./utils"
 
 // #region Field types
@@ -118,7 +118,7 @@ type FieldBuilder<TForm> = {
   <TKey extends KeyOf<TForm>>(
     name: TKey,
     properties?: Omit<Field<TForm, TKey, FieldBase<TForm[TKey]>>, "name">
-  ): FieldDescriptor<TForm, TKey, never>
+  ): FieldDescriptor<TForm, TKey, "name">
 
   <TKey extends KeyOf<TForm>>(
     name: TKey,
@@ -127,7 +127,7 @@ type FieldBuilder<TForm> = {
       Field<TForm, TKey, FieldBase<TForm[TKey]>>,
       "name" | "label"
     >
-  ): FieldDescriptor<TForm, TKey, "label">
+  ): FieldDescriptor<TForm, TKey, "name" | "label">
 }
 
 type FieldDescriptor<
@@ -137,9 +137,16 @@ type FieldDescriptor<
 > = {
   [name in TKey]: Field<TForm, TKey, FieldBase<TForm[TKey]>>
 } & {
+  /**
+   * Extends the field with an extended field type.
+   */
   as: <TFieldBase extends FieldBase<TForm[TKey]>>(
-    properties: Omit<Field<TForm, TKey, TFieldBase>, "name" | TExcept>
+    properties: Omit<Field<TForm, TKey, TFieldBase>, TExcept>
   ) => FieldItem<TForm, TKey, TFieldBase>
+
+  /**
+   * Configures the field as hidden.
+   */
   asHidden: () => FieldItem<TForm, TKey, FieldBase<TForm[TKey]>>
 }
 

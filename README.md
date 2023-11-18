@@ -56,7 +56,7 @@ interface IYourData {
   yourSelectField: string
 }
 
-const fields = signalForm<IYourData>().createFields((field) => {
+const fields = signalForm<IYourData>().withFields((field) => {
   //                      ^ All specifications and rules will be strongly
   //                        typed based on your data interface.
 
@@ -99,7 +99,7 @@ const MyInput = ({ field }: MyInputProps) => {
     errors,
     isApplicable,
     ...otherSignals
-    //  ^ With intellisense matching your selected extensions.
+    // ^ With intellisense matching your selected extensions.
   } = useFieldSignals()
 
   if (!isApplicable) {
@@ -134,7 +134,7 @@ const MyForm = () => {
 
 ## Rules and signals
 
-All internal state management is handled with signals. An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. The results of these rules are in turn also saved in (computed) signals.
+All internal state management is done with signals. An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. The results of these rules are in turn also saved in (computed) signals.
 
 A simple example to illustrate what this means for performance: if field A is only applicable if field B has a specific value, then:
 

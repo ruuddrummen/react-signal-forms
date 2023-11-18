@@ -19,10 +19,6 @@ interface SignalsFormInnerProps extends SignalsFormProps {
   extensions: Array<SignalFormExtension<any, any>>
 }
 
-// type ExtractValueType<TField> = TField extends FieldBase<infer TValue>
-//   ? TValue
-//   : never
-
 export function configureSignalForm<
   TExtensions extends SignalFormExtension<any, any>[],
 >(

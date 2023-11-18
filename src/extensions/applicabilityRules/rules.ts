@@ -1,6 +1,6 @@
 import { ApplicabilityFieldRule, EXTENSION_NAME } from "./extension"
 
-import { FieldRule } from "../.."
+import { FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { KeyOf } from "../../utils"
 
