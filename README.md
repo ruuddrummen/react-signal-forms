@@ -35,7 +35,7 @@ If you want to explore the demo code, a good place to start would be [the demo f
 
 ## Your first form
 
-Start by initializing your form component and field hook, including the extensions you want to use.
+Start by initializing your form component and field hook, including the extensions you want to use:
 
 ```tsx
 // Add extensions, replace extensions, or plug in your own.
@@ -48,7 +48,7 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
 
 > ⚠️ Touched signals are coming soon.
 
-Create field specifications for your form data:
+Create specifications for your forms:
 
 ```tsx
 interface IYourData {
@@ -73,7 +73,8 @@ const fields = signalForm<IYourData>().withFields((field) => {
   })
 
   ...field("yourSelectField", "Select field").as<SelectField>({
-    //          Plug in any field type you need. ^
+    //          Plug in any field type you need, ^
+    //          built-in or your own.
     options: [
       /* ...items */
     ]
@@ -126,7 +127,8 @@ const MyForm = () => {
       initialValues={valuesFromStore}
       onSubmit={handleSubmit}
     >
-      <MyInput field={field.yourTextField} />
+      <YourTextInput field={field.yourTextField} />
+      <YourSelectInput field={field.yourSelectField} />
     </SignalForm>
   )
 }
