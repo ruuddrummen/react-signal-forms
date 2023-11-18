@@ -19,7 +19,7 @@ interface SignalsFormInnerProps extends SignalsFormProps {
   extensions: Array<SignalFormExtension<any, any>>
 }
 
-export function createSignalForm<
+export function configureSignalForm<
   TExtensions extends SignalFormExtension<any, any>[],
 >(
   ...extensions: TExtensions

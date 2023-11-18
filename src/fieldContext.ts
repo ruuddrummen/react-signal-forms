@@ -11,8 +11,8 @@ export type FieldContextCollection<TForm = any> = {
 }
 
 export interface IFieldContext<TValue = any> {
-  value: TValue
-  setValue(value: TValue): void
+  value: TValue | null
+  setValue(value: TValue | null): void
   peekValue(): TValue
 }
 

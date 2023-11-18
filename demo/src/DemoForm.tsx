@@ -1,5 +1,5 @@
 import { Divider, Grid, Stack, Typography } from "@mui/material"
-import { createFields } from "react-signal-forms"
+import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
   minLength,
@@ -18,12 +18,15 @@ import {
   TextInput,
   useLocalStorageStore,
 } from "./FormComponents"
+import { SelectInput } from "./FormComponents/SelectInput"
 import { FormValidationIndicator } from "./FormValidationIndicator"
 
 interface FormData {
   text: string
   number: number
   boolean: boolean
+
+  select: string
 
   alwaysRequired: string
   mustBeEqualToOtherField: string
@@ -40,67 +43,53 @@ interface FormData {
   complicatedField: string
 }
 
-const fields = createFields<FormData>((form) => {
-  form.field("text", (field) => {
-    field.label = "A text field"
-    field.defaultValue = "Welcome to the demo"
-  })
-
-  form.field("number", (field) => {
-    field.label = "A number field"
-  })
-
-  form.field("boolean", (field) => {
-    field.label = "A boolean field"
-  })
-
-  form.field("alwaysRequired", (field) => {
-    field.label = "Required field"
-    field.rules = [required()]
-  })
-
-  form.field("mustBeEqualToOtherField", (field) => {
-    field.label = "Must be equal to required field"
-
-    // TODO: Get the field name with intellisense or context.
-    field.rules = [mustBeEqualToField("alwaysRequired")]
-  })
-
-  form.field("hasMinimumLength", (field) => {
-    field.label = "At least 6 characters long"
-    field.rules = [required(), minLength(6)]
-  })
-
-  form.field("makeFieldRequired", (field) => {
-    field.label = "Make next field required"
-  })
-
-  form.field("canBeRequired", (field) => {
-    field.label = "Only rerenders if value or isValid changes"
-    field.rules = [
+const fields = signalForm<FormData>().withFields((field) => ({
+  ...field("text", "A text field", {
+    defaultValue: "Welcome to the demo",
+  }),
+  ...field("number", "A number field"),
+  ...field("boolean", "A boolean field"),
+  ...field("select", "A select field").as<SelectField>({
+    options: [
+      {
+        label: "Option 1",
+        value: "Value 1",
+      },
+      {
+        label: "Option 2",
+        value: "Value 2",
+      },
+      {
+        label: "Option 3",
+        value: "Value 3",
+      },
+    ],
+  }),
+  ...field("alwaysRequired", "Required field", {
+    rules: [required()],
+  }),
+  ...field("mustBeEqualToOtherField", "Must be equal to required field", {
+    rules: [mustBeEqualToField("alwaysRequired")],
+  }),
+  ...field("hasMinimumLength", "At least 6 characters long", {
+    rules: [required(), minLength(6)],
+  }),
+  ...field("makeFieldRequired", "Make next field required"),
+  ...field("canBeRequired", "Only rerenders if value or isValid changes", {
+    rules: [
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
-    ]
-  })
-
-  form.field("showSecretField", (field) => {
-    field.label = "Show secret field"
-  })
-
-  form.field("secret", (field) => {
-    field.label = "Value is cleared when not applicable"
-    field.defaultValue = "Default value"
-    field.rules = [
+    ],
+  }),
+  ...field("showSecretField", "Show secret field"),
+  ...field("secret", "Value is cleared when not applicable", {
+    defaultValue: "Default value",
+    rules: [
       applicableIf(({ fields }) => fields.showSecretField.value === true),
-    ]
-  })
-
-  form.field("makeComplicatedFieldApplicable", (field) => {
-    field.label = "Make the field applicable"
-  })
-
-  form.field("complicatedField", (field) => {
-    field.label = "Only validated if applicable"
-    field.rules = [
+    ],
+  }),
+  ...field("makeComplicatedFieldApplicable", "Make the field applicable"),
+  ...field("complicatedField", "Only validated if applicable", {
+    rules: [
       applicableIf(
         ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
       ),
@@ -110,9 +99,9 @@ const fields = createFields<FormData>((form) => {
         testResult: value?.endsWith("signals") ?? false,
         errorMessage: "Value must end with 'signals'",
       })),
-    ]
-  })
-})
+    ],
+  }),
+}))
 
 export const MyForm = () => {
   const store = useLocalStorageStore()
@@ -134,6 +123,9 @@ export const MyForm = () => {
           </Grid>
           <Grid item xs={12}>
             <Switch field={fields.boolean} />
+          </Grid>
+          <Grid item xs={12}>
+            <SelectInput field={fields.select} />
           </Grid>
           <GridDivider />
 

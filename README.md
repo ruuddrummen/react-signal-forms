@@ -2,17 +2,17 @@
 
 > ⚠️ This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
-A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
+The form library that grows with your needs. Start with what you need now, extend with what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
+- Easy to use, easy to extend. Built from the ground with an DX friendly [extension model](#extensions).
   - Pick and choose what you need.
   - Plug in your own.
 - Add built-in context aware rules to your fields or create your own.
-  - Like `required()` or `applicableIf(...)`.
-- Only calculates and renders what is necessary by leveraging signals.
-- Field and rule specifications are separated from UI.
+  - Like `required()`, `requiredIf(...)`, `applicableIf(...)`, `computed(...)`, etc.
+- Only calculates and renders what is necessary [without you needing to think about it](#rules-and-signals).
+- Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
 - Bring your own UI libraries and components.
-- Everything is strongly typed with Typescript.
+- All strongly typed with TypeScript.
 
 ## Getting started
 
@@ -35,42 +35,48 @@ If you want to explore the demo code, a good place to start would be [the demo f
 
 ## Your first form
 
-Start by initializing your form component and field hook, including the extensions you want to use.
+Start by initializing your form component and field hook, including the extensions you want to use:
 
 ```tsx
 // Add extensions, replace extensions, or plug in your own.
 export const { SignalForm, useFieldSignals } = createSignalForm(
   ...defaultExtensions, // the defaults, includes validation rules and touched signals.
   extensions.applicabilityRules // adds applicability rules and field signals.
+  // other extensions...
 )
-
-// Or just stick to the defaults (planned).
-export const { SignalForm, useFieldSignals } = createSignalForm()
 ```
 
 > ⚠️ Touched signals are coming soon.
 
-Create field specifications for your form data:
+Create specifications for your forms:
 
 ```tsx
-interface YourDataInterface {
+interface IYourData {
   yourTextField: string
+  yourSelectField: string
 }
 
-const fields = createFields<YourDataInterface>((form) => {
-  //                        ^ All specifications and rules will be strongly
-  //                          typed based on your data interface.
+const fields = signalForm<IYourData>().withFields((field) => {
+  //                      ^ All specifications and rules will be strongly
+  //                        typed based on your data interface.
 
-  form.field("yourTextField", (field) => {
-    field.label = "My field"
-    field.defaultValue = "Demo"
+  ...field("yourTextField", "Text field", {
+    defaultValue: "Demo",
 
-    // Add rules to your field. Here are some examples:
-    field.rules = [
+    // Add rules to your field. Some examples:
+    rules: [
       required(),
       minLength(6),
       requiredIf(({ form }) => form.fields.otherField.value === true),
       applicableIf(({ form })) => form.field.otherField.value === true)
+    ]
+  })
+
+  ...field("yourSelectField", "Select field").as<SelectField>({
+    //          Plug in any field type you need, ^
+    //          built-in or your own.
+    options: [
+      /* ...items */
     ]
   })
 
@@ -88,14 +94,26 @@ interface MyInputProps {
 
 const MyInput = ({ field }: MyInputProps) => {
   const {
-      value, setValue, isValid,
-      errors, isApplicable, ...otherSignals
-  //  ^ You get intellisense matching your selected extensions.
-    } = useFieldSignals()
+    value,
+    setValue,
+    isValid,
+    errors,
+    isApplicable,
+    ...otherSignals
+    // ^ With intellisense matching your selected extensions.
+  } = useFieldSignals()
 
-  // Handle things like `isApplicable`.
+  if (!isApplicable) {
+    return null
+  }
 
-  <input value={value} onChange={e => setValue(e.currentTarget.value)} {...otherProps} />
+  return (
+    <input
+      value={value}
+      onChange={(e) => setValue(e.currentTarget.value)}
+      {...otherProps}
+    />
+  )
 }
 ```
 
@@ -109,11 +127,21 @@ const MyForm = () => {
       initialValues={valuesFromStore}
       onSubmit={handleSubmit}
     >
-      <MyInput field={field.yourTextField} />
+      <YourTextInput field={field.yourTextField} />
+      <YourSelectInput field={field.yourSelectField} />
     </SignalForm>
   )
 }
 ```
+
+## Rules and signals
+
+All internal state management is done with signals. An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. The results of these rules are in turn also saved in (computed) signals.
+
+A simple example to illustrate what this means for performance: if field A is only applicable if field B has a specific value, then:
+
+- The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
+- Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
 ## Extensions
 

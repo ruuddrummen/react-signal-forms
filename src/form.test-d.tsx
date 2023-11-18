@@ -5,22 +5,20 @@ import { extensions } from "./extensions"
 import { ApplicabilityFieldProperties } from "./extensions/applicabilityRules/extension"
 import { ValidationFieldContextProperties } from "./extensions/validation/extension"
 import { IFieldContext } from "./fieldContext"
-import { createFields } from "./fields"
-import { createSignalForm } from "./form"
+import { signalForm } from "./fields"
+import { configureSignalForm } from "./form"
 
 interface ITestData {
   textField: string
 }
 
 describe("useFieldSignals tests", () => {
-  const fields = createFields<ITestData>((form) => {
-    form.field("textField", (field) => {
-      field.label = "Test"
-    })
-  })
+  const fields = signalForm<ITestData>().withFields((field) => ({
+    ...field("textField", "Text field"),
+  }))
 
   test("should get validation field properties", () => {
-    const { SignalForm, useFieldSignals } = createSignalForm(
+    const { SignalForm, useFieldSignals } = configureSignalForm(
       extensions.validationRules
     )
 
@@ -42,7 +40,7 @@ describe("useFieldSignals tests", () => {
   })
 
   test("should get applicability field properties", () => {
-    const { SignalForm, useFieldSignals } = createSignalForm(
+    const { SignalForm, useFieldSignals } = configureSignalForm(
       extensions.applicabilityRules
     )
 

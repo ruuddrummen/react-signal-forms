@@ -2,14 +2,14 @@ export type KeyOf<TForm> = keyof TForm & string
 
 export function forAllKeysOf<T extends {}>(
   obj: T,
-  test: (key: keyof T) => boolean
+  test: (key: KeyOf<T>) => boolean
 ): boolean {
   return Object.keys(obj).every((key) => test(key as any))
 }
 
 export function forEachKeyOf<T extends {}>(
   obj: T,
-  action: (key: keyof T) => void
+  action: (key: KeyOf<T>) => void
 ): void {
   Object.keys(obj).forEach((key) => action(key as any))
 }

@@ -5,12 +5,12 @@ import { validationRulesExtension } from "./validation/extension"
 
 export const defaultExtensions = [
   validationRulesExtension,
-  touchedFieldsExtension,
+  // touchedFieldsExtension, // planned
 ] as const
 
 export const extensions = {
   applicabilityRules: applicabilityRulesExtension,
   validationRules: validationRulesExtension,
-  diffChanges: diffChangesExtension,
-  touchedFields: touchedFieldsExtension,
+  diffChanges: diffChangesExtension, // planned
+  touchedFields: touchedFieldsExtension, // planned
 }
