@@ -43,7 +43,7 @@ interface FormData {
   complicatedField: string
 }
 
-const fields = signalForm<FormData>().createFields((field) => ({
+const fields = signalForm<FormData>().withFields((field) => ({
   ...field("text", "A text field", {
     defaultValue: "Welcome to the demo",
   }),
