@@ -2,17 +2,17 @@
 
 > ⚠️ This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
-The form library that grows with your needs. A forms library which aims to provide a high performance modular and extensible experience by leveraging the power of signals with [@preact/signals-react](https://github.com/preactjs/signals).
+The form library that grows with your needs. Start with what you need now, extend with what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly extension model.
+- Easy to use, easy to extend. Built from the ground with an DX friendly [extension model](#extensions).
   - Pick and choose what you need.
   - Plug in your own.
 - Add built-in context aware rules to your fields or create your own.
   - Like `required()`, `requiredIf(...)`, `applicableIf(...)`, `computed(...)`, etc.
-- Only calculates and renders what is necessary by leveraging signals.
-- Field and rule specifications are separated from UI.
+- Only calculates and renders what is necessary [without you needing to think about it](#rules-and-signals).
+- Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
 - Bring your own UI libraries and components.
-- Everything is strongly typed with Typescript.
+- All strongly typed with TypeScript.
 
 ## Getting started
 
@@ -44,9 +44,6 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
   extensions.applicabilityRules // adds applicability rules and field signals.
   // other extensions...
 )
-
-// Or just stick to the defaults (planned).
-export const { SignalForm, useFieldSignals } = createSignalForm()
 ```
 
 > ⚠️ Touched signals are coming soon.

@@ -13,7 +13,7 @@ interface ITestData {
 }
 
 describe("useFieldSignals tests", () => {
-  const fields = signalForm<ITestData>().createFields((field) => ({
+  const fields = signalForm<ITestData>().withFields((field) => ({
     ...field("textField", "Text field"),
   }))
 

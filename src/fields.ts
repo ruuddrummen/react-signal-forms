@@ -46,7 +46,7 @@ export type FieldCollection<TForm = any> = {
 // #region Field builder implementation
 
 export const signalForm = <TForm>() => ({
-  createFields<TFields extends FieldCollection<TForm>>(
+  withFields<TFields extends FieldCollection<TForm>>(
     build: (field: FieldBuilder<TForm>) => TFields
   ): { [Key in KeyOf<TForm>]: TFields[Key] } {
     const fields = build(createFieldBuilder<TForm>())

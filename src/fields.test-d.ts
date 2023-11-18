@@ -12,7 +12,7 @@ interface ITestData {
 }
 
 test("Test field builder and collection types.", () => {
-  const fields = signalForm<ITestData>().createFields((field) => ({
+  const fields = signalForm<ITestData>().withFields((field) => ({
     ...field("hiddenField").asHidden(),
 
     ...field("textField", "My text field"),
