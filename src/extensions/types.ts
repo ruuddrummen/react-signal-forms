@@ -41,11 +41,11 @@ export interface SignalFormExtension<
 type MergeFieldContextProperties<
   T extends SignalFormExtension<any, any, any>[],
 > = T extends [
-  firstItem: SignalFormExtension<any, infer B, any>,
+  firstItem: SignalFormExtension<any, infer X, any>,
   ...rest: infer R,
 ]
   ? R extends SignalFormExtension<any, any, any>[]
-    ? B & MergeFieldContextProperties<R>
+    ? X & MergeFieldContextProperties<R>
     : never
   : {}
 
@@ -56,11 +56,11 @@ type MergeFieldContextProperties<
 type MergeFormContextProperties<
   T extends SignalFormExtension<any, any, any>[],
 > = T extends [
-  firstItem: SignalFormExtension<any, any, infer B>,
+  firstItem: SignalFormExtension<any, any, infer X>,
   ...rest: infer R,
 ]
   ? R extends SignalFormExtension<any, any, any>[]
-    ? B & MergeFormContextProperties<R>
+    ? X & MergeFormContextProperties<R>
     : never
   : {}
 
