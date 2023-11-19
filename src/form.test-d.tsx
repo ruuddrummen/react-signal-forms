@@ -3,7 +3,7 @@ import React from "react"
 import { describe, expectTypeOf, test } from "vitest"
 import { extensions } from "./extensions"
 import { ApplicabilityFieldProperties } from "./extensions/applicabilityRules/extension"
-import { ValidationFieldContextProperties } from "./extensions/validation/extension"
+import { ValidationFieldProperties } from "./extensions/validation/extension"
 import { IFieldContext } from "./fieldContext"
 import { signalForm } from "./fields"
 import { configureSignalForm } from "./form"
@@ -26,7 +26,7 @@ describe("useFieldSignals tests", () => {
       const signals = useFieldSignals(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
-        IFieldContext<string> & ValidationFieldContextProperties
+        IFieldContext<string> & ValidationFieldProperties
       >()
 
       return null

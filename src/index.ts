@@ -10,5 +10,3 @@ export type {
 } from "./fields"
 
 export { signalForm } from "./fields"
-
-export type { FormValues } from "./types"

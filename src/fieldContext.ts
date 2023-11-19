@@ -30,15 +30,17 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
 
   inputProps = {
     onBlur: (_event: React.FocusEvent<HTMLElement, Element>) => {
-      _event.target.blur()
+      /* Do nothing */
     },
   }
 
-  addBlurEffect = (effect: () => void) => {
+  addBlurEffect = (
+    effect: (event: React.FocusEvent<HTMLElement, Element>) => void
+  ) => {
     this.inputProps.onBlur = (
       event: React.FocusEvent<HTMLElement, Element>
     ) => {
-      effect()
+      effect(event)
       this.inputProps.onBlur(event)
     }
   }

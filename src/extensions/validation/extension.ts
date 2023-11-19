@@ -8,13 +8,18 @@ import { RuleContext, SignalFormExtension } from "../types"
 
 export const EXTENSION_NAME = "validation"
 
-type ValidationFieldContextExtension = {
+type ValidationFieldExtension = {
   errorsSignal: Signal<string[]>
 }
 
-export type ValidationFieldContextProperties = {
+export type ValidationFieldProperties = {
   isValid: boolean
   errors: string[]
+}
+
+type ValidationFormProperties = {
+  isValid: boolean
+  invalidFields: Array<IFieldContext & ValidationFieldProperties>
 }
 
 /**
@@ -24,12 +29,9 @@ export type ValidationFieldContextProperties = {
  * and exempt from all validation rules.
  */
 export const validationRulesExtension: SignalFormExtension<
-  ValidationFieldContextExtension,
-  ValidationFieldContextProperties,
-  {
-    isValid: boolean
-    invalidFields: Array<IFieldContext & ValidationFieldContextProperties>
-  }
+  ValidationFieldExtension,
+  ValidationFieldProperties,
+  ValidationFormProperties
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
@@ -57,7 +59,7 @@ export const validationRulesExtension: SignalFormExtension<
   },
 }
 
-const defaultContextExtension: ValidationFieldContextExtension = {
+const defaultContextExtension: ValidationFieldExtension = {
   errorsSignal: signal([]),
 }
 
@@ -66,7 +68,7 @@ const emptyErrors: string[] = []
 function createFieldExtension(
   field: Field,
   formContext: IFormContext
-): ValidationFieldContextExtension {
+): ValidationFieldExtension {
   const fieldContext = formContext.fields[field.name]
   const rules = (field.rules?.filter(isValidationRule) ??
     []) as ValidationFieldRule[]
