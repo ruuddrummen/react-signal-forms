@@ -40,13 +40,11 @@ Start by initializing your form component and field hook, including the extensio
 ```tsx
 // Add extensions, replace extensions, or plug in your own.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  ...defaultExtensions, // the defaults, includes validation rules and touched signals.
+  ...defaultExtensions, // the defaults, includes validation rules and touched field signals.
   extensions.applicabilityRules // adds applicability rules and field signals.
   // other extensions...
 )
 ```
-
-> ⚠️ Touched signals are coming soon.
 
 Create specifications for your forms:
 

@@ -1,8 +1,9 @@
 import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
-import { FieldCollection, FormValues } from "."
-import { SignalFormExtension } from "./extensions/types"
+import { FieldCollection } from "."
+import { PropertyDescriptors, SignalFormExtension } from "./extensions/types"
 import { FieldContext, FieldContextCollection } from "./fieldContext"
+import { FormValues } from "./types"
 
 const noop = () => ({}) as any
 
@@ -26,7 +27,7 @@ export interface IFormContext<TForm = any> {
 
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any>>,
+  extensions: Array<SignalFormExtension<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = useRef<IFormContext>(
@@ -41,7 +42,7 @@ export function useFormContextProvider(
 
 function createFormContext(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any>>,
+  extensions: Array<SignalFormExtension<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = new FormContext(fields, extensions, onSubmit)
@@ -62,7 +63,7 @@ class FormContext implements IFormContext {
 
   constructor(
     fields: FieldCollection,
-    extensions: Array<SignalFormExtension<any, any>>,
+    extensions: Array<SignalFormExtension<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
     this.__isSubmittingSignal = signal(false)
@@ -90,6 +91,22 @@ class FormContext implements IFormContext {
           ext.createFieldProperties(fieldExtension)
         )
       })
+    })
+
+    extensions.forEach((ext) => {
+      if (typeof ext.createFormProperties !== "function") {
+        return
+      }
+      const fieldSignals = Object.keys(fields).map((key) => this.fields[key])
+      const fieldExtensions = fieldSignals.map((field) =>
+        (field as FieldContext).getExtension(ext.name)
+      )
+      const formContextProperties = ext.createFormProperties({
+        fields: fieldSignals,
+        extensions: fieldExtensions,
+      })
+
+      this.addProperties(formContextProperties)
     })
   }
 
@@ -120,5 +137,11 @@ class FormContext implements IFormContext {
     this.__isSubmittingSignal.value = true
     await this.__onSubmit(values)
     this.__isSubmittingSignal.value = false
+  }
+
+  addProperties = <TContext,>(
+    formContextProperties: PropertyDescriptors<TContext>
+  ) => {
+    Object.defineProperties(this, formContextProperties)
   }
 }

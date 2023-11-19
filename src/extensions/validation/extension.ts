@@ -1,19 +1,25 @@
 import { Signal, computed, signal } from "@preact/signals-react"
+import { IFieldContext } from "../../fieldContext"
 import { Field, FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { FormValues } from "../../types"
-import { KeyOf } from "../../utils"
+import { KeyOf, arrayEquals } from "../../utils"
 import { RuleContext, SignalFormExtension } from "../types"
 
 export const EXTENSION_NAME = "validation"
 
-type ValidationFieldContextExtension = {
+type ValidationFieldExtension = {
   errorsSignal: Signal<string[]>
 }
 
-export type ValidationFieldContextProperties = {
+export type ValidationFieldProperties = {
   isValid: boolean
   errors: string[]
+}
+
+type ValidationFormProperties = {
+  isValid: boolean
+  invalidFields: Array<IFieldContext & ValidationFieldProperties>
 }
 
 /**
@@ -23,8 +29,9 @@ export type ValidationFieldContextProperties = {
  * and exempt from all validation rules.
  */
 export const validationRulesExtension: SignalFormExtension<
-  ValidationFieldContextExtension,
-  ValidationFieldContextProperties
+  ValidationFieldExtension,
+  ValidationFieldProperties,
+  ValidationFormProperties
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
@@ -40,9 +47,19 @@ export const validationRulesExtension: SignalFormExtension<
       },
     }
   },
+  createFormProperties({ fields }) {
+    return {
+      isValid: {
+        get: () => fields.every((f) => f.isValid),
+      },
+      invalidFields: {
+        get: () => fields.filter((f) => !f.isValid),
+      },
+    }
+  },
 }
 
-const defaultContextExtension: ValidationFieldContextExtension = {
+const defaultContextExtension: ValidationFieldExtension = {
   errorsSignal: signal([]),
 }
 
@@ -51,7 +68,7 @@ const emptyErrors: string[] = []
 function createFieldExtension(
   field: Field,
   formContext: IFormContext
-): ValidationFieldContextExtension {
+): ValidationFieldExtension {
   const fieldContext = formContext.fields[field.name]
   const rules = (field.rules?.filter(isValidationRule) ??
     []) as ValidationFieldRule[]
@@ -59,6 +76,8 @@ function createFieldExtension(
   if (rules.length === 0) {
     return defaultContextExtension
   }
+
+  let previousErrors: string[] = []
 
   return {
     errorsSignal: computed(() => {
@@ -75,7 +94,16 @@ function createFieldExtension(
 
       const errors = results.filter((e) => typeof e === "string") as string[]
 
-      return errors.length > 0 ? errors : emptyErrors
+      if (errors.length === 0) {
+        return emptyErrors
+      }
+
+      if (arrayEquals(errors, previousErrors)) {
+        return previousErrors
+      }
+
+      previousErrors = errors
+      return errors
     }),
   }
 }

@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material"
 import React from "react"
-import { FieldCollection, useFormSignals } from "react-signal-forms"
+import { FieldCollection } from "react-signal-forms"
+import { useFormSignals } from "./SignalForm"
 export const FormStateViewer: React.FC<{ fields: FieldCollection }> = ({
   fields,
 }) => {

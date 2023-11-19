@@ -22,6 +22,15 @@ export function areEqualish(val1: any, val2: any) {
   return val1 === val2
 }
 
+export function arrayEquals(a: any[], b: any[]) {
+  return (
+    Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index])
+  )
+}
+
 export function ensureNotNull<T>(
   name: string,
   value: T
