@@ -96,11 +96,15 @@ class FormContext implements IFormContext {
       if (typeof ext.createFormProperties !== "function") {
         return
       }
-      const fieldExtensions = Object.keys(fields).map((key) => {
-        const fieldContext = this.fields[key] as FieldContext
-        return fieldContext.getExtension(ext.name)
+      const fieldSignals = Object.keys(fields).map((key) => this.fields[key])
+      const fieldExtensions = fieldSignals.map((field) =>
+        (field as FieldContext).getExtension(ext.name)
+      )
+      const formContextProperties = ext.createFormProperties({
+        fields: fieldSignals,
+        extensions: fieldExtensions,
       })
-      const formContextProperties = ext.createFormProperties(fieldExtensions)
+
       this.addProperties(formContextProperties)
     })
   }

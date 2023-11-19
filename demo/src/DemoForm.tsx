@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack, Typography } from "@mui/material"
+import { Button, Divider, Grid, Stack, Typography } from "@mui/material"
 import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
@@ -16,10 +16,11 @@ import {
   SubmitButton,
   Switch,
   TextInput,
+  useFormSignals,
   useLocalStorageStore,
 } from "./FormComponents"
+import { FormValidationIndicator } from "./FormComponents/FormValidationIndicator"
 import { SelectInput } from "./FormComponents/SelectInput"
-import { FormValidationIndicator } from "./FormValidationIndicator"
 
 interface FormData {
   text: string
@@ -179,7 +180,7 @@ export const MyForm = () => {
         margin={2}
         spacing={2}
       >
-        <FormValidationIndicator /> <SubmitButton />
+        <FormValidationIndicator /> <TouchAllFieldsButton /> <SubmitButton />
       </Stack>
       <FormStateViewer fields={fields} />
     </SignalForm>
@@ -205,3 +206,9 @@ const GridDivider = () => (
 const Paragraph = ({ children }: StringChild) => (
   <Typography paragraph>{children}</Typography>
 )
+
+const TouchAllFieldsButton = () => {
+  const form = useFormSignals()
+
+  return <Button onClick={() => form.touchAll()}>Touch all fields</Button>
+}

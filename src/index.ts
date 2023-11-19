@@ -9,8 +9,6 @@ export type {
   TextField,
 } from "./fields"
 
-export { useFormSignals } from "./formContext"
-
 export { signalForm } from "./fields"
 
 export type { FormValues } from "./types"

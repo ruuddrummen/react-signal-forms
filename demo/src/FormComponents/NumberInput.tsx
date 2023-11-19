@@ -33,7 +33,7 @@ export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
   return (
     <FormControl margin="normal" fullWidth {...inputProps}>
       <MuiTextField
-        label={`${field.label} (rendered ${renderCount.current} times)`}
+        label={`${field.label} (rendered ${renderCount} times)`}
         type="number"
         value={value ?? ""}
         onChange={handleChange}

@@ -1,8 +1,9 @@
 import { Signal, computed, signal } from "@preact/signals-react"
+import { IFieldContext } from "../../fieldContext"
 import { Field, FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { FormValues } from "../../types"
-import { KeyOf } from "../../utils"
+import { KeyOf, arrayEquals } from "../../utils"
 import { RuleContext, SignalFormExtension } from "../types"
 
 export const EXTENSION_NAME = "validation"
@@ -25,7 +26,10 @@ export type ValidationFieldContextProperties = {
 export const validationRulesExtension: SignalFormExtension<
   ValidationFieldContextExtension,
   ValidationFieldContextProperties,
-  never
+  {
+    isValid: boolean
+    invalidFields: Array<IFieldContext & ValidationFieldContextProperties>
+  }
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
@@ -38,6 +42,16 @@ export const validationRulesExtension: SignalFormExtension<
       },
       errors: {
         get: () => extension.errorsSignal.value,
+      },
+    }
+  },
+  createFormProperties({ fields }) {
+    return {
+      isValid: {
+        get: () => fields.every((f) => f.isValid),
+      },
+      invalidFields: {
+        get: () => fields.filter((f) => !f.isValid),
       },
     }
   },
@@ -61,6 +75,8 @@ function createFieldExtension(
     return defaultContextExtension
   }
 
+  let previousErrors: string[] = []
+
   return {
     errorsSignal: computed(() => {
       console.log(`(${field.name}) Checking validation rules`)
@@ -76,7 +92,16 @@ function createFieldExtension(
 
       const errors = results.filter((e) => typeof e === "string") as string[]
 
-      return errors.length > 0 ? errors : emptyErrors
+      if (errors.length === 0) {
+        return emptyErrors
+      }
+
+      if (arrayEquals(errors, previousErrors)) {
+        return previousErrors
+      }
+
+      previousErrors = errors
+      return errors
     }),
   }
 }

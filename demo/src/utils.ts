@@ -7,5 +7,5 @@ export const useRenderCount = () => {
     count.current++
   })
 
-  return count
+  return count.current
 }

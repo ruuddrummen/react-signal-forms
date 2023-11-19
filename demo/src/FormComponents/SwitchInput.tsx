@@ -26,7 +26,7 @@ export const Switch: React.FC<FormInputProps> = ({ field }) => {
     <FormControl margin="normal" fullWidth error={!isValid} {...inputProps}>
       <FormControlLabel
         control={<MuiSwitch />}
-        label={`${field.label} (rendered ${renderCount.current} times)`}
+        label={`${field.label} (rendered ${renderCount} times)`}
         checked={value ?? false}
         onChange={(_e, checked) => setValue(checked)}
       />

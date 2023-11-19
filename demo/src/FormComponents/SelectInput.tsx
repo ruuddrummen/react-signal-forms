@@ -10,7 +10,7 @@ interface SelectInputProps {
 export const SelectInput = ({ field }: SelectInputProps) => {
   const { value, setValue, inputProps } = useFieldSignals(field)
   const renderCount = useRenderCount()
-  const label = `${field.label} (rendered ${renderCount.current} times)`
+  const label = `${field.label} (rendered ${renderCount} times)`
   const labelId = field.name + "-select-label"
 
   return (

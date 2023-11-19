@@ -1,11 +1,16 @@
 import React, { useMemo } from "react"
 import {
   ExpandFieldContextProperties,
+  ExpandFormContextProperties,
   SignalFormExtension,
 } from "./extensions/types"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
-import { useFormContextProvider, useFormSignals } from "./formContext"
+import {
+  IFormContext,
+  useFormContextProvider,
+  useFormSignals,
+} from "./formContext"
 import { FormValues } from "./types"
 
 interface SignalsFormProps {
@@ -28,6 +33,7 @@ export function configureSignalForm<
   useFieldSignals: <TValue>(
     field: FieldBase<TValue>
   ) => IFieldContext<TValue> & ExpandFieldContextProperties<TExtensions>
+  useFormSignals: () => IFormContext & ExpandFormContextProperties<TExtensions>
 } {
   return {
     SignalForm: (props) => {
@@ -47,6 +53,12 @@ export function configureSignalForm<
       const formContext = useFormSignals()
       return formContext.fields[field.name] as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
+    },
+    useFormSignals: function () {
+      const formContext = useFormSignals()
+
+      return formContext as IFormContext &
+        ExpandFormContextProperties<TExtensions>
     },
   }
 }

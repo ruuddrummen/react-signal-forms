@@ -27,7 +27,7 @@ export const TextInput = ({ field }: FormInputProps) => {
   return (
     <FormControl margin="normal" fullWidth {...inputProps}>
       <MuiTextField
-        label={`${field.label} (rendered ${renderCount.current} times)`}
+        label={`${field.label} (rendered ${renderCount} times)`}
         value={value ?? ""}
         onChange={(e) => setValue(e.currentTarget.value)}
         error={isTouched && !isValid}

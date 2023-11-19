@@ -35,7 +35,7 @@ export const touchedFieldsExtension: SignalFormExtension<
       },
     }
   },
-  createFormProperties(extensions) {
+  createFormProperties({ extensions }) {
     return {
       touchAll: {
         get: () => () =>
