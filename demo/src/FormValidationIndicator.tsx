@@ -3,12 +3,12 @@ import { useComputed } from "@preact/signals-react"
 import { useFormSignals } from "react-signal-forms"
 
 export const FormValidationIndicator = () => {
-  const context = useFormSignals()
+  const form = useFormSignals()
 
   const formIsValidSignal = useComputed(() =>
-    Object.keys(context.fields).every((key) => {
+    Object.keys(form.fields).every((key) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const field = context.fields[key] as any // Yup this is a hack. Will be replaced with a `form.isValid` signal later.
+      const field = form.fields[key] as any // Yup this is a hack. Will be replaced with a `form.isValid` signal later.
 
       return field.isValid
     })

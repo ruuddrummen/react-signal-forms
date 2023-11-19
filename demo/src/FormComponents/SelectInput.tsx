@@ -8,13 +8,13 @@ interface SelectInputProps {
 }
 
 export const SelectInput = ({ field }: SelectInputProps) => {
-  const { value, setValue } = useFieldSignals(field)
+  const { value, setValue, inputProps } = useFieldSignals(field)
   const renderCount = useRenderCount()
   const label = `${field.label} (rendered ${renderCount.current} times)`
   const labelId = field.name + "-select-label"
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth {...inputProps}>
       <InputLabel id={labelId}>{label}</InputLabel>
       <Select
         labelId={labelId}

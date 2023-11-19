@@ -24,7 +24,8 @@ export type ValidationFieldContextProperties = {
  */
 export const validationRulesExtension: SignalFormExtension<
   ValidationFieldContextExtension,
-  ValidationFieldContextProperties
+  ValidationFieldContextProperties,
+  never
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {

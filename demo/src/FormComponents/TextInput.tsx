@@ -8,8 +8,15 @@ interface FormInputProps {
 }
 
 export const TextInput = ({ field }: FormInputProps) => {
-  const { value, setValue, isApplicable, isValid, errors } =
-    useFieldSignals(field)
+  const {
+    inputProps,
+    value,
+    setValue,
+    isApplicable,
+    isTouched,
+    isValid,
+    errors,
+  } = useFieldSignals(field)
 
   const renderCount = useRenderCount()
 
@@ -18,13 +25,13 @@ export const TextInput = ({ field }: FormInputProps) => {
   }
 
   return (
-    <FormControl margin="normal" fullWidth>
+    <FormControl margin="normal" fullWidth {...inputProps}>
       <MuiTextField
         label={`${field.label} (rendered ${renderCount.current} times)`}
         value={value ?? ""}
         onChange={(e) => setValue(e.currentTarget.value)}
-        error={!isValid}
-        helperText={errors[0]}
+        error={isTouched && !isValid}
+        helperText={isTouched && errors[0]}
       />
     </FormControl>
   )

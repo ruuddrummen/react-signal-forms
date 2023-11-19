@@ -22,7 +22,8 @@ export type ApplicabilityFieldProperties = {
  */
 export const applicabilityRulesExtension: SignalFormExtension<
   ApplicabilityFieldContextExtension,
-  ApplicabilityFieldProperties
+  ApplicabilityFieldProperties,
+  never
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {

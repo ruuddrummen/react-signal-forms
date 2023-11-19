@@ -9,14 +9,15 @@ import { KeyOf } from "../utils"
 export type FieldContextExtension = {}
 export type FieldContextExtensions = Record<string, FieldContextExtension>
 
-export type FieldContextProperties = Record<string, unknown>
+export type ContextProperties = Record<string, unknown>
 
 /**
  * Interface for describing a signal form extension.
  */
 export interface SignalFormExtension<
   TFieldContextExtension extends FieldContextExtension,
-  TFieldContextProperties extends FieldContextProperties,
+  TFieldContextProperties extends ContextProperties,
+  TFormContextProperties extends ContextProperties,
 > {
   name: string
   createFieldExtension(
@@ -26,23 +27,30 @@ export interface SignalFormExtension<
   createFieldProperties(
     extension: TFieldContextExtension
   ): PropertyDescriptors<TFieldContextProperties>
+  createFormProperties?(
+    extensions: TFieldContextExtension[]
+  ): PropertyDescriptors<TFormContextProperties>
 }
 
 /**
  * Recursively merges the types of the second type parameters, which
  * describes the field context properties.
  **/
-type MergeFieldContextProperties<T extends SignalFormExtension<any, any>[]> =
-  T extends [firstItem: SignalFormExtension<any, infer B>, ...rest: infer R]
-    ? R extends SignalFormExtension<any, any>[]
-      ? B & MergeFieldContextProperties<R>
-      : never
-    : {}
+type MergeFieldContextProperties<
+  T extends SignalFormExtension<any, any, any>[],
+> = T extends [
+  firstItem: SignalFormExtension<any, infer B, any>,
+  ...rest: infer R,
+]
+  ? R extends SignalFormExtension<any, any, any>[]
+    ? B & MergeFieldContextProperties<R>
+    : never
+  : {}
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 
 export type ExpandFieldContextProperties<
-  T extends SignalFormExtension<any, any>[],
+  T extends SignalFormExtension<any, any, any>[],
 > = Expand<MergeFieldContextProperties<T>>
 
 interface PropertyDescriptor<T> {
