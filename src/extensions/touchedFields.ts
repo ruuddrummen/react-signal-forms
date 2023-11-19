@@ -6,23 +6,25 @@ import { SignalFormExtension } from "./types"
 
 const EXTENSION_NAME = "touched"
 
-type TouchedFieldContextExtension = {
+type TouchedFieldExtension = {
   touchedSignal: Signal<boolean>
 }
 
-type TouchedFieldContextProperties = {
+type TouchedFieldProperties = {
   isTouched: boolean
+}
+
+type TouchedFormProperties = {
+  touchAll(): void
 }
 
 /**
  * Enables keeping track of fields being touched or not.
  */
 export const touchedFieldsExtension: SignalFormExtension<
-  TouchedFieldContextExtension,
-  TouchedFieldContextProperties,
-  {
-    touchAll: () => void
-  }
+  TouchedFieldExtension,
+  TouchedFieldProperties,
+  TouchedFormProperties
 > = {
   name: EXTENSION_NAME,
   createFieldExtension(field, formContext) {
@@ -48,7 +50,7 @@ export const touchedFieldsExtension: SignalFormExtension<
 function createFieldExtension(
   field: Field,
   formContext: IFormContext<any>
-): TouchedFieldContextExtension {
+): TouchedFieldExtension {
   const fieldContext = formContext.fields[field.name] as FieldContext
   const touchedSignal = signal(false)
 
