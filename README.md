@@ -46,8 +46,6 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
 )
 ```
 
-> ⚠️ Touched signals are coming soon.
-
 Create specifications for your forms:
 
 ```tsx
