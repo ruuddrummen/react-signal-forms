@@ -1,4 +1,5 @@
 import { Button, Divider, Grid, Stack, Typography } from "@mui/material"
+import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
@@ -104,7 +105,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   }),
 }))
 
-export const MyForm = () => {
+export const MyForm = React.memo(() => {
   const store = useLocalStorageStore()
 
   return (
@@ -185,7 +186,7 @@ export const MyForm = () => {
       <FormStateViewer fields={fields} />
     </SignalForm>
   )
-}
+})
 
 interface StringChild {
   children: string
