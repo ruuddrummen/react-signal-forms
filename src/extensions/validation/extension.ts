@@ -158,16 +158,17 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
 
 /**
  * Describes a validation result, which is an error message if
- * a field is invalid. If `null` or `false` are returned the field
- * is considered valid.
+ * a field is invalid. Can also be an object to include whether
+ * the field should be marked as `required`. If the error message
+ * is set to `null` or `true` the field is considered valid.
  */
 export type ValidationTestResult =
   | string
   | ValidationTestResultObject
   | null
-  | false
+  | true
 
 type ValidationTestResultObject = {
-  errorMessage: string | null | false
+  errorMessage: string | null | true
   setRequiredFlag: boolean
 }

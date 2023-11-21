@@ -11,7 +11,7 @@ import {
 export const required = createValidationRule((context) => ({
   setRequiredFlag: true,
   errorMessage:
-    (context.value === null || context.value !== "") &&
+    (context.value !== null && context.value !== "") ||
     "This field is required",
 }))
 
@@ -25,7 +25,7 @@ export const requiredIf = createValidationRule<() => boolean>(
 
     return {
       setRequiredFlag: isRequired,
-      errorMessage: isRequired && !hasValue && "This field is required",
+      errorMessage: !isRequired || hasValue || "This field is required",
     }
   }
 )
@@ -35,7 +35,7 @@ export const requiredIf = createValidationRule<() => boolean>(
  */
 export const minLength = createValidationRule<number>(
   (context, length) =>
-    (typeof context.value !== "string" || context.value.length >= length) &&
+    (typeof context.value === "string" && context.value.length >= length) ||
     `Must be at least ${length} characters long`
 )
 
@@ -44,7 +44,7 @@ export const minLength = createValidationRule<number>(
  */
 export const mustBeEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
-    value !== form.fields[fieldName].value &&
+    value === form.fields[fieldName].value ||
     `Must be equal to "${form.fields[fieldName].value}"`
 )
 
@@ -60,7 +60,7 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
   (context, args) => {
     const argsResult = args(context)
 
-    return argsResult.testResult ? null : argsResult.errorMessage
+    return argsResult.testResult || argsResult.errorMessage
   }
 )
 
