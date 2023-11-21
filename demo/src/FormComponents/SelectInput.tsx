@@ -8,19 +8,20 @@ interface SelectInputProps {
 }
 
 export const SelectInput = ({ field }: SelectInputProps) => {
-  const { value, setValue, inputProps } = useFieldSignals(field)
+  const { value, setValue, handleBlur } = useFieldSignals(field)
   const renderCount = useRenderCount()
   const label = `${field.label} (rendered ${renderCount} times)`
   const labelId = field.name + "-select-label"
 
   return (
-    <FormControl fullWidth {...inputProps}>
+    <FormControl fullWidth>
       <InputLabel id={labelId}>{label}</InputLabel>
       <Select
         labelId={labelId}
         label={label}
         value={value ?? ""}
         onChange={(e) => setValue(e.target.value)}
+        onBlurCapture={handleBlur}
       >
         {field.options.map((option) => (
           <MenuItem key={option.value} value={option.value}>

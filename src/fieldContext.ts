@@ -11,12 +11,10 @@ export type FieldContextCollection<TForm = any> = {
 }
 
 export interface IFieldContext<TValue = any> {
-  inputProps: {
-    onBlur: (event: React.FocusEvent<HTMLElement, Element>) => void
-  }
   value: TValue | null
   setValue(value: TValue | null): void
   peekValue(): TValue
+  handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
 }
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
@@ -28,20 +26,12 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     this.__extensions = {}
   }
 
-  inputProps = {
-    onBlur: (_event: React.FocusEvent<HTMLElement, Element>) => {
-      /* Do nothing */
-    },
-  }
-
   addBlurEffect = (
     effect: (event: React.FocusEvent<HTMLElement, Element>) => void
   ) => {
-    this.inputProps.onBlur = (
-      event: React.FocusEvent<HTMLElement, Element>
-    ) => {
+    this.handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
       effect(event)
-      this.inputProps.onBlur(event)
+      this.handleBlur(event)
     }
   }
 
@@ -55,6 +45,10 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
 
   setValue = (value: TValue) => {
     this.__valueSignal.value = value
+  }
+
+  handleBlur = (_event: React.FocusEvent<HTMLElement, Element>) => {
+    /* Do nothing */
   }
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(

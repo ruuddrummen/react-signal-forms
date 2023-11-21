@@ -9,9 +9,9 @@ interface FormInputProps {
 
 export const TextInput = ({ field }: FormInputProps) => {
   const {
-    inputProps,
     value,
     setValue,
+    handleBlur,
     isApplicable,
     isTouched,
     isValid,
@@ -25,11 +25,12 @@ export const TextInput = ({ field }: FormInputProps) => {
   }
 
   return (
-    <FormControl margin="normal" fullWidth {...inputProps}>
+    <FormControl margin="normal" fullWidth>
       <MuiTextField
         label={`${field.label} (rendered ${renderCount} times)`}
         value={value ?? ""}
         onChange={(e) => setValue(e.currentTarget.value)}
+        onBlurCapture={handleBlur}
         error={isTouched && !isValid}
         helperText={isTouched && errors[0]}
       />
