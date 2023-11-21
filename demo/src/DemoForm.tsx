@@ -76,7 +76,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
     rules: [required(), minLength(6)],
   }),
   ...field("makeFieldRequired", "Make next field required"),
-  ...field("canBeRequired", "Only rerenders if value or isValid changes", {
+  ...field("canBeRequired", "Required depending on other values", {
     rules: [
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ],
@@ -140,10 +140,10 @@ export const MyForm = () => {
           <Grid item xs={12}>
             <TextInput field={fields.hasMinimumLength} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Switch field={fields.makeFieldRequired} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <TextInput field={fields.canBeRequired} />
           </Grid>
           <GridDivider />

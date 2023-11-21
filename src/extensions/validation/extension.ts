@@ -10,11 +10,13 @@ export const EXTENSION_NAME = "validation"
 
 type ValidationFieldExtension = {
   errorsSignal: Signal<string[]>
+  isRequiredSignal: Signal<boolean>
 }
 
 export type ValidationFieldProperties = {
   isValid: boolean
   errors: string[]
+  isRequired: boolean
 }
 
 type ValidationFormProperties = {
@@ -45,6 +47,9 @@ export const validationRulesExtension: SignalFormExtension<
       errors: {
         get: () => extension.errorsSignal.value,
       },
+      isRequired: {
+        get: () => extension.isRequiredSignal.value,
+      },
     }
   },
   createFormProperties({ fields }) {
@@ -61,6 +66,7 @@ export const validationRulesExtension: SignalFormExtension<
 
 const defaultContextExtension: ValidationFieldExtension = {
   errorsSignal: signal([]),
+  isRequiredSignal: signal(false),
 }
 
 const emptyErrors: string[] = []
@@ -79,20 +85,31 @@ function createFieldExtension(
 
   let previousErrors: string[] = []
 
+  const validationResults = computed(() => {
+    console.log(`(${field.name}) Checking validation rules`)
+
+    // Rules must be executed to create subscriptions on the necessary signals.
+    const results = rules.map((r) =>
+      r.execute({ value: fieldContext.value, form: formContext })
+    )
+
+    if (fieldContext.peekValue() === undefined) {
+      return emptyErrors
+    }
+
+    return results
+  })
+
   return {
     errorsSignal: computed(() => {
-      console.log(`(${field.name}) Checking validation rules`)
-
-      // Rules must be executed to create subscriptions on the necessary signals.
-      const results = rules.map((r) =>
-        r.execute({ value: fieldContext.value, form: formContext })
-      )
-
-      if (fieldContext.peekValue() === undefined) {
-        return emptyErrors
-      }
-
-      const errors = results.filter((e) => typeof e === "string") as string[]
+      const errors = [
+        ...(validationResults.value.filter(
+          (e) => typeof e === "string"
+        ) as string[]),
+        ...validationResults.value
+          .filter((e) => typeof e === "object" && e?.message != null)
+          .map((e) => (e as ValidationTestResultObject).message!),
+      ]
 
       if (errors.length === 0) {
         return emptyErrors
@@ -105,6 +122,11 @@ function createFieldExtension(
       previousErrors = errors
       return errors
     }),
+    isRequiredSignal: computed(() =>
+      validationResults.value.some(
+        (r) => typeof r === "object" && r?.setRequiredFlag === true
+      )
+    ),
   }
 }
 
@@ -127,4 +149,9 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
  * Describes a validation result, which is an error message if
  * a field is invalid, or `null` if the field is valid.
  */
-export type ValidationTestResult = null | string
+export type ValidationTestResult = null | string | ValidationTestResultObject
+
+type ValidationTestResultObject = {
+  message: string | null
+  setRequiredFlag: boolean
+}

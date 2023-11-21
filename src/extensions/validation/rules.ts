@@ -8,20 +8,29 @@ import {
 /**
  * Requires the field to have a value.
  */
-export const required = createValidationRule((context) =>
-  context.value !== null && context.value !== ""
-    ? null
-    : "This field is required"
-)
+export const required = createValidationRule((context) => ({
+  setRequiredFlag: true,
+  message:
+    context.value !== null && context.value !== ""
+      ? null
+      : "This field is required",
+}))
 
 /**
  * Requires the field to have a value if the given test succeeds.
  */
 export const requiredIf = createValidationRule<() => boolean>(
-  (context, test) =>
-    !test(context) || (context.value != null && context.value !== "")
-      ? null
-      : "This field is required"
+  (context, test) => {
+    const isRequired = test(context)
+
+    return {
+      setRequiredFlag: isRequired,
+      message:
+        !isRequired || (context.value != null && context.value !== "")
+          ? null
+          : "This field is required",
+    }
+  }
 )
 
 /**
