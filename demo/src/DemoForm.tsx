@@ -97,7 +97,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
       required(),
       minLength(5),
       validIf(({ value }) => ({
-        testResult: value?.endsWith("signals") ?? false,
+        validIf: value?.endsWith("signals") ?? false,
         errorMessage: "Value must end with 'signals'",
       })),
     ],

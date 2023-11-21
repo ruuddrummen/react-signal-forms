@@ -49,7 +49,7 @@ export const mustBeEqualToField = createValidationRule<string>(
 )
 
 type ValidIfArgs = {
-  testResult: boolean
+  validIf: boolean
   errorMessage: string
 }
 
@@ -60,7 +60,7 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
   (context, args) => {
     const argsResult = args(context)
 
-    return argsResult.testResult || argsResult.errorMessage
+    return argsResult.validIf || argsResult.errorMessage
   }
 )
 
