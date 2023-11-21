@@ -26,7 +26,7 @@ export const TextInput = ({ field }: FormInputProps) => {
   }
 
   return (
-    <FormControl margin="normal" fullWidth onBlur={handleBlur}>
+    <FormControl margin="normal" fullWidth>
       <MuiTextField
         label={`${field.label} (rendered ${renderCount} times)`}
         value={value ?? ""}

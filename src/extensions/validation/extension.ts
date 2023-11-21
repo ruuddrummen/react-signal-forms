@@ -69,7 +69,7 @@ const defaultContextExtension: ValidationFieldExtension = {
   isRequiredSignal: signal(false),
 }
 
-const emptyErrors: string[] = []
+const emptyResults: string[] = []
 
 function createFieldExtension(
   field: Field,
@@ -93,8 +93,9 @@ function createFieldExtension(
       r.execute({ value: fieldContext.value, form: formContext })
     )
 
+    // If value is undefined results are not applicable.
     if (fieldContext.peekValue() === undefined) {
-      return emptyErrors
+      return emptyResults
     }
 
     return results
@@ -107,12 +108,14 @@ function createFieldExtension(
           (e) => typeof e === "string"
         ) as string[]),
         ...validationResults.value
-          .filter((e) => typeof e === "object" && e?.message != null)
-          .map((e) => (e as ValidationTestResultObject).message!),
+          .filter(
+            (e) => typeof e === "object" && typeof e?.errorMessage === "string"
+          )
+          .map((e) => (e as ValidationTestResultObject).errorMessage as string),
       ]
 
       if (errors.length === 0) {
-        return emptyErrors
+        return emptyResults
       }
 
       if (arrayEquals(errors, previousErrors)) {
@@ -147,11 +150,16 @@ type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
 
 /**
  * Describes a validation result, which is an error message if
- * a field is invalid, or `null` if the field is valid.
+ * a field is invalid. If `null` or `false` are returned the field
+ * is considered valid.
  */
-export type ValidationTestResult = null | string | ValidationTestResultObject
+export type ValidationTestResult =
+  | string
+  | ValidationTestResultObject
+  | null
+  | false
 
 type ValidationTestResultObject = {
-  message: string | null
+  errorMessage: string | null | false
   setRequiredFlag: boolean
 }
