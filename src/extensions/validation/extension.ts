@@ -128,9 +128,7 @@ function getErrorsFromResults(results: ValidationTestResult[]) {
   return results.reduce<string[]>((errors, result) => {
     if (typeof result === "string") {
       errors.push(result)
-    }
-
-    if (
+    } else if (
       typeof result === "object" &&
       typeof result?.errorMessage === "string"
     ) {
