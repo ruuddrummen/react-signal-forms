@@ -13,7 +13,7 @@ interface FormInputProps {
 }
 
 export const Switch: React.FC<FormInputProps> = ({ field }) => {
-  const { value, setValue, isApplicable, isValid, inputProps } =
+  const { value, setValue, handleBlur, isApplicable, isValid } =
     useFieldSignals(field)
 
   const renderCount = useRenderCount()
@@ -23,12 +23,13 @@ export const Switch: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <FormControl margin="normal" fullWidth error={!isValid} {...inputProps}>
+    <FormControl margin="normal" fullWidth error={!isValid}>
       <FormControlLabel
         control={<MuiSwitch />}
         label={`${field.label} (rendered ${renderCount} times)`}
         checked={value ?? false}
         onChange={(_e, checked) => setValue(checked)}
+        onBlurCapture={handleBlur}
       />
     </FormControl>
   )
