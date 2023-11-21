@@ -103,16 +103,7 @@ function createFieldExtension(
 
   return {
     errorsSignal: computed(() => {
-      const errors = [
-        ...(validationResults.value.filter(
-          (e) => typeof e === "string"
-        ) as string[]),
-        ...validationResults.value
-          .filter(
-            (e) => typeof e === "object" && typeof e?.errorMessage === "string"
-          )
-          .map((e) => (e as ValidationTestResultObject).errorMessage as string),
-      ]
+      const errors = getErrorsFromResults(validationResults.value)
 
       if (errors.length === 0) {
         return emptyResults
@@ -131,6 +122,23 @@ function createFieldExtension(
       )
     ),
   }
+}
+
+function getErrorsFromResults(results: ValidationTestResult[]) {
+  return results.reduce<string[]>((errors, result) => {
+    if (typeof result === "string") {
+      errors.push(result)
+    }
+
+    if (
+      typeof result === "object" &&
+      typeof result?.errorMessage === "string"
+    ) {
+      errors.push(result.errorMessage)
+    }
+
+    return errors
+  }, [])
 }
 
 function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
