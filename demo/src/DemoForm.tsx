@@ -199,7 +199,7 @@ const GridHeader = ({ children }: StringChild) => (
 )
 
 const GridDivider = () => (
-  <Grid item xs={12} marginBottom={2}>
+  <Grid item xs={12} marginTop={2} marginBottom={2}>
     <Divider />
   </Grid>
 )

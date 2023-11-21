@@ -28,7 +28,6 @@ export const ThemeSelector = () => {
     <Stack direction="row" alignItems="center" justifyContent="end" margin={2}>
       <Typography variant="subtitle2">Light</Typography>
       <Switch
-        // size="medium"
         checked={themeSignal.value === "dark"}
         onChange={(_e, checked) =>
           (themeSignal.value = checked ? "dark" : "light")
