@@ -51,7 +51,7 @@ test("Test field builder and collection types.", () => {
           expectTypeOf(context.form).toMatchTypeOf<IFormContext<ITestData>>()
 
           return {
-            testResult: true,
+            validIf: true,
             errorMessage: "",
           }
         }),

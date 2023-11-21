@@ -20,6 +20,9 @@ export interface IFieldContext<TValue = any> {
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   private __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
+  private _blurEffects: Array<
+    (event: React.FocusEvent<HTMLElement, Element>) => void
+  > = []
 
   constructor(value: TValue) {
     this.__valueSignal = signal(value)
@@ -29,10 +32,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   addBlurEffect = (
     effect: (event: React.FocusEvent<HTMLElement, Element>) => void
   ) => {
-    this.handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
-      effect(event)
-      this.handleBlur(event)
-    }
+    this._blurEffects.push(effect)
   }
 
   get value() {
@@ -47,8 +47,8 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     this.__valueSignal.value = value
   }
 
-  handleBlur = (_event: React.FocusEvent<HTMLElement, Element>) => {
-    /* Do nothing */
+  handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
+    this._blurEffects.forEach((effect) => effect(event))
   }
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(

@@ -8,29 +8,35 @@ import {
 /**
  * Requires the field to have a value.
  */
-export const required = createValidationRule((context) =>
-  context.value !== null && context.value !== ""
-    ? null
-    : "This field is required"
-)
+export const required = createValidationRule((context) => ({
+  setRequiredFlag: true,
+  errorMessage:
+    (context.value !== null && context.value !== "") ||
+    "This field is required",
+}))
 
 /**
  * Requires the field to have a value if the given test succeeds.
  */
 export const requiredIf = createValidationRule<() => boolean>(
-  (context, test) =>
-    !test(context) || (context.value != null && context.value !== "")
-      ? null
-      : "This field is required"
+  (context, test) => {
+    const isRequired = test(context)
+    const hasValue = context.value != null && context.value !== ""
+
+    return {
+      setRequiredFlag: isRequired,
+      errorMessage: !isRequired || hasValue || "This field is required",
+    }
+  }
 )
 
 /**
  * Requires the value to have the given minimum length.
  */
-export const minLength = createValidationRule<number>((context, length) =>
-  typeof context.value === "string" && context.value.length >= length
-    ? null
-    : `Must be at least ${length} characters long`
+export const minLength = createValidationRule<number>(
+  (context, length) =>
+    (typeof context.value === "string" && context.value.length >= length) ||
+    `Must be at least ${length} characters long`
 )
 
 /**
@@ -38,13 +44,12 @@ export const minLength = createValidationRule<number>((context, length) =>
  */
 export const mustBeEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
-    value === form.fields[fieldName].value
-      ? null
-      : `Must be equal to "${form.fields[fieldName].value}"`
+    value === form.fields[fieldName].value ||
+    `Must be equal to "${form.fields[fieldName].value}"`
 )
 
 type ValidIfArgs = {
-  testResult: boolean
+  validIf: boolean
   errorMessage: string
 }
 
@@ -55,7 +60,7 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
   (context, args) => {
     const argsResult = args(context)
 
-    return argsResult.testResult ? null : argsResult.errorMessage
+    return argsResult.validIf || argsResult.errorMessage
   }
 )
 
