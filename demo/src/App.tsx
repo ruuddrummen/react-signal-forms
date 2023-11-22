@@ -14,10 +14,11 @@ import React from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
-import { ThemeSelector, Themes } from "./themes"
+import { ThemeSelector, useTheme } from "./themes"
 
 export const App: React.FC = () => {
   const formKey = useSignal(1)
+  const theme = useTheme()
 
   const reload = () => {
     formKey.value++
@@ -29,7 +30,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={Themes.selected}>
+    <ThemeProvider theme={theme.selected}>
       <CssBaseline />
       <nav style={{ position: "sticky", top: 0, zIndex: 100 }}>
         <Paper>
@@ -42,7 +43,7 @@ export const App: React.FC = () => {
                 <GitHubIcon />
               </Link>
               <Typography marginLeft={2}>|</Typography>
-              <ThemeSelector />
+              <ThemeSelector theme={theme} />
             </Stack>
             <Typography variant="h2" textAlign="center" paddingBottom={2}>
               React Signal Forms <Button onClick={reload}>Reload form</Button>

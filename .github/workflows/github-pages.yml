@@ -36,6 +36,7 @@ jobs:
 
   deploy:
     name: Deploy
+    needs: [build]
     runs-on: ubuntu-latest
     environment: github-pages
     permissions:

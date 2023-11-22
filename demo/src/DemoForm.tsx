@@ -35,6 +35,8 @@ import {
 import { FormValidationIndicator } from "./FormComponents/FormValidationIndicator"
 import { SelectInput } from "./FormComponents/SelectInput"
 
+/* Define a form data interface or type */
+
 interface FormData {
   text: string
   number: number
@@ -56,6 +58,8 @@ interface FormData {
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
 }
+
+/* Create a specification for your fields */
 
 const fields = signalForm<FormData>().withFields((field) => ({
   ...field("text", "A text field", {
@@ -116,6 +120,8 @@ const fields = signalForm<FormData>().withFields((field) => ({
     ],
   }),
 }))
+
+/* Render your form */
 
 export const MyForm = React.memo(() => {
   const store = useLocalStorageStore()
