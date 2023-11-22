@@ -2,6 +2,7 @@ export { configureSignalForm } from "./form"
 
 export type {
   BooleanField,
+  Field,
   FieldCollection,
   FieldRule,
   NumberField,

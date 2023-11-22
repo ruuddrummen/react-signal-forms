@@ -1,0 +1,47 @@
+name: Github Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+
+      - run: npm run ci
+      - run: npm run test
+      - run: npm run build-demo
+
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "demo/dist/" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: demo/dist/
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

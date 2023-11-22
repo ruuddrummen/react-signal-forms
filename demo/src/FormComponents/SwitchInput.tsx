@@ -6,6 +6,7 @@ import {
 import React from "react"
 import { BooleanField } from "react-signal-forms"
 import { useRenderCount } from "../utils"
+import { InputContainer } from "./InputContainer"
 import { useFieldSignals } from "./SignalForm"
 
 interface FormInputProps {
@@ -23,14 +24,16 @@ export const Switch: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <FormControl margin="normal" fullWidth error={!isValid}>
-      <FormControlLabel
-        control={<MuiSwitch />}
-        label={`${field.label} (rendered ${renderCount} times)`}
-        checked={value ?? false}
-        onChange={(_e, checked) => setValue(checked)}
-        onBlurCapture={handleBlur}
-      />
-    </FormControl>
+    <InputContainer field={field} paddingLeft={4}>
+      <FormControl margin="dense" fullWidth error={!isValid}>
+        <FormControlLabel
+          control={<MuiSwitch />}
+          label={`${field.label} (rendered ${renderCount} times)`}
+          checked={value ?? false}
+          onChange={(_e, checked) => setValue(checked)}
+          onBlurCapture={handleBlur}
+        />
+      </FormControl>
+    </InputContainer>
   )
 }

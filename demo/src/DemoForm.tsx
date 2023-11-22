@@ -1,4 +1,17 @@
-import { Button, Divider, Grid, Stack, Typography } from "@mui/material"
+import JoinFullIcon from "@mui/icons-material/JoinFull"
+import ListAltIcon from "@mui/icons-material/ListAlt"
+import RuleIcon from "@mui/icons-material/Rule"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material"
+import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
@@ -9,7 +22,7 @@ import {
   validIf,
 } from "react-signal-forms/rules"
 import {
-  FormStateViewer,
+  FormState,
   NumberInput,
   SignalForm,
   SubmitBackdrop,
@@ -104,7 +117,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   }),
 }))
 
-export const MyForm = () => {
+export const MyForm = React.memo(() => {
   const store = useLocalStorageStore()
 
   return (
@@ -113,97 +126,108 @@ export const MyForm = () => {
       initialValues={store.getValues()}
       onSubmit={store.setValues}
     >
-      <SubmitBackdrop>
-        <Grid container padding={2} columnSpacing={2} alignItems="start">
-          <GridHeader>Just inputs</GridHeader>
-          <Grid item xs={12}>
-            <TextInput field={fields.text} />
-          </Grid>
-          <Grid item xs={12}>
-            <NumberInput field={fields.number} />
-          </Grid>
-          <Grid item xs={12}>
-            <Switch field={fields.boolean} />
-          </Grid>
-          <Grid item xs={12}>
-            <SelectInput field={fields.select} />
-          </Grid>
-          <GridDivider />
+      <Box marginBottom={5}>
+        <SubmitBackdrop>
+          <Grid container padding={2} columnSpacing={2} rowSpacing={2}>
+            <GridHeader>
+              <ListAltIcon /> Just inputs
+            </GridHeader>
+            <Grid item xs={12}>
+              <TextInput field={fields.text} />
+            </Grid>
+            <Grid item xs={12}>
+              <NumberInput field={fields.number} />
+            </Grid>
+            <Grid item xs={12}>
+              <Switch field={fields.boolean} />
+            </Grid>
+            <Grid item xs={12}>
+              <SelectInput field={fields.select} />
+            </Grid>
+            <GridDivider />
 
-          <GridHeader>Validation rules</GridHeader>
-          <Grid item xs={6}>
-            <TextInput field={fields.alwaysRequired} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextInput field={fields.mustBeEqualToOtherField} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextInput field={fields.hasMinimumLength} />
-          </Grid>
-          <Grid item xs={4}>
-            <Switch field={fields.makeFieldRequired} />
-          </Grid>
-          <Grid item xs={8}>
-            <TextInput field={fields.canBeRequired} />
-          </Grid>
-          <GridDivider />
+            <GridHeader>
+              <RuleIcon /> Validation rules
+            </GridHeader>
+            <Grid item xs={6}>
+              <TextInput field={fields.alwaysRequired} />
+            </Grid>
+            <Grid item xs={6}>
+              <TextInput field={fields.mustBeEqualToOtherField} />
+            </Grid>
+            <Grid item xs={12}>
+              <TextInput field={fields.hasMinimumLength} />
+            </Grid>
+            <Grid item xs={5}>
+              <Switch field={fields.makeFieldRequired} />
+            </Grid>
+            <Grid item xs={7}>
+              <TextInput field={fields.canBeRequired} />
+            </Grid>
+            <GridDivider />
 
-          <GridHeader>Applicability rules</GridHeader>
-          <Grid item xs={6}>
-            <Switch field={fields.showSecretField} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextInput field={fields.secret} />
-          </Grid>
+            <GridHeader>
+              <VisibilityIcon /> Applicability rules
+            </GridHeader>
+            <Grid item xs={6}>
+              <Switch field={fields.showSecretField} />
+            </Grid>
+            <Grid item xs={6}>
+              <TextInput field={fields.secret} />
+            </Grid>
 
-          <GridDivider />
-          <GridHeader>Combining rules</GridHeader>
-          <Grid item xs={12}>
-            <Paragraph>
-              Rules can be combined. Priority on error messages is based on the
-              order in which the rules are specified. Also, validation rules are
-              not applied if a field is not applicable.
-            </Paragraph>
+            <GridDivider />
+            <GridHeader>
+              <JoinFullIcon /> Combining rules
+            </GridHeader>
+            <Grid item xs={12}>
+              <Paragraph>
+                Rules can be combined. Priority on error messages is based on
+                the order in which the rules are specified. Also, validation
+                rules are not applied if a field is not applicable.
+              </Paragraph>
+            </Grid>
+            <Grid item xs={6}>
+              <Switch field={fields.makeComplicatedFieldApplicable} />
+            </Grid>
+            <Grid item xs={6}>
+              <TextInput field={fields.complicatedField} />
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Switch field={fields.makeComplicatedFieldApplicable} />
-          </Grid>
-          <Grid item xs={6}>
-            <TextInput field={fields.complicatedField} />
-          </Grid>
-        </Grid>
-      </SubmitBackdrop>
-      <Stack
-        direction="row"
-        justifyContent="end"
-        alignItems="center"
-        margin={2}
-        spacing={2}
-      >
-        <FormValidationIndicator /> <TouchAllFieldsButton /> <SubmitButton />
-      </Stack>
-      <FormStateViewer fields={fields} />
+        </SubmitBackdrop>
+        <Box position="sticky" bottom={-4} zIndex={100} marginTop={2}>
+          <Paper variant="outlined">
+            <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              margin={2}
+              spacing={2}
+            >
+              <FormValidationIndicator /> <TouchAllFieldsButton />{" "}
+              <SubmitButton />
+            </Stack>
+          </Paper>
+        </Box>
+        <FormState />
+      </Box>
     </SignalForm>
   )
-}
+})
 
-interface StringChild {
-  children: string
-}
-
-const GridHeader = ({ children }: StringChild) => (
-  <Grid item xs={12}>
-    <Typography variant="h6">{children}</Typography>
+const GridHeader = ({ children }: React.PropsWithChildren<object>) => (
+  <Grid item xs={12} marginTop={2}>
+    <Typography variant="h4">{children}</Typography>
   </Grid>
 )
 
 const GridDivider = () => (
-  <Grid item xs={12} marginBottom={2}>
+  <Grid item xs={12} marginTop={2}>
     <Divider />
   </Grid>
 )
 
-const Paragraph = ({ children }: StringChild) => (
+const Paragraph = ({ children }: React.PropsWithChildren<object>) => (
   <Typography paragraph>{children}</Typography>
 )
 
