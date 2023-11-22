@@ -1,13 +1,8 @@
-import {
-  Box,
-  FormControl,
-  TextField as MuiTextField,
-  Paper,
-} from "@mui/material"
+import { FormControl, TextField as MuiTextField } from "@mui/material"
 import React, { ChangeEvent } from "react"
 import { NumberField } from "react-signal-forms"
 import { useRenderCount } from "../utils"
-import { FieldInfo } from "./FieldInfo"
+import { InputContainer } from "./InputContainer"
 import { useFieldSignals } from "./SignalForm"
 
 interface FormInputProps {
@@ -37,20 +32,17 @@ export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <Paper variant="outlined">
-      <Box padding={2} height={120}>
-        <FormControl margin="dense" fullWidth>
-          <MuiTextField
-            label={`${field.label} (rendered ${renderCount} times)`}
-            type="number"
-            value={value ?? ""}
-            onChange={handleChange}
-            onBlurCapture={handleBlur}
-            error={!isValid}
-          />
-        </FormControl>
-      </Box>
-      <FieldInfo for={field} />
-    </Paper>
+    <InputContainer field={field}>
+      <FormControl margin="dense" fullWidth>
+        <MuiTextField
+          label={`${field.label} (rendered ${renderCount} times)`}
+          type="number"
+          value={value ?? ""}
+          onChange={handleChange}
+          onBlurCapture={handleBlur}
+          error={!isValid}
+        />
+      </FormControl>
+    </InputContainer>
   )
 }

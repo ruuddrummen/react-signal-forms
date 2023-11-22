@@ -22,7 +22,7 @@ export const FormState: React.FC = () => {
   )
 
   return (
-    <Box padding={2}>
+    <Box padding={2} marginTop={2}>
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="button">Toggle form info</Typography>

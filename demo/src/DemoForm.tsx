@@ -195,7 +195,7 @@ export const MyForm = React.memo(() => {
             </Grid>
           </Grid>
         </SubmitBackdrop>
-        <Box sx={{ position: "sticky", bottom: -4, zIndex: 100 }}>
+        <Box position="sticky" bottom={-4} zIndex={100} marginTop={2}>
           <Paper variant="outlined">
             <Stack
               direction="row"
@@ -216,13 +216,13 @@ export const MyForm = React.memo(() => {
 })
 
 const GridHeader = ({ children }: React.PropsWithChildren<object>) => (
-  <Grid item xs={12}>
+  <Grid item xs={12} marginTop={2}>
     <Typography variant="h4">{children}</Typography>
   </Grid>
 )
 
 const GridDivider = () => (
-  <Grid item xs={12} marginTop={2} marginBottom={2}>
+  <Grid item xs={12} marginTop={2}>
     <Divider />
   </Grid>
 )

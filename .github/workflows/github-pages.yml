@@ -1,4 +1,5 @@
-name: Release
+name: Github Pages
+
 on:
   push:
     branches:
