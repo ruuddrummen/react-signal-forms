@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider theme={Themes.selected}>
       <CssBaseline />
-      <Container className="App" maxWidth="md">
+      <Container className="App" maxWidth="lg">
         <ThemeSelector />
         <Typography variant="h2" textAlign="center">
           React Signal Forms <Button onClick={reload}>Reload form</Button>

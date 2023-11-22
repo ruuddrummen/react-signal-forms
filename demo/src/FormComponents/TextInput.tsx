@@ -7,7 +7,7 @@ import {
 } from "@mui/material"
 import { TextField } from "react-signal-forms"
 import { useRenderCount } from "../utils"
-import { FieldInfo } from "./ShowFieldSignals"
+import { FieldInfo } from "./FieldInfo"
 import { useFieldSignals } from "./SignalForm"
 
 interface FormInputProps {
@@ -30,9 +30,9 @@ export const TextInput = ({ field }: FormInputProps) => {
 
   return (
     <Paper variant="outlined">
-      <Box margin={2} height={90}>
+      <Box padding={2} height={120}>
         {isApplicable ? (
-          <FormControl margin="normal" fullWidth>
+          <FormControl margin="dense" fullWidth>
             <MuiTextField
               label={`${field.label} (rendered ${renderCount} times)`}
               value={value ?? ""}
@@ -44,7 +44,7 @@ export const TextInput = ({ field }: FormInputProps) => {
             />
           </FormControl>
         ) : (
-          <Typography padding={2}>Not applicable</Typography>
+          <Typography variant="button">Not applicable</Typography>
         )}
       </Box>
       <FieldInfo for={field} />
