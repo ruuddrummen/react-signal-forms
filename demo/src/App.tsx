@@ -9,19 +9,18 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material"
-import { useSignal } from "@preact/signals-react"
-import React from "react"
+import React, { useState } from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
 import { ThemeSelector, useTheme } from "./themes"
 
 export const App: React.FC = () => {
-  const formKey = useSignal(1)
   const theme = useTheme()
+  const [formKey, setFormKey] = useState(1)
 
   const reload = () => {
-    formKey.value++
+    setFormKey((key) => key + 1)
   }
 
   const reset = () => {
@@ -55,7 +54,7 @@ export const App: React.FC = () => {
         </Paper>
       </nav>
       <Container className="App" maxWidth="lg">
-        <MyForm key={formKey.value} />
+        <MyForm key={formKey} />
       </Container>
     </ThemeProvider>
   )
