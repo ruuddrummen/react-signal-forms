@@ -64,4 +64,25 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   getExtension = (name: string) => {
     return this.__extensions[name]
   }
+
+  toJSON() {
+    const proto = Object.getPrototypeOf(this)
+    const jsonObj: any = {}
+
+    Object.entries(Object.getOwnPropertyDescriptors(proto))
+      .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
+      .filter(([key, descriptor]) => typeof descriptor.get === "function")
+      .map(([key, descriptor]) => {
+        if (descriptor && key[0] !== "_") {
+          try {
+            const val = (this as any)[key]
+            jsonObj[key] = val
+          } catch (error) {
+            console.error(`Error calling getter ${key}`, error)
+          }
+        }
+      })
+
+    return jsonObj
+  }
 }
