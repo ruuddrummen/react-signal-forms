@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React from "react"
 import {
   ExpandFieldContextProperties,
   ExpandFormContextProperties,
@@ -37,11 +37,7 @@ export function configureSignalForm<
 } {
   return {
     SignalForm: (props) => {
-      const SignalFormComponent = useMemo(() => {
-        return <SignalForm {...props} extensions={extensions} />
-      }, [props])
-
-      return SignalFormComponent
+      return <SignalForm {...props} extensions={extensions} />
     },
     useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
       if (field == null) {

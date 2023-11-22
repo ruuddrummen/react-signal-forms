@@ -155,19 +155,19 @@ export const MyForm = React.memo(() => {
             <GridHeader>
               <RuleIcon /> Validation rules
             </GridHeader>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <TextInput field={fields.alwaysRequired} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <TextInput field={fields.mustBeEqualToOtherField} />
             </Grid>
             <Grid item xs={12}>
               <TextInput field={fields.hasMinimumLength} />
             </Grid>
-            <Grid item xs={5}>
+            <Grid item md={5} xs={12}>
               <Switch field={fields.makeFieldRequired} />
             </Grid>
-            <Grid item xs={7}>
+            <Grid item md={7} xs={12}>
               <TextInput field={fields.canBeRequired} />
             </Grid>
             <GridDivider />
@@ -175,10 +175,10 @@ export const MyForm = React.memo(() => {
             <GridHeader>
               <VisibilityIcon /> Applicability rules
             </GridHeader>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <Switch field={fields.showSecretField} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <TextInput field={fields.secret} />
             </Grid>
 
@@ -186,17 +186,17 @@ export const MyForm = React.memo(() => {
             <GridHeader>
               <JoinFullIcon /> Combining rules
             </GridHeader>
-            <Grid item xs={12}>
+            <Grid item md={12}>
               <Paragraph>
                 Rules can be combined. Priority on error messages is based on
                 the order in which the rules are specified. Also, validation
                 rules are not applied if a field is not applicable.
               </Paragraph>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <Switch field={fields.makeComplicatedFieldApplicable} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6} xs={12}>
               <TextInput field={fields.complicatedField} />
             </Grid>
           </Grid>

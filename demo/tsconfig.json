@@ -24,7 +24,9 @@
       "react-signal-forms": ["../src"],
       "react-signal-forms/extensions": ["../src/extensions"],
       "react-signal-forms/rules": ["../src/rules"]
-    }
+    },
+
+    "types": ["@emotion/react/types/css-prop"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
