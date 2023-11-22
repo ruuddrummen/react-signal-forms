@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   Button,
@@ -31,7 +33,7 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme.selected}>
       <CssBaseline />
-      <nav style={{ position: "sticky", top: 0, zIndex: 100 }}>
+      <Header>
         <Paper>
           <Container maxWidth="lg">
             <Stack direction="row" alignItems="center" justifyContent="right">
@@ -52,11 +54,30 @@ export const App: React.FC = () => {
             </Typography>
           </Container>
         </Paper>
-      </nav>
+      </Header>
       <Container className="App" maxWidth="lg">
         <MyForm key={formKey} />
       </Container>
+      <div style={{ position: "fixed" }}>
+        {/* an empty fixed div should fix issues with sticky elements in mobile browsers. */}
+      </div>
     </ThemeProvider>
+  )
+}
+
+const Header = (props: React.PropsWithChildren<object>) => {
+  return (
+    <nav
+      css={css`
+        @media (min-height: 800px) {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+      `}
+    >
+      {props.children}
+    </nav>
   )
 }
 
