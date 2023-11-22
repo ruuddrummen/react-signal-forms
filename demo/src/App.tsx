@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme.selected}>
       <CssBaseline />
       <nav style={{ position: "sticky", top: 0, zIndex: 100 }}>
         <Paper>
@@ -43,7 +43,7 @@ export const App: React.FC = () => {
                 <GitHubIcon />
               </Link>
               <Typography marginLeft={2}>|</Typography>
-              <ThemeSelector />
+              <ThemeSelector theme={theme} />
             </Stack>
             <Typography variant="h2" textAlign="center" paddingBottom={2}>
               React Signal Forms <Button onClick={reload}>Reload form</Button>

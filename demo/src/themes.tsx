@@ -1,11 +1,12 @@
 import {
   Stack,
   Switch,
+  Theme,
   Typography,
   createTheme,
   useMediaQuery,
 } from "@mui/material"
-import { signal } from "@preact/signals-react"
+import { useEffect, useState } from "react"
 
 const availableThemes = {
   light: createTheme(),
@@ -16,15 +17,13 @@ const availableThemes = {
   }),
 } as const
 
-const themeName = signal<keyof typeof availableThemes | null>(null)
+type ThemeSignal = {
+  selectedName: keyof typeof availableThemes
+  selected: Theme
+  set: (name: keyof typeof availableThemes) => void
+}
 
-themeName.subscribe((value) => {
-  if (value != null) {
-    localStorage.setItem("theme", value)
-  }
-})
-
-export const useTheme = () => {
+export const useTheme = (): ThemeSignal => {
   const storedTheme = localStorage.getItem("theme")
 
   const isDarkModeEnabled = useMediaQuery("(prefers-color-scheme: dark)")
@@ -38,13 +37,20 @@ export const useTheme = () => {
       ? (storedTheme as keyof typeof availableThemes)
       : preferredTheme
 
-  themeName.value = initialTheme
-  const theme = availableThemes[themeName.value]
+  const [themeName, setThemeName] =
+    useState<keyof typeof availableThemes>(initialTheme)
 
-  return theme
+  useEffect(() => {
+    localStorage.setItem("theme", themeName)
+  }, [themeName])
+  return {
+    selectedName: themeName,
+    selected: availableThemes[themeName],
+    set: (name: keyof typeof availableThemes) => setThemeName(name),
+  }
 }
 
-export const ThemeSelector = () => {
+export const ThemeSelector = (props: { theme: ThemeSignal }) => {
   return (
     <Stack
       direction="row"
@@ -55,10 +61,8 @@ export const ThemeSelector = () => {
     >
       <Typography variant="subtitle2">Light</Typography>
       <Switch
-        checked={themeName.value === "dark"}
-        onChange={(_e, checked) =>
-          (themeName.value = checked ? "dark" : "light")
-        }
+        checked={props.theme.selectedName === "dark"}
+        onChange={(_e, checked) => props.theme.set(checked ? "dark" : "light")}
       />
       <Typography variant="subtitle2">Dark</Typography>
     </Stack>
