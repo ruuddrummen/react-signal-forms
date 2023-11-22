@@ -5,8 +5,7 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material"
-import { signal, useSignalEffect } from "@preact/signals-react"
-import { useEffect } from "react"
+import { signal } from "@preact/signals-react"
 
 const availableThemes = {
   light: createTheme(),
@@ -17,37 +16,35 @@ const availableThemes = {
   }),
 } as const
 
-const storedTheme = localStorage.getItem("theme")
+const themeName = signal<keyof typeof availableThemes | null>(null)
 
-const initialTheme: keyof typeof availableThemes =
-  storedTheme != null && Object.keys(availableThemes).includes(storedTheme)
-    ? (storedTheme as keyof typeof availableThemes)
-    : "light"
+themeName.subscribe((value) => {
+  if (value != null) {
+    localStorage.setItem("theme", value)
+  }
+})
 
-const themeSignal = signal<keyof typeof availableThemes>(initialTheme)
+export const useTheme = () => {
+  const storedTheme = localStorage.getItem("theme")
 
-export const ThemeSelector = () => {
   const isDarkModeEnabled = useMediaQuery("(prefers-color-scheme: dark)")
 
-  useEffect(() => {
-    if (
-      storedTheme != null &&
-      Object.keys(availableThemes).includes(storedTheme)
-    ) {
-      return
-    }
+  const preferredTheme: keyof typeof availableThemes = isDarkModeEnabled
+    ? "dark"
+    : "light"
 
-    const preferredTheme: keyof typeof availableThemes = isDarkModeEnabled
-      ? "dark"
-      : "light"
+  const initialTheme: keyof typeof availableThemes =
+    storedTheme != null && Object.keys(availableThemes).includes(storedTheme)
+      ? (storedTheme as keyof typeof availableThemes)
+      : preferredTheme
 
-    themeSignal.value = preferredTheme
-  }, [isDarkModeEnabled])
+  themeName.value = initialTheme
+  const theme = availableThemes[themeName.value]
 
-  useSignalEffect(() => {
-    localStorage.setItem("theme", themeSignal.value)
-  })
+  return theme
+}
 
+export const ThemeSelector = () => {
   return (
     <Stack
       direction="row"
@@ -58,20 +55,12 @@ export const ThemeSelector = () => {
     >
       <Typography variant="subtitle2">Light</Typography>
       <Switch
-        checked={themeSignal.value === "dark"}
+        checked={themeName.value === "dark"}
         onChange={(_e, checked) =>
-          (themeSignal.value = checked ? "dark" : "light")
+          (themeName.value = checked ? "dark" : "light")
         }
       />
       <Typography variant="subtitle2">Dark</Typography>
     </Stack>
   )
 }
-
-class Themes {
-  get selected() {
-    return availableThemes[themeSignal.value]
-  }
-}
-
-export const themes = new Themes()

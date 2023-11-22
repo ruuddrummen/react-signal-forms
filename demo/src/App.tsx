@@ -14,10 +14,11 @@ import React from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
-import { ThemeSelector, themes } from "./themes"
+import { ThemeSelector, useTheme } from "./themes"
 
 export const App: React.FC = () => {
   const formKey = useSignal(1)
+  const theme = useTheme()
 
   const reload = () => {
     formKey.value++
@@ -29,7 +30,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={themes.selected}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <nav style={{ position: "sticky", top: 0, zIndex: 100 }}>
         <Paper>
