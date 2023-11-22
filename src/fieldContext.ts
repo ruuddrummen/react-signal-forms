@@ -71,7 +71,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
 
     Object.entries(Object.getOwnPropertyDescriptors(proto))
       .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
-      .filter(([key, descriptor]) => typeof descriptor.get === "function")
+      .filter(([_key, descriptor]) => typeof descriptor.get === "function")
       .map(([key, descriptor]) => {
         if (descriptor && key[0] !== "_") {
           try {

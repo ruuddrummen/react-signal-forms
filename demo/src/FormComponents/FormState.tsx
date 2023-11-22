@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Grid,
   Typography,
 } from "@mui/material"
@@ -21,23 +22,25 @@ export const FormState: React.FC = () => {
   )
 
   return (
-    <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="button">Toggle form info</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid container padding={2}>
-          <Grid item md={6}>
-            <pre>values: {JSON.stringify(values, null, 2)}</pre>
+    <Box padding={2}>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="button">Toggle form info</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container padding={2}>
+            <Grid item md={6}>
+              <pre>values: {JSON.stringify(values, null, 2)}</pre>
+            </Grid>
+            <Grid item md={6}>
+              <pre>
+                invalidFields:{" "}
+                {JSON.stringify(formContext.invalidFields, null, 2)}
+              </pre>
+            </Grid>
           </Grid>
-          <Grid item md={6}>
-            <pre>
-              invalidFields:{" "}
-              {JSON.stringify(formContext.invalidFields, null, 2)}
-            </pre>
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   )
 }

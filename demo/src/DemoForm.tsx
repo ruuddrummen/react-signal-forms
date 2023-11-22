@@ -2,7 +2,15 @@ import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
-import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material"
 import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
 import {
@@ -113,12 +121,12 @@ export const MyForm = React.memo(() => {
   const store = useLocalStorageStore()
 
   return (
-    <Box marginBottom={10}>
-      <SignalForm
-        fields={fields}
-        initialValues={store.getValues()}
-        onSubmit={store.setValues}
-      >
+    <SignalForm
+      fields={fields}
+      initialValues={store.getValues()}
+      onSubmit={store.setValues}
+    >
+      <Box marginBottom={5}>
         <SubmitBackdrop>
           <Grid container padding={2} columnSpacing={2} rowSpacing={2}>
             <GridHeader>
@@ -187,18 +195,23 @@ export const MyForm = React.memo(() => {
             </Grid>
           </Grid>
         </SubmitBackdrop>
-        <Stack
-          direction="row"
-          justifyContent="end"
-          alignItems="center"
-          margin={2}
-          spacing={2}
-        >
-          <FormValidationIndicator /> <TouchAllFieldsButton /> <SubmitButton />
-        </Stack>
+        <Box sx={{ position: "sticky", bottom: -4, zIndex: 100 }}>
+          <Paper variant="outlined">
+            <Stack
+              direction="row"
+              justifyContent="end"
+              alignItems="center"
+              margin={2}
+              spacing={2}
+            >
+              <FormValidationIndicator /> <TouchAllFieldsButton />{" "}
+              <SubmitButton />
+            </Stack>
+          </Paper>
+        </Box>
         <FormState />
-      </SignalForm>
-    </Box>
+      </Box>
+    </SignalForm>
   )
 })
 

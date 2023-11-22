@@ -25,7 +25,7 @@ themeSignal.subscribe((value) => {
 
 export const ThemeSelector = () => {
   return (
-    <Stack direction="row" alignItems="center" justifyContent="end" margin={2}>
+    <Stack direction="row" alignItems="center" justifyContent="end" padding={2}>
       <Typography variant="subtitle2">Light</Typography>
       <Switch
         checked={themeSignal.value === "dark"}
