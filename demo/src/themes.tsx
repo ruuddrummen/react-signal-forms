@@ -1,5 +1,12 @@
-import { Stack, Switch, Typography, createTheme } from "@mui/material"
-import { signal } from "@preact/signals-react"
+import {
+  Stack,
+  Switch,
+  Typography,
+  createTheme,
+  useMediaQuery,
+} from "@mui/material"
+import { signal, useSignalEffect } from "@preact/signals-react"
+import { useEffect } from "react"
 
 const themes = {
   light: createTheme(),
@@ -19,13 +26,33 @@ const initialTheme: keyof typeof themes =
 
 const themeSignal = signal<keyof typeof themes>(initialTheme)
 
-themeSignal.subscribe((value) => {
-  localStorage.setItem("theme", value)
-})
-
 export const ThemeSelector = () => {
+  const isDarkModeEnabled = useMediaQuery("(prefers-color-scheme: dark)")
+
+  useEffect(() => {
+    if (storedTheme != null && Object.keys(themes).includes(storedTheme)) {
+      return
+    }
+
+    const preferredTheme: keyof typeof themes = isDarkModeEnabled
+      ? "dark"
+      : "light"
+
+    themeSignal.value = preferredTheme
+  }, [isDarkModeEnabled])
+
+  useSignalEffect(() => {
+    localStorage.setItem("theme", themeSignal.value)
+  })
+
   return (
-    <Stack direction="row" alignItems="center" justifyContent="end" padding={2}>
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="end"
+      padding={2}
+      margin={0}
+    >
       <Typography variant="subtitle2">Light</Typography>
       <Switch
         checked={themeSignal.value === "dark"}

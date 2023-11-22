@@ -1,8 +1,11 @@
+import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   Button,
   Container,
   CssBaseline,
+  Link,
   Paper,
+  Stack,
   ThemeProvider,
   Typography,
 } from "@mui/material"
@@ -10,6 +13,7 @@ import { useSignal } from "@preact/signals-react"
 import React from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
+import { clearStorage } from "./FormComponents"
 import { ThemeSelector, Themes } from "./themes"
 
 export const App: React.FC = () => {
@@ -20,7 +24,7 @@ export const App: React.FC = () => {
   }
 
   const reset = () => {
-    localStorage.clear()
+    clearStorage()
     reload()
   }
 
@@ -30,7 +34,16 @@ export const App: React.FC = () => {
       <nav style={{ position: "sticky", top: 0, zIndex: 100 }}>
         <Paper>
           <Container maxWidth="lg">
-            <ThemeSelector />
+            <Stack direction="row" alignItems="center" justifyContent="right">
+              <Link
+                href="https://github.com/ruuddrummen/react-signal-forms"
+                target="_blank"
+              >
+                <GitHubIcon />
+              </Link>
+              <Typography marginLeft={2}>|</Typography>
+              <ThemeSelector />
+            </Stack>
             <Typography variant="h2" textAlign="center" paddingBottom={2}>
               React Signal Forms <Button onClick={reload}>Reload form</Button>
               <Button color="primary" onClick={reset}>
