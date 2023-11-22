@@ -8,7 +8,7 @@ import {
 import { signal, useSignalEffect } from "@preact/signals-react"
 import { useEffect } from "react"
 
-const themes = {
+const availableThemes = {
   light: createTheme(),
   dark: createTheme({
     palette: {
@@ -19,22 +19,25 @@ const themes = {
 
 const storedTheme = localStorage.getItem("theme")
 
-const initialTheme: keyof typeof themes =
-  storedTheme != null && Object.keys(themes).includes(storedTheme)
-    ? (storedTheme as keyof typeof themes)
+const initialTheme: keyof typeof availableThemes =
+  storedTheme != null && Object.keys(availableThemes).includes(storedTheme)
+    ? (storedTheme as keyof typeof availableThemes)
     : "light"
 
-const themeSignal = signal<keyof typeof themes>(initialTheme)
+const themeSignal = signal<keyof typeof availableThemes>(initialTheme)
 
 export const ThemeSelector = () => {
   const isDarkModeEnabled = useMediaQuery("(prefers-color-scheme: dark)")
 
   useEffect(() => {
-    if (storedTheme != null && Object.keys(themes).includes(storedTheme)) {
+    if (
+      storedTheme != null &&
+      Object.keys(availableThemes).includes(storedTheme)
+    ) {
       return
     }
 
-    const preferredTheme: keyof typeof themes = isDarkModeEnabled
+    const preferredTheme: keyof typeof availableThemes = isDarkModeEnabled
       ? "dark"
       : "light"
 
@@ -65,8 +68,10 @@ export const ThemeSelector = () => {
   )
 }
 
-export class Themes {
-  static get selected() {
-    return themes[themeSignal.value]
+class Themes {
+  get selected() {
+    return availableThemes[themeSignal.value]
   }
 }
+
+export const themes = new Themes()
