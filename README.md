@@ -24,14 +24,14 @@ npm i react-signal-forms
 
 ## Exploring the demo
 
-If you want to explore the library without any setup, you can run [the demo](./demo/) by cloning the repository and running:
+For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/), or run it yourself by cloning the repository and running:
 
 ```
 npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the demo form](./demo/src/DemoForm.tsx).
+If you want to explore the demo code, a good place to start would be [the form](./demo/src/DemoForm.tsx).
 
 ## Your first form
 
