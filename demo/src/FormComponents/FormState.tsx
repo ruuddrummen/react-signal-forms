@@ -6,12 +6,14 @@ import {
   Box,
   Grid,
   Typography,
+  useMediaQuery,
 } from "@mui/material"
 import React from "react"
 import { useFormSignals } from "./SignalForm"
 
 export const FormState: React.FC = () => {
   const formContext = useFormSignals()
+  const atLeastTabletSize = useMediaQuery("(min-width: 768px)")
   const values = Object.keys(formContext.fields).reduce(
     (result, key) => {
       result[key] = formContext.fields[key].value
@@ -23,7 +25,7 @@ export const FormState: React.FC = () => {
 
   return (
     <Box padding={2} marginTop={2}>
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded={atLeastTabletSize}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="button">Toggle form info</Typography>
         </AccordionSummary>

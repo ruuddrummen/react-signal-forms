@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
@@ -10,6 +11,7 @@ import {
   Paper,
   Stack,
   Typography,
+  css,
 } from "@mui/material"
 import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
@@ -201,7 +203,16 @@ export const MyForm = React.memo(() => {
             </Grid>
           </Grid>
         </SubmitBackdrop>
-        <Box position="sticky" bottom={-4} zIndex={100} marginTop={2}>
+        <Box
+          marginTop={2}
+          css={css`
+            @media (min-width: 769px) {
+              position: sticky;
+              bottom: -4px;
+              z-index: 100;
+            }
+          `}
+        >
           <Paper variant="outlined">
             <Stack
               direction="row"
