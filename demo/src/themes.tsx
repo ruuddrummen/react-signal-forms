@@ -6,7 +6,7 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material"
-import { useEffect, useState } from "react"
+import { signal } from "@preact/signals-react"
 
 const availableThemes = {
   light: createTheme(),
@@ -17,40 +17,36 @@ const availableThemes = {
   }),
 } as const
 
-type ThemeSignal = {
-  selectedName: keyof typeof availableThemes
-  selected: Theme
-  set: (name: keyof typeof availableThemes) => void
-}
+type ThemeName = keyof typeof availableThemes
 
-export const useTheme = (): ThemeSignal => {
-  const storedTheme = localStorage.getItem("theme")
+const themeNameSignal = signal<ThemeName | null>(null)
 
+themeNameSignal.subscribe((value) => {
+  if (value != null) {
+    localStorage.setItem("theme", value)
+  }
+})
+
+export const useTheme = (): Theme => {
   const isDarkModeEnabled = useMediaQuery("(prefers-color-scheme: dark)")
 
-  const preferredTheme: keyof typeof availableThemes = isDarkModeEnabled
-    ? "dark"
-    : "light"
+  if (themeNameSignal.value === null) {
+    const storedTheme = localStorage.getItem("theme")
 
-  const initialTheme: keyof typeof availableThemes =
-    storedTheme != null && Object.keys(availableThemes).includes(storedTheme)
-      ? (storedTheme as keyof typeof availableThemes)
-      : preferredTheme
+    const preferredTheme: keyof typeof availableThemes = isDarkModeEnabled
+      ? "dark"
+      : "light"
 
-  const [themeName, setThemeName] =
-    useState<keyof typeof availableThemes>(initialTheme)
-
-  useEffect(() => {
-    localStorage.setItem("theme", themeName)
-  }, [themeName])
-  return {
-    selectedName: themeName,
-    selected: availableThemes[themeName],
-    set: (name: keyof typeof availableThemes) => setThemeName(name),
+    themeNameSignal.value =
+      storedTheme != null && Object.keys(availableThemes).includes(storedTheme)
+        ? (storedTheme as keyof typeof availableThemes)
+        : preferredTheme
   }
+
+  return availableThemes[themeNameSignal.value]
 }
 
-export const ThemeSelector = (props: { theme: ThemeSignal }) => {
+export const ThemeSelector = () => {
   return (
     <Stack
       direction="row"
@@ -61,8 +57,10 @@ export const ThemeSelector = (props: { theme: ThemeSignal }) => {
     >
       <Typography variant="subtitle2">Light</Typography>
       <Switch
-        checked={props.theme.selectedName === "dark"}
-        onChange={(_e, checked) => props.theme.set(checked ? "dark" : "light")}
+        checked={themeNameSignal.value === "dark"}
+        onChange={(_e, checked) =>
+          (themeNameSignal.value = checked ? "dark" : "light")
+        }
       />
       <Typography variant="subtitle2">Dark</Typography>
     </Stack>
