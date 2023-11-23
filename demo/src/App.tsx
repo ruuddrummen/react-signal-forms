@@ -11,14 +11,11 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material"
-import { signal } from "@preact/signals-react"
 import React, { useState } from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
 import { ThemeSelector, useTheme } from "./themes"
-
-const count = signal(1)
 
 export const App: React.FC = () => {
   const theme = useTheme()
@@ -53,9 +50,6 @@ export const App: React.FC = () => {
               React Signal Forms <Button onClick={reload}>Reload form</Button>
               <Button color="primary" onClick={reset}>
                 Clear store
-              </Button>
-              <Button onClick={() => count.value++}>
-                Count is {count.value}
               </Button>
             </Typography>
           </Container>
