@@ -48,13 +48,7 @@ export const useTheme = (): Theme => {
 
 export const ThemeSelector = () => {
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="end"
-      padding={2}
-      margin={0}
-    >
+    <Stack direction="row" alignItems="center" justifyContent="end">
       <Typography variant="subtitle2">Light</Typography>
       <Switch
         checked={themeNameSignal.value === "dark"}

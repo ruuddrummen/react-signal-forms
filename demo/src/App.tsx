@@ -1,27 +1,43 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   Button,
   Container,
   CssBaseline,
+  Divider,
+  Grid,
   Link,
   Paper,
   Stack,
   ThemeProvider,
   Typography,
+  css,
 } from "@mui/material"
-import { useSignal } from "@preact/signals-react"
+import { signal } from "@preact/signals-react"
 import React from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
 import { ThemeSelector, useTheme } from "./themes"
 
+const formKey = signal(1)
+
 export const App: React.FC = () => {
   const theme = useTheme()
-  const formKey = useSignal(1)
 
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Header />
+      <Container className="App" maxWidth="lg">
+        <MyForm key={formKey.value} />
+      </Container>
+      <StickyElementFix />
+    </ThemeProvider>
+  )
+}
+
+const Header = () => {
   const reload = () => {
     formKey.value++
   }
@@ -32,54 +48,60 @@ export const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Header>
-        <Paper>
-          <Container maxWidth="lg">
-            <Stack direction="row" alignItems="center" justifyContent="right">
+    <Paper
+      elevation={4}
+      css={css`
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-radius: 0;
+
+        @media (max-width: 768px) {
+          top: -4rem;
+        }
+      `}
+    >
+      <Container maxWidth="lg">
+        <Grid container>
+          <Grid item md={6} alignItems="center">
+            <Typography variant="h4" textAlign="left" lineHeight="4rem" noWrap>
+              React Signal Forms
+            </Typography>
+          </Grid>
+          <Grid item md={6}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="end"
+              height="4rem"
+              spacing={2}
+            >
+              <Button onClick={reload}>Reload form</Button>
+              <Button color="primary" onClick={reset}>
+                Clear store
+              </Button>
+              <Divider variant="inset" orientation="vertical" flexItem />
               <Link
                 href="https://github.com/ruuddrummen/react-signal-forms"
                 target="_blank"
               >
                 <GitHubIcon />
               </Link>
-              <Typography marginLeft={2}>|</Typography>
               <ThemeSelector />
             </Stack>
-            <Typography variant="h2" textAlign="center" paddingBottom={2}>
-              React Signal Forms <Button onClick={reload}>Reload form</Button>
-              <Button color="primary" onClick={reset}>
-                Clear store
-              </Button>
-            </Typography>
-          </Container>
-        </Paper>
-      </Header>
-      <Container className="App" maxWidth="lg">
-        <MyForm key={formKey.value} />
+          </Grid>
+        </Grid>
       </Container>
-      <div style={{ position: "fixed" }}>
-        {/* an empty fixed div should fix issues with sticky elements in mobile browsers. */}
-      </div>
-    </ThemeProvider>
+    </Paper>
   )
 }
 
-const Header = (props: React.PropsWithChildren<object>) => {
-  return (
-    <nav
-      css={css`
-        @media (min-height: 800px) {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-        }
-      `}
-    >
-      {props.children}
-    </nav>
-  )
-}
-
-export default App
+const StickyElementFix = () => (
+  <div
+    style={{
+      position: "fixed",
+    }}
+  >
+    {/* an empty fixed div should fix issues with sticky elements in mobile browsers. */}
+  </div>
+)
