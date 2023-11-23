@@ -11,7 +11,8 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import { useSignal } from "@preact/signals-react"
+import React from "react"
 import "./App.css"
 import { MyForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
@@ -19,10 +20,10 @@ import { ThemeSelector, useTheme } from "./themes"
 
 export const App: React.FC = () => {
   const theme = useTheme()
-  const [formKey, setFormKey] = useState(1)
+  const formKey = useSignal(1)
 
   const reload = () => {
-    setFormKey((key) => key + 1)
+    formKey.value++
   }
 
   const reset = () => {
@@ -56,7 +57,7 @@ export const App: React.FC = () => {
         </Paper>
       </Header>
       <Container className="App" maxWidth="lg">
-        <MyForm key={formKey} />
+        <MyForm key={formKey.value} />
       </Container>
       <div style={{ position: "fixed" }}>
         {/* an empty fixed div should fix issues with sticky elements in mobile browsers. */}
