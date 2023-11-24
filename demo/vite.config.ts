@@ -13,20 +13,8 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "react-signal-forms",
-        replacement: path.resolve(__dirname, "../src"),
-      },
-      {
         find: "@",
         replacement: path.resolve(__dirname, "../src"),
-      },
-      {
-        find: "react-signal-forms/plugins",
-        replacement: path.resolve(__dirname, "../src/plugins"),
-      },
-      {
-        find: "react-signal-forms/rules",
-        replacement: path.resolve(__dirname, "../src/rules"),
       },
       {
         find: "@preact/signals-react",
