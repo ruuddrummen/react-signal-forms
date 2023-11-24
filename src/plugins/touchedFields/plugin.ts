@@ -1,8 +1,8 @@
 import { Signal, signal } from "@preact/signals-react"
-import { FieldContext } from "../fieldContext"
-import { Field } from "../fields"
-import { IFormContext } from "../formContext"
-import { createPlugin } from "./types"
+import { FieldContext } from "../../fieldContext"
+import { Field } from "../../fields"
+import { IFormContext } from "../../formContext"
+import { createPlugin } from "../types"
 
 const PLUGIN_NAME = "touched"
 
