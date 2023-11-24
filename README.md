@@ -1,6 +1,6 @@
 # React Signal Forms
 
-> ⚠️ This library is brand new and under heavy development. You can follow its progress in the [release notes](/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
+> ⚠️ This library is brand new and under heavy development. You can follow its progress in the [releases](https://github.com/ruuddrummen/react-signal-forms/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
 The form library that conforms to your needs. Start with what you need now, plug in what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
