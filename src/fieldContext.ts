@@ -54,11 +54,13 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   addExtension = <TExtension extends FieldContextExtension, TContext>(
     name: string,
     fieldExtension: TExtension,
-    fieldContextProperties: PropertyDescriptors<TContext>
+    fieldContextProperties: PropertyDescriptors<TContext> | undefined
   ) => {
     this.__extensions[name] = fieldExtension
 
-    Object.defineProperties(this, fieldContextProperties)
+    if (fieldContextProperties != null) {
+      Object.defineProperties(this, fieldContextProperties)
+    }
   }
 
   getExtension = (name: string) => {

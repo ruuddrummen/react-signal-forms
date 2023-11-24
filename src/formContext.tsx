@@ -88,7 +88,7 @@ class FormContext implements IFormContext {
         fieldContext.addExtension(
           ext.name,
           fieldExtension,
-          ext.createFieldProperties(fieldExtension)
+          ext.createFieldProperties?.(fieldExtension)
         )
       })
     })

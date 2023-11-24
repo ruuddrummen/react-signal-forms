@@ -21,7 +21,7 @@ export interface SignalFormExtension<
   TFormContextProperties extends ContextProperties,
 > {
   name: string
-  createFieldExtension?(
+  createFieldExtension(
     field: Field,
     formContext: IFormContext
   ): TFieldContextExtension
@@ -54,7 +54,7 @@ export function createPlugin<
      * @param field The field.
      * @param formContext The form context.
      */
-    createFieldExtension?(
+    createFieldExtension(
       field: Field,
       formContext: IFormContext
     ): TFieldContextExtension
