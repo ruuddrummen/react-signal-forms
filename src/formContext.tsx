@@ -2,7 +2,7 @@ import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
 import { FieldCollection } from "."
 import { FieldContext, FieldContextCollection } from "./fieldContext"
-import { PropertyDescriptors, SignalFormExtension } from "./plugins/types"
+import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
 
 const noop = () => ({}) as any
@@ -27,7 +27,7 @@ export interface IFormContext<TForm = any> {
 
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any, any>>,
+  extensions: Array<SignalFormPlugin<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = useRef<IFormContext>(
@@ -42,7 +42,7 @@ export function useFormContextProvider(
 
 function createFormContext(
   fields: FieldCollection,
-  extensions: Array<SignalFormExtension<any, any, any>>,
+  extensions: Array<SignalFormPlugin<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = new FormContext(fields, extensions, onSubmit)
@@ -63,7 +63,7 @@ class FormContext implements IFormContext {
 
   constructor(
     fields: FieldCollection,
-    extensions: Array<SignalFormExtension<any, any, any>>,
+    extensions: Array<SignalFormPlugin<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
     this.__isSubmittingSignal = signal(false)

@@ -9,7 +9,7 @@ import {
 import {
   ExpandFieldContextProperties,
   ExpandFormContextProperties,
-  SignalFormExtension,
+  SignalFormPlugin,
 } from "./plugins/types"
 import { FormValues } from "./types"
 
@@ -21,11 +21,11 @@ interface SignalsFormProps {
 }
 
 interface SignalsFormInnerProps extends SignalsFormProps {
-  extensions: Array<SignalFormExtension<any, any, any>>
+  extensions: Array<SignalFormPlugin<any, any, any>>
 }
 
 export function configureSignalForm<
-  TExtensions extends SignalFormExtension<any, any, any>[],
+  TExtensions extends SignalFormPlugin<any, any, any>[],
 >(
   ...extensions: TExtensions
 ): {
