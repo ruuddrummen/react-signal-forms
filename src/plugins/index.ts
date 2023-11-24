@@ -14,3 +14,7 @@ export const plugins = {
   touchedFields: touchedFieldsPlugin,
   diffChanges: diffChangesPlugin, // planned
 }
+
+export { createPlugin } from "./create"
+
+export type { RuleContext } from "./types"

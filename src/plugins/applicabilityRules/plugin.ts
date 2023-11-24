@@ -3,7 +3,7 @@ import { Field, FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { alwaysTrueSignal } from "../../signals"
 import { KeyOf } from "../../utils"
-import { createPlugin } from "../types"
+import { createPlugin } from "../create"
 
 export const PLUGIN_NAME = "applicability"
 

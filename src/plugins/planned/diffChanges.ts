@@ -1,4 +1,4 @@
-import { createPlugin } from "../types"
+import { createPlugin } from "../create"
 
 const PLUGIN_NAME = "diffChanges"
 
