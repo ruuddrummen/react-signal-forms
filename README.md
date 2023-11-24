@@ -29,7 +29,7 @@ npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form](./demo/src/DemoForm.tsx).
+If you want to explore the demo code, a good place to start would be [the form](/demo/src/DemoForm.tsx).
 
 ## Your first form
 
@@ -142,5 +142,5 @@ All form features other than value handling - e.g. validation and applicability 
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](./src/plugins/validation/rules.ts).
-- Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the `createPlugin()` method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
+- Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
+- Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
