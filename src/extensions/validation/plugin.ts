@@ -1,28 +1,11 @@
 import { Signal, computed, signal } from "@preact/signals-react"
-import { IFieldContext } from "../../fieldContext"
 import { Field, FieldRule } from "../../fields"
 import { IFormContext } from "../../formContext"
 import { FormValues } from "../../types"
 import { KeyOf, arrayEquals } from "../../utils"
-import { RuleContext, SignalFormExtension } from "../types"
+import { RuleContext, createPlugin } from "../types"
 
-export const EXTENSION_NAME = "validation"
-
-type ValidationFieldExtension = {
-  errorsSignal: Signal<string[]>
-  isRequiredSignal: Signal<boolean>
-}
-
-export type ValidationFieldProperties = {
-  isValid: boolean
-  errors: string[]
-  isRequired: boolean
-}
-
-type ValidationFormProperties = {
-  isValid: boolean
-  invalidFields: Array<IFieldContext & ValidationFieldProperties>
-}
+export const PLUGIN_NAME = "validation"
 
 /**
  * Adds validation rule handling and field signals.
@@ -30,12 +13,7 @@ type ValidationFormProperties = {
  * **Note:** if a field has value `undefined`, it is considered not applicable
  * and exempt from all validation rules.
  */
-export const validationRulesExtension: SignalFormExtension<
-  ValidationFieldExtension,
-  ValidationFieldProperties,
-  ValidationFormProperties
-> = {
-  name: EXTENSION_NAME,
+export const validationRulesPlugin = createPlugin(PLUGIN_NAME, {
   createFieldExtension(field, formContext) {
     return createFieldExtension(field, formContext)
   },
@@ -62,6 +40,11 @@ export const validationRulesExtension: SignalFormExtension<
       },
     }
   },
+})
+
+type ValidationFieldExtension = {
+  errorsSignal: Signal<string[]>
+  isRequiredSignal: Signal<boolean>
 }
 
 const defaultContextExtension: ValidationFieldExtension = {
@@ -140,7 +123,7 @@ function getErrorsFromResults(results: ValidationTestResult[]) {
 }
 
 function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
-  return rule.extension === EXTENSION_NAME
+  return rule.extension === PLUGIN_NAME
 }
 
 export interface ValidationFieldRule<

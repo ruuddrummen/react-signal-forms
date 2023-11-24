@@ -1,9 +1,9 @@
 import { FieldRuleFunction, RuleArguments, RuleContext } from "../types"
 import {
-  EXTENSION_NAME,
+  PLUGIN_NAME,
   ValidationFieldRule,
   ValidationTestResult,
-} from "./extension"
+} from "./plugin"
 
 /**
  * Requires the field to have a value.
@@ -88,7 +88,7 @@ export function createValidationRule<TArgs = void>(
 ): FieldRuleFunction<TArgs> {
   const result = (args: RuleArguments<TArgs>) =>
     ({
-      extension: EXTENSION_NAME,
+      extension: PLUGIN_NAME,
       execute: (context) => execute(context as any, args as any),
     }) as ValidationFieldRule
 

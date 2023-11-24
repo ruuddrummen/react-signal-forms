@@ -44,11 +44,11 @@ test("Test field builder and collection types.", () => {
       rules: [
         required(),
         validIf((context) => {
-          expectTypeOf(context).toMatchTypeOf<
+          expectTypeOf(context).toEqualTypeOf<
             RuleContext<ITestData, "selectField">
           >()
           expectTypeOf(context.value).toBeString()
-          expectTypeOf(context.form).toMatchTypeOf<IFormContext<ITestData>>()
+          expectTypeOf(context.form).toEqualTypeOf<IFormContext<ITestData>>()
 
           return {
             validIf: true,
@@ -65,7 +65,7 @@ test("Test field builder and collection types.", () => {
   expect(fields.selectField.name).toBe("selectField")
 
   expectTypeOf(fields.selectField).toMatchTypeOf<SelectField>()
-  expectTypeOf(fields.selectField.rules).toMatchTypeOf<
+  expectTypeOf(fields.selectField.rules).toEqualTypeOf<
     FieldRule<ITestData, "selectField">[] | undefined
   >()
 })
