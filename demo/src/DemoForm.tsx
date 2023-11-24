@@ -125,7 +125,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
 
 /* Render your form */
 
-export const MyForm = React.memo(() => {
+export const DemoForm = React.memo(() => {
   const store = useLocalStorageStore()
 
   return (

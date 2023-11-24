@@ -16,7 +16,7 @@ import {
 import { signal } from "@preact/signals-react"
 import React from "react"
 import "./App.css"
-import { MyForm } from "./DemoForm"
+import { DemoForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
 import { ThemeSelector, useTheme } from "./themes"
 
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
       <CssBaseline />
       <Header />
       <Container className="App" maxWidth="lg">
-        <MyForm key={formKey.value} />
+        <DemoForm key={formKey.value} />
       </Container>
       <StickyElementFix />
     </ThemeProvider>
