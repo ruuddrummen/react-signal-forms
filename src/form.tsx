@@ -1,9 +1,4 @@
 import React from "react"
-import {
-  ExpandFieldContextProperties,
-  ExpandFormContextProperties,
-  SignalFormExtension,
-} from "./extensions/types"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
@@ -11,6 +6,11 @@ import {
   useFormContextProvider,
   useFormSignals,
 } from "./formContext"
+import {
+  ExpandFieldContextProperties,
+  ExpandFormContextProperties,
+  SignalFormExtension,
+} from "./plugins/types"
 import { FormValues } from "./types"
 
 interface SignalsFormProps {

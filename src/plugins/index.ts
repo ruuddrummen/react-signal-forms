@@ -3,12 +3,12 @@ import { diffChangesExtension } from "./planned/diffChanges"
 import { touchedFieldsExtension } from "./touchedFields"
 import { validationRulesPlugin } from "./validation/plugin"
 
-export const defaultExtensions = [
+export const defaultPlugins = [
   validationRulesPlugin,
   touchedFieldsExtension,
 ] as const
 
-export const extensions = {
+export const plugins = {
   applicabilityRules: applicabilityRulesPlugin,
   validationRules: validationRulesPlugin,
   touchedFields: touchedFieldsExtension,

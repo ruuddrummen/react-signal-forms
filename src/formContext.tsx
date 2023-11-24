@@ -1,8 +1,8 @@
 import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
 import { FieldCollection } from "."
-import { PropertyDescriptors, SignalFormExtension } from "./extensions/types"
 import { FieldContext, FieldContextCollection } from "./fieldContext"
+import { PropertyDescriptors, SignalFormExtension } from "./plugins/types"
 import { FormValues } from "./types"
 
 const noop = () => ({}) as any

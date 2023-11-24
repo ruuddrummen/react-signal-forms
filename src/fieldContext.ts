@@ -3,7 +3,7 @@ import {
   FieldContextExtension,
   FieldContextExtensions,
   PropertyDescriptors,
-} from "./extensions/types"
+} from "./plugins/types"
 import { KeyOf } from "./utils"
 
 export type FieldContextCollection<TForm = any> = {

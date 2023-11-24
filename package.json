@@ -47,9 +47,9 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./extensions": {
-      "types": "./dist/extensions/index.d.ts",
-      "default": "./dist/extensions/index.js"
+    "./plugins": {
+      "types": "./dist/plugins/index.d.ts",
+      "default": "./dist/plugins/index.js"
     },
     "./rules": {
       "types": "./dist/rules.d.ts",

@@ -1,2 +1,2 @@
-export * from "./extensions/applicabilityRules/rules"
-export * from "./extensions/validation/rules"
+export * from "./plugins/applicabilityRules/rules"
+export * from "./plugins/validation/rules"

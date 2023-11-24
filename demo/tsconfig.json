@@ -22,7 +22,7 @@
     /* Aliasing to signal-forms */
     "paths": {
       "react-signal-forms": ["../src"],
-      "react-signal-forms/extensions": ["../src/extensions"],
+      "react-signal-forms/plugins": ["../src/plugins"],
       "react-signal-forms/rules": ["../src/rules"]
     },
 

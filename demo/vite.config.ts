@@ -16,8 +16,8 @@ export default defineConfig({
         replacement: path.resolve(__dirname, "../src"),
       },
       {
-        find: "react-signal-forms/extensions",
-        replacement: path.resolve(__dirname, "../src/extensions"),
+        find: "react-signal-forms/plugins",
+        replacement: path.resolve(__dirname, "../src/plugins"),
       },
       {
         find: "react-signal-forms/rules",
