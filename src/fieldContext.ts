@@ -1,10 +1,10 @@
-import { Signal, signal } from "@preact/signals-react"
 import {
   FieldContextExtension,
   FieldContextExtensions,
   PropertyDescriptors,
-} from "./extensions/types"
-import { KeyOf } from "./utils"
+} from "@/plugins/types"
+import { KeyOf } from "@/utils"
+import { Signal, signal } from "@preact/signals-react"
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>
@@ -54,11 +54,13 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   addExtension = <TExtension extends FieldContextExtension, TContext>(
     name: string,
     fieldExtension: TExtension,
-    fieldContextProperties: PropertyDescriptors<TContext>
+    fieldContextProperties: PropertyDescriptors<TContext> | undefined
   ) => {
     this.__extensions[name] = fieldExtension
 
-    Object.defineProperties(this, fieldContextProperties)
+    if (fieldContextProperties != null) {
+      Object.defineProperties(this, fieldContextProperties)
+    }
   }
 
   getExtension = (name: string) => {

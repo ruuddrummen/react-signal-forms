@@ -34,7 +34,7 @@ export interface FieldRule<
   TForm = FormValues,
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
 > {
-  extension: string
+  plugin: string
 }
 
 export type FieldCollection<TForm = any> = {

@@ -1,10 +1,10 @@
 # React Signal Forms
 
-> ⚠️ This library is brand new and under heavy development. You can follow its progress at the [development project](https://github.com/users/ruuddrummen/projects/1). Everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
+> ⚠️ This library is brand new and under heavy development. You can follow its progress in the [releases](https://github.com/ruuddrummen/react-signal-forms/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
-The form library that conforms to your needs. Start with what you need now, extend with what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
+The form library that conforms to your needs. Start with what you need now, plug in what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly [extension model](#extensions).
+- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin model](#plugins).
   - Pick and choose what you need.
   - Plug in your own.
 - Add built-in context aware rules to your fields or create your own.
@@ -15,8 +15,6 @@ The form library that conforms to your needs. Start with what you need now, exte
 - All strongly typed with TypeScript.
 
 ## Getting started
-
-To get started install the package with npm:
 
 ```
 npm i react-signal-forms
@@ -31,22 +29,21 @@ npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form](./demo/src/DemoForm.tsx).
+If you want to explore the demo code, a good place to start would be [the form](/demo/src/DemoForm.tsx).
 
 ## Your first form
 
-Start by initializing your form component and field hook, including the extensions you want to use:
+Start by initializing your form component and field hook, including the plugins you want to use:
 
 ```tsx
-// Add extensions, replace extensions, or plug in your own.
+// Add plugins, built-in or your own.
 export const { SignalForm, useFieldSignals } = createSignalForm(
-  ...defaultExtensions, // the defaults, includes validation rules and touched field signals.
-  extensions.applicabilityRules // adds applicability rules and field signals.
-  // other extensions...
+  ...defaultPlugins, // the defaults, includes validation rules and touched field signals.
+  plugins.applicabilityRules // adds applicability rules and field signals.
 )
 ```
 
-Create specifications for your forms:
+Create field specifications for your forms:
 
 ```tsx
 interface IYourData {
@@ -81,16 +78,14 @@ const fields = signalForm<IYourData>().withFields((field) => {
 })
 ```
 
-> ℹ️ For now there are only a few extensions, configuration options and rules. More will be coming, and you will also be able create and plug in your own. More on that in [Extensions](#extensions).
-
 Add the `useFieldSignals` hook to your inputs:
 
 ```tsx
-interface MyInputProps {
+interface TextInputProps {
   field: TextField // only accepts string fields.
 }
 
-const MyInput = ({ field }: MyInputProps) => {
+const TextInput = ({ field }: TextInputProps) => {
   const {
     value,
     setValue,
@@ -98,7 +93,7 @@ const MyInput = ({ field }: MyInputProps) => {
     errors,
     isApplicable,
     ...otherSignals
-    // ^ With intellisense matching your selected extensions.
+    // ^ With intellisense matching your selected plugins.
   } = useFieldSignals()
 
   if (!isApplicable) {
@@ -125,8 +120,8 @@ const MyForm = () => {
       initialValues={valuesFromStore}
       onSubmit={handleSubmit}
     >
-      <YourTextInput field={field.yourTextField} />
-      <YourSelectInput field={field.yourSelectField} />
+      <TextInput field={field.yourTextField} />
+      <SelectInput field={field.yourSelectField} />
     </SignalForm>
   )
 }
@@ -141,11 +136,11 @@ A simple example to illustrate what this means for performance: if field A is on
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
-## Extensions
+## Plugins
 
-Form features - e.g. validation and applicability rules - are implemented in separated extensions. The goal behind this idea is to make the form implementation both scalable and extensible. In most simpler cases though, the native extensions should be enough to get you going.
+All form features other than value handling - e.g. validation and applicability rules - are implemented as plugins. The goal behind this idea is to make the form implementation both scalable and extensible. In most simpler cases though, the native plugins should be enough to get you going.
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 
-- Custom rules can be added to existing extensions. If it fits your needs, than this is the easier option. The validation extension for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](./src/extensions/validation/rules.ts).
-- Extensions can be replaced and custom extensions can be plugged in to fit your needs. To do this you can implement the `SignalFormExtension` interface. This is currently in (super) early development.
+- Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
+- Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.

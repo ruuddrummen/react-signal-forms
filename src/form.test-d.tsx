@@ -1,12 +1,10 @@
 import { render } from "@testing-library/react"
 import React from "react"
 import { describe, expectTypeOf, test } from "vitest"
-import { extensions } from "./extensions"
-import { ApplicabilityFieldProperties } from "./extensions/applicabilityRules/extension"
-import { ValidationFieldProperties } from "./extensions/validation/extension"
 import { IFieldContext } from "./fieldContext"
 import { signalForm } from "./fields"
 import { configureSignalForm } from "./form"
+import { plugins } from "./plugins"
 
 interface ITestData {
   textField: string
@@ -19,14 +17,14 @@ describe("useFieldSignals tests", () => {
 
   test("should get validation field properties", () => {
     const { SignalForm, useFieldSignals } = configureSignalForm(
-      extensions.validationRules
+      plugins.validationRules
     )
 
     function Input() {
       const signals = useFieldSignals(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
-        IFieldContext<string> & ValidationFieldProperties
+        IFieldContext<string> & { isValid: boolean }
       >()
 
       return null
@@ -41,14 +39,14 @@ describe("useFieldSignals tests", () => {
 
   test("should get applicability field properties", () => {
     const { SignalForm, useFieldSignals } = configureSignalForm(
-      extensions.applicabilityRules
+      plugins.applicabilityRules
     )
 
     function Input() {
       const signals = useFieldSignals(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
-        IFieldContext<string> & ApplicabilityFieldProperties
+        IFieldContext<string> & { isApplicable: boolean }
       >()
 
       return null

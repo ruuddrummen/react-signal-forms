@@ -1,31 +1,17 @@
+import { Field, FieldRule, IFormContext } from "@/index"
+import { createPlugin } from "@/plugins/create"
+import { alwaysTrueSignal } from "@/signals"
+import { KeyOf } from "@/utils"
 import { Signal, computed } from "@preact/signals-react"
-import { Field, FieldRule } from "../../fields"
-import { IFormContext } from "../../formContext"
-import { alwaysTrueSignal } from "../../signals"
-import { KeyOf } from "../../utils"
-import { SignalFormExtension } from "../types"
 
-export const EXTENSION_NAME = "applicability"
-
-type ApplicabilityFieldContextExtension = {
-  isApplicableSignal: Signal<boolean>
-}
-
-export type ApplicabilityFieldProperties = {
-  isApplicable: boolean
-}
+export const PLUGIN_NAME = "applicability"
 
 /**
  * Adds applicability rule handling and field signals. The value of fields which are not
  * applicable is set to `undefined`. When a field becomes applicable its value is set to
  * its default value, or `null` if no default value is specified.
  */
-export const applicabilityRulesExtension: SignalFormExtension<
-  ApplicabilityFieldContextExtension,
-  ApplicabilityFieldProperties,
-  {}
-> = {
-  name: EXTENSION_NAME,
+export const applicabilityRulesPlugin = createPlugin(PLUGIN_NAME, {
   createFieldExtension(field, formContext) {
     return {
       isApplicableSignal: createApplicabilitySignal(field, formContext),
@@ -38,7 +24,7 @@ export const applicabilityRulesExtension: SignalFormExtension<
       },
     }
   },
-}
+})
 
 function createApplicabilitySignal(
   field: Field,
@@ -76,5 +62,5 @@ export interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>
 ): rule is ApplicabilityFieldRule<TForm, TKey> {
-  return rule.extension === EXTENSION_NAME
+  return rule.plugin === PLUGIN_NAME
 }

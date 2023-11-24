@@ -1,21 +1,22 @@
-import { IFieldContext } from "../fieldContext"
-import { Field, FieldRule } from "../fields"
-import { IFormContext } from "../formContext"
-import { FormValues } from "../types"
-import { KeyOf } from "../utils"
+import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
+import { FormValues } from "@/types"
+import { KeyOf } from "@/utils"
 
 /**
- * Base interface for extensions to field signals.
+ * Base type for extensions to field signals.
  */
-export type FieldContextExtension = {}
+export type FieldContextExtension = Record<string, unknown>
 export type FieldContextExtensions = Record<string, FieldContextExtension>
 
+/**
+ * Base type for context properties.
+ */
 export type ContextProperties = Record<string, unknown>
 
 /**
- * Interface for describing a signal form extension.
+ * Interface for describing a signal form plugin.
  */
-export interface SignalFormExtension<
+export interface SignalFormPlugin<
   TFieldContextExtension extends FieldContextExtension,
   TFieldContextProperties extends ContextProperties,
   TFormContextProperties extends ContextProperties,
@@ -25,7 +26,7 @@ export interface SignalFormExtension<
     field: Field,
     formContext: IFormContext
   ): TFieldContextExtension
-  createFieldProperties(
+  createFieldProperties?(
     extension: TFieldContextExtension
   ): PropertyDescriptors<TFieldContextProperties>
   createFormProperties?(args: {
@@ -38,40 +39,32 @@ export interface SignalFormExtension<
  * Recursively merges the types of the second type parameters, which
  * describes the field context properties.
  **/
-type MergeFieldContextProperties<
-  T extends SignalFormExtension<any, any, any>[],
-> = T extends [
-  firstItem: SignalFormExtension<any, infer X, any>,
-  ...rest: infer R,
-]
-  ? R extends SignalFormExtension<any, any, any>[]
-    ? X & MergeFieldContextProperties<R>
-    : never
-  : {}
+type MergeFieldContextProperties<T extends SignalFormPlugin<any, any, any>[]> =
+  T extends [firstItem: SignalFormPlugin<any, infer X, any>, ...rest: infer R]
+    ? R extends SignalFormPlugin<any, any, any>[]
+      ? X & MergeFieldContextProperties<R>
+      : never
+    : {}
 
 /**
  * Recursively merges the types of the third type parameters, which
  * describes the form context properties.
  **/
-type MergeFormContextProperties<
-  T extends SignalFormExtension<any, any, any>[],
-> = T extends [
-  firstItem: SignalFormExtension<any, any, infer X>,
-  ...rest: infer R,
-]
-  ? R extends SignalFormExtension<any, any, any>[]
-    ? X & MergeFormContextProperties<R>
-    : never
-  : {}
+type MergeFormContextProperties<T extends SignalFormPlugin<any, any, any>[]> =
+  T extends [firstItem: SignalFormPlugin<any, any, infer X>, ...rest: infer R]
+    ? R extends SignalFormPlugin<any, any, any>[]
+      ? X & MergeFormContextProperties<R>
+      : never
+    : {}
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 
 export type ExpandFieldContextProperties<
-  T extends SignalFormExtension<any, any, any>[],
+  T extends SignalFormPlugin<any, any, any>[],
 > = Expand<MergeFieldContextProperties<T>>
 
 export type ExpandFormContextProperties<
-  T extends SignalFormExtension<any, any, any>[],
+  T extends SignalFormPlugin<any, any, any>[],
 > = Expand<MergeFormContextProperties<T>>
 
 interface PropertyDescriptor<T> {
