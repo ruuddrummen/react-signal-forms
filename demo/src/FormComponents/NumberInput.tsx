@@ -35,6 +35,7 @@ export const NumberInput: React.FC<FormInputProps> = ({ field }) => {
     <InputContainer field={field}>
       <FormControl margin="dense" fullWidth>
         <MuiTextField
+          variant="standard"
           label={`${field.label} (rendered ${renderCount} times)`}
           type="number"
           value={value ?? ""}

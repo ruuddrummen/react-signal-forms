@@ -16,9 +16,10 @@ export const SelectInput = ({ field }: SelectInputProps) => {
 
   return (
     <InputContainer field={field}>
-      <FormControl fullWidth>
+      <FormControl fullWidth margin="dense">
         <InputLabel id={labelId}>{label}</InputLabel>
         <Select
+          variant="standard"
           labelId={labelId}
           label={label}
           value={value ?? ""}
