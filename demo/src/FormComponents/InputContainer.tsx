@@ -18,7 +18,7 @@ export const InputContainer = ({
   const { isApplicable } = useFieldSignals(field)
 
   return (
-    <Paper variant="outlined">
+    <Paper variant="elevation" elevation={2}>
       <Box padding={2} height={boxHeight} paddingLeft={paddingLeft}>
         {isApplicable ? (
           children
