@@ -88,7 +88,7 @@ export function createValidationRule<TArgs = void>(
 ): FieldRuleFunction<TArgs> {
   const result = (args: RuleArguments<TArgs>) =>
     ({
-      extension: PLUGIN_NAME,
+      plugin: PLUGIN_NAME,
       execute: (context) => execute(context as any, args as any),
     }) as ValidationFieldRule
 

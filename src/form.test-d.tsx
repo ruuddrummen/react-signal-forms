@@ -2,7 +2,6 @@ import { render } from "@testing-library/react"
 import React from "react"
 import { describe, expectTypeOf, test } from "vitest"
 import { extensions } from "./extensions"
-import { ApplicabilityFieldProperties } from "./extensions/applicabilityRules/extension"
 import { IFieldContext } from "./fieldContext"
 import { signalForm } from "./fields"
 import { configureSignalForm } from "./form"
@@ -47,7 +46,7 @@ describe("useFieldSignals tests", () => {
       const signals = useFieldSignals(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
-        IFieldContext<string> & ApplicabilityFieldProperties
+        IFieldContext<string> & { isApplicable: boolean }
       >()
 
       return null

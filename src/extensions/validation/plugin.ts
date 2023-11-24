@@ -123,7 +123,7 @@ function getErrorsFromResults(results: ValidationTestResult[]) {
 }
 
 function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
-  return rule.extension === PLUGIN_NAME
+  return rule.plugin === PLUGIN_NAME
 }
 
 export interface ValidationFieldRule<
