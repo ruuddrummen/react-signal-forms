@@ -3,6 +3,8 @@ import { diffChangesPlugin } from "./planned/diffChanges"
 import { touchedFieldsPlugin } from "./touchedFields/plugin"
 import { validationRulesPlugin } from "./validation/plugin"
 
+export { createPlugin } from "./create"
+
 export const defaultPlugins = [
   validationRulesPlugin,
   touchedFieldsPlugin,
@@ -15,6 +17,9 @@ export const plugins = {
   diffChanges: diffChangesPlugin, // planned
 }
 
-export { createPlugin } from "./create"
-
-export type { RuleContext } from "./types"
+export type {
+  FieldRuleFunction,
+  PropertyDescriptors,
+  RuleArguments,
+  RuleContext,
+} from "./types"

@@ -5,9 +5,7 @@ import {
   SignalFormPlugin,
 } from "./types"
 
-import { IFieldContext } from "../fieldContext"
-import { Field } from "../fields"
-import { IFormContext } from "../formContext"
+import { Field, IFieldContext, IFormContext } from "@/index"
 
 /**
  * Creates a plugin. Note that the generic types can be inferred, and do not

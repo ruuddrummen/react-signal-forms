@@ -14,4 +14,4 @@ export type {
 
 export type { IFormContext } from "./formContext"
 
-export type { FieldContext } from "./fieldContext"
+export type { FieldContext, IFieldContext } from "./fieldContext"

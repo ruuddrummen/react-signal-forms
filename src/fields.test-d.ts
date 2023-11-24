@@ -1,8 +1,7 @@
+import { FieldRule, IFormContext, SelectField, signalForm } from "@/index"
+import { RuleContext } from "@/plugins"
+import { required, validIf } from "@/rules"
 import { expect, expectTypeOf, test } from "vitest"
-import { FieldRule, SelectField, signalForm } from "./fields"
-import { IFormContext } from "./formContext"
-import { RuleContext } from "./plugins/types"
-import { required, validIf } from "./rules"
 
 interface ITestData {
   hiddenField: string

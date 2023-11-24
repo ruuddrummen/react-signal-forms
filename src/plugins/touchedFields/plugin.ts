@@ -1,6 +1,6 @@
+import { Field, FieldContext, IFormContext } from "@/index"
+import { createPlugin } from "@/plugins/create"
 import { Signal, signal } from "@preact/signals-react"
-import { Field, FieldContext, IFormContext } from "../../index"
-import { createPlugin } from "../index"
 
 const PLUGIN_NAME = "touched"
 

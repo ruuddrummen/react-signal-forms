@@ -1,8 +1,9 @@
+import { Field, FieldRule, IFormContext } from "@/index"
+import { RuleContext } from "@/plugins"
+import { createPlugin } from "@/plugins/create"
+import { FormValues } from "@/types"
+import { KeyOf, arrayEquals } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
-import { Field, FieldRule, IFormContext } from "../../index"
-import { FormValues } from "../../types"
-import { KeyOf, arrayEquals } from "../../utils"
-import { RuleContext, createPlugin } from "../index"
 
 export const PLUGIN_NAME = "validation"
 

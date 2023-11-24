@@ -1,5 +1,5 @@
+import { areEqualish, forAllKeysOf } from "@/utils"
 import { Signal } from "@preact/signals-react"
-import { areEqualish, forAllKeysOf } from "../utils"
 
 export function patch<T extends {}>(signal: Signal<T>, update: Partial<T>) {
   if (typeof update !== "object") {

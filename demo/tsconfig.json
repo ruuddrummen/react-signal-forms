@@ -23,7 +23,8 @@
     "paths": {
       "react-signal-forms": ["../src"],
       "react-signal-forms/plugins": ["../src/plugins"],
-      "react-signal-forms/rules": ["../src/rules"]
+      "react-signal-forms/rules": ["../src/rules"],
+      "@/*": ["../src/*"]
     },
 
     "types": ["@emotion/react/types/css-prop"]

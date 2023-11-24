@@ -1,4 +1,4 @@
-import { FieldRuleFunction, RuleArguments, RuleContext } from "../types"
+import { FieldRuleFunction, RuleArguments, RuleContext } from "@/plugins"
 import {
   PLUGIN_NAME,
   ValidationFieldRule,

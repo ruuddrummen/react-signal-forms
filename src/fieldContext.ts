@@ -1,10 +1,10 @@
-import { Signal, signal } from "@preact/signals-react"
 import {
   FieldContextExtension,
   FieldContextExtensions,
   PropertyDescriptors,
-} from "./plugins/types"
-import { KeyOf } from "./utils"
+} from "@/plugins/types"
+import { KeyOf } from "@/utils"
+import { Signal, signal } from "@preact/signals-react"
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>

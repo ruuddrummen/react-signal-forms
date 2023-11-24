@@ -1,8 +1,6 @@
-import { IFieldContext } from "../fieldContext"
-import { Field, FieldRule } from "../fields"
-import { IFormContext } from "../formContext"
-import { FormValues } from "../types"
-import { KeyOf } from "../utils"
+import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
+import { FormValues } from "@/types"
+import { KeyOf } from "@/utils"
 
 /**
  * Base type for extensions to field signals.
