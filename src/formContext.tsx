@@ -27,6 +27,7 @@ export interface IFormContext<TForm = any> {
   submit(values: FormValues): Promise<void>
 }
 
+// TODO: add and initialize with `initialValues` parameter.
 export function useFormContextProvider(
   fields: FieldCollection,
   extensions: Array<SignalFormPlugin<any, any, any>>,
@@ -75,7 +76,7 @@ class FormContext implements IFormContext {
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, key) => {
-        prev[key] = new FieldContext(fields[key].defaultValue ?? null)
+        prev[key] = new FieldContext(fields[key]) // TODO add initial value.
 
         return prev
       },

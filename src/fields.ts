@@ -4,6 +4,7 @@ import { KeyOf } from "./utils"
 // #region Field types
 
 export interface FieldBase<TValue = unknown> {
+  type?: string
   name: string
   label: string | null
   defaultValue?: TValue
@@ -200,10 +201,18 @@ export interface ArrayFieldBase<TArray = any> extends FieldBase<TArray> {
   fields: FieldCollection<ArrayItemType<TArray>>
 }
 
-type ArrayItemType<TArray> = TArray extends Array<infer TItem> ? TItem : never
+export type ArrayItemType<TArray> = TArray extends Array<infer TItem>
+  ? TItem
+  : never
 
 type ArrayFieldBuilder<TArray> = (
   field: FieldBuilder<ArrayItemType<TArray>>
 ) => FieldCollection<ArrayItemType<TArray>>
+
+export function isArrayField<TValue>(
+  field: FieldBase<TValue>
+): field is ArrayFieldBase<TValue> {
+  return field.type === "array"
+}
 
 // #endregion

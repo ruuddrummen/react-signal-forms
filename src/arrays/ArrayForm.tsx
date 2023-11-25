@@ -2,7 +2,10 @@ import { ArrayFieldBase, FieldCollection } from "@/fields"
 import { useFormSignals } from "@/formContext"
 import React from "react"
 import { IFieldContext } from ".."
-import { ArrayItemContext } from "./context"
+import {
+  ArrayFormContextProvider,
+  ArrayFormItemContextProvider,
+} from "./context"
 
 interface ArrayFormProps<TArray> {
   field: ArrayFieldBase<TArray>
@@ -17,7 +20,11 @@ export const ArrayForm = <TArray,>({
   const fieldSignals = fields[field.name] as IFieldContext<TArray>
   const items = fieldSignals.peekValue()
 
-  return children && children(items)
+  return (
+    <ArrayFormContextProvider value={{ field: field }}>
+      {children && children(items)}
+    </ArrayFormContextProvider>
+  )
 }
 
 interface ArrayItemProps<TItem> {
@@ -33,8 +40,8 @@ export const ArrayFormItem = <TItem,>({
   const { fieldSpecs } = useFormSignals()
 
   return (
-    <ArrayItemContext.Provider value={{ index: key }}>
+    <ArrayFormItemContextProvider value={{ index: key }}>
       {children && children(fieldSpecs)}
-    </ArrayItemContext.Provider>
+    </ArrayFormItemContextProvider>
   )
 }

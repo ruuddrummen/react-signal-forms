@@ -5,6 +5,8 @@ import {
 } from "@/plugins/types"
 import { KeyOf } from "@/utils"
 import { Signal, signal } from "@preact/signals-react"
+import { ArrayItemType, Field, FieldBase, isArrayField } from "./fields"
+import { FormValues } from "./types"
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>
@@ -17,16 +19,27 @@ export interface IFieldContext<TValue = any> {
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
 }
 
-export class FieldContext<TValue = any> implements IFieldContext<TValue> {
+export interface IArrayFieldContext<TValue = FormValues[]>
+  extends IFieldContext<TValue> {
+  items: ArrayFieldContextItem<TValue>[]
+}
+
+export class FieldContext<TValue = any>
+  implements IFieldContext<TValue>, IArrayFieldContext<TValue>
+{
   private __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
   private _blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void
   > = []
 
-  constructor(value: TValue) {
-    this.__valueSignal = signal(value)
+  constructor(field: Field, initialValue?: TValue) {
+    this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
     this.__extensions = {}
+
+    this.items = isArrayField(field)
+      ? createContextItemsForArrayField(field)
+      : []
   }
 
   addBlurEffect = (
@@ -67,6 +80,11 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     return this.__extensions[name]
   }
 
+  /**
+   * Only relevant for array form fields.
+   */
+  items: ArrayFieldContextItem<TValue>[]
+
   toJSON() {
     const proto = Object.getPrototypeOf(this)
     const jsonObj: any = {}
@@ -87,4 +105,36 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
 
     return jsonObj
   }
+}
+
+function createContextItemsForArrayField<
+  TValue extends FormValues[] = FormValues[],
+>(field: FieldBase<TValue>): ArrayFieldContextItem<TValue>[] {
+  if (!isArrayField(field) || field.defaultValue == null) {
+    return []
+  }
+
+  const items = field.defaultValue.map<ArrayFieldContextItem<TValue>>(
+    (itemValue) => {
+      return {
+        fields: Object.keys(field.fields).reduce(
+          (contextItems, key) => {
+            contextItems[key] = new FieldContext(
+              field.fields[key],
+              itemValue[key]
+            )
+
+            return contextItems
+          },
+          {} as Record<string, IFieldContext<any>>
+        ),
+      }
+    }
+  )
+
+  return items
+}
+
+interface ArrayFieldContextItem<TValue> {
+  fields: Record<KeyOf<ArrayItemType<TValue>>, IFieldContext<any>>
 }

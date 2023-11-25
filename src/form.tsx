@@ -1,5 +1,6 @@
 import React from "react"
-import { IFieldContext } from "./fieldContext"
+import { useArrayFormContext, useArrayFormItemContext } from "./arrays/context"
+import { IArrayFieldContext, IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
   IFormContext,
@@ -39,6 +40,7 @@ export function configureSignalForm<
     SignalForm: (props) => {
       return <SignalForm {...props} extensions={extensions} />
     },
+
     useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
       if (field == null) {
         throw new Error(
@@ -47,11 +49,30 @@ export function configureSignalForm<
       }
 
       const formContext = useFormSignals()
-      const fieldContext = formContext.fields[field.name]
+      const arrayFormContext = useArrayFormContext()
+      const arrayFormItemContext = useArrayFormItemContext()
 
+      if (field.type === "array") {
+        // const items = fieldContext.value as any[]
+        if (arrayFormContext == null || arrayFormItemContext == null) {
+          throw new Error(
+            "array form fields must be rendered inside `ArrayForm` and `ArrayFormItem` components."
+          )
+        }
+        const arrayFieldContext = formContext.fields[
+          arrayFormContext.field.name
+        ] as IArrayFieldContext
+        const fieldContext =
+          arrayFieldContext.items[arrayFormItemContext.index].fields[field.name]
+        return fieldContext as IFieldContext &
+          ExpandFieldContextProperties<TExtensions>
+      }
+
+      const fieldContext = formContext.fields[field.name]
       return fieldContext as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
     },
+
     useFormSignals: function () {
       const formContext = useFormSignals()
 
