@@ -15,6 +15,7 @@ export const TextInput = ({ field }: FormInputProps) => {
     handleBlur,
     isTouched,
     isRequired,
+    readonly,
     isValid,
     errors,
   } = useFieldSignals(field)
@@ -30,6 +31,7 @@ export const TextInput = ({ field }: FormInputProps) => {
           value={value ?? ""}
           onChange={(e) => setValue(e.currentTarget.value)}
           onBlurCapture={handleBlur}
+          disabled={readonly}
           required={isRequired}
           error={isTouched && !isValid}
           helperText={isTouched && errors[0]}
