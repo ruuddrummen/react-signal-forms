@@ -1,8 +1,7 @@
-import { FieldRule } from "@/fields"
-import { IFormContext } from "@/formContext"
+import { FieldRule, IFormContext } from "@/index"
+import { createPlugin } from "@/plugins/create"
 import { KeyOf } from "@/utils"
 import { computed } from "@preact/signals-react"
-import { createPlugin } from "../create"
 
 export const PLUGIN_NAME = "readonly"
 

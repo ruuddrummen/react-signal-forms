@@ -1,5 +1,4 @@
-import { FieldRule } from "@/fields"
-import { IFormContext } from "@/formContext"
+import { FieldRule, IFormContext } from "@/index"
 import { KeyOf } from "@/utils"
 import { PLUGIN_NAME, ReadonlyFieldRule } from "./plugin"
 
