@@ -53,6 +53,7 @@ export const signalForm = <TForm>() => ({
 
     // Clean up descriptor methods.
     delete (fields as any).as
+    delete (fields as any).asArray
     delete (fields as any).asHidden
 
     return fields
@@ -104,16 +105,23 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
       }
     },
 
-    asArray: (build) => {
+    asArray: (properties) => {
       const fieldBuilder = createFieldBuilder<ArrayItemType<TForm[TKey]>>()
-      const fields = build(fieldBuilder)
+      const { fields: fieldsFn, ...otherProperties } = properties
+      const fields = fieldsFn(fieldBuilder)
+
+      // Clean up descriptor methods.
+      delete (fields as any).as
+      delete (fields as any).asArray
+      delete (fields as any).asHidden
 
       return {
-        [field.name]: { name: field.name, label: null, fields } as Field<
-          TForm,
-          TKey,
-          ArrayFieldBase<TForm[TKey]>
-        >,
+        [field.name]: {
+          name: field.name,
+          label: null,
+          fields,
+          ...otherProperties,
+        },
       }
     },
 
@@ -160,9 +168,12 @@ type FieldDescriptor<
   ) => FieldItem<TForm, TKey, TFieldBase>
 
   asArray: (
-    build: (
-      arrayField: FieldBuilder<ArrayItemType<TForm[TKey]>>
-    ) => Omit<Field<TForm, TKey, ArrayFieldBase<TForm[TKey]>>, "name" | "label">
+    properties: Omit<
+      Field<TForm, TKey, ArrayFieldBase<TForm[TKey]>>,
+      "name" | "label" | "fields"
+    > & {
+      fields: ArrayFieldBuilder<TForm[TKey]>
+    }
   ) => FieldItem<TForm, TKey, ArrayFieldBase<TForm[TKey]>>
 
   /**
@@ -186,3 +197,7 @@ interface ArrayFieldBase<TArray> extends FieldBase<TArray> {
 }
 
 type ArrayItemType<TArray> = TArray extends Array<infer TItem> ? TItem : never
+
+type ArrayFieldBuilder<TArray> = (
+  field: FieldBuilder<ArrayItemType<TArray>>
+) => FieldCollection<ArrayItemType<TArray>>

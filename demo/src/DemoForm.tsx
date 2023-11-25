@@ -66,26 +66,11 @@ interface FormData {
 
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
-
-  arrayField: Array<ArrayFieldData>
-}
-
-interface ArrayFieldData {
-  textInArray: string
 }
 
 /* Create a specification for your fields */
 
 const fields = signalForm<FormData>().withFields((field) => ({
-  ...field("arrayField").asArray((aField) => ({
-    fields: {
-      ...aField("textInArray", "Text field in array", {
-        rules: [],
-      }),
-    },
-    rules: [],
-  })),
-
   // Just fields.
 
   ...field("text", "A text field", {
