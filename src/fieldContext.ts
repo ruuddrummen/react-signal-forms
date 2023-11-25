@@ -124,6 +124,8 @@ function createContextItemsForArrayField<
               itemValue[key]
             )
 
+            // TODO: Add extensions.
+
             return contextItems
           },
           {} as Record<string, IFieldContext<any>>
