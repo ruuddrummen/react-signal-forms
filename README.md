@@ -43,6 +43,8 @@ export const { SignalForm, useFieldSignals } = createSignalForm(
 )
 ```
 
+> ℹ️ A full list of the currently available plugins can be found in [plugins](/src/plugins/index.ts).
+
 Create field specifications for your forms:
 
 ```tsx
