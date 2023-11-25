@@ -162,7 +162,7 @@ type FieldDescriptor<
   asArray: (
     build: (
       arrayField: FieldBuilder<ArrayItemType<TForm[TKey]>>
-    ) => Omit<ArrayFieldBase<TForm[TKey]>, "name" | "label">
+    ) => Omit<Field<TForm, TKey, ArrayFieldBase<TForm[TKey]>>, "name" | "label">
   ) => FieldItem<TForm, TKey, ArrayFieldBase<TForm[TKey]>>
 
   /**

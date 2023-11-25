@@ -77,10 +77,13 @@ interface ArrayFieldData {
 /* Create a specification for your fields */
 
 const fields = signalForm<FormData>().withFields((field) => ({
-  ...field("arrayField").asArray((arrayField) => ({
+  ...field("arrayField").asArray((aField) => ({
     fields: {
-      ...arrayField("textInArray", "Text field in array"),
+      ...aField("textInArray", "Text field in array", {
+        rules: [],
+      }),
     },
+    rules: [],
   })),
 
   // Just fields.
