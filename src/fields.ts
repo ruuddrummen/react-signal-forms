@@ -95,6 +95,7 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
 ): FieldDescriptor<TForm, TKey, never> {
   return {
     [field.name]: field,
+
     as: <TFieldBase extends FieldBase<TForm[TKey]>>(
       properties: Field<TForm, TKey, TFieldBase>
     ) => {
@@ -102,6 +103,20 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
         [field.name]: { ...field, ...properties },
       }
     },
+
+    asArray: (build) => {
+      const fieldBuilder = createFieldBuilder<ArrayItemType<TForm[TKey]>>()
+      const fields = build(fieldBuilder)
+
+      return {
+        [field.name]: { name: field.name, label: null, fields } as Field<
+          TForm,
+          TKey,
+          ArrayFieldBase<TForm[TKey]>
+        >,
+      }
+    },
+
     asHidden: () => {
       return {
         [field.name]: field,
@@ -144,6 +159,12 @@ type FieldDescriptor<
     properties: Omit<Field<TForm, TKey, TFieldBase>, TExcept>
   ) => FieldItem<TForm, TKey, TFieldBase>
 
+  asArray: (
+    build: (
+      arrayField: FieldBuilder<ArrayItemType<TForm[TKey]>>
+    ) => Omit<ArrayFieldBase<TForm[TKey]>, "name" | "label">
+  ) => FieldItem<TForm, TKey, ArrayFieldBase<TForm[TKey]>>
+
   /**
    * Configures the field as hidden.
    */
@@ -159,3 +180,9 @@ type FieldItem<
 }
 
 // #endregion
+
+interface ArrayFieldBase<TArray> extends FieldBase<TArray> {
+  fields: FieldCollection<ArrayItemType<TArray>>
+}
+
+type ArrayItemType<TArray> = TArray extends Array<infer TItem> ? TItem : never
