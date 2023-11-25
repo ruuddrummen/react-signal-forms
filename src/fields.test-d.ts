@@ -2,6 +2,7 @@ import { FieldRule, IFormContext, SelectField, signalForm } from "@/index"
 import { RuleContext } from "@/plugins"
 import { required, validIf } from "@/rules"
 import { describe, expect, expectTypeOf, test } from "vitest"
+import { ArrayFieldBase, Field, TextField } from "./fields"
 
 interface ITestData {
   hiddenField: string
@@ -101,6 +102,16 @@ describe("Test field builder and collection types", () => {
 
     console.log("fields:", fields)
     console.log("arrayField:", fields.arrayField)
+
+    expectTypeOf(fields.arrayField).toEqualTypeOf<
+      Field<IArrayFormData, "arrayField", ArrayFieldBase<IArrayFieldData[]>>
+    >()
+    expectTypeOf(fields.arrayField.fields.textInArray).toEqualTypeOf<
+      Field<IArrayFieldData, "textInArray", TextField>
+    >()
+    expectTypeOf(fields.arrayField.fields.textInArray.rules).toEqualTypeOf<
+      FieldRule<IArrayFieldData, "textInArray">[] | undefined
+    >()
   })
 
   interface IArrayFormData {
