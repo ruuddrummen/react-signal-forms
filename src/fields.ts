@@ -118,6 +118,7 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
       return {
         [field.name]: {
           name: field.name,
+          type: "array",
           label: null,
           fields,
           ...otherProperties,
@@ -170,7 +171,7 @@ type FieldDescriptor<
   asArray: (
     properties: Omit<
       Field<TForm, TKey, ArrayFieldBase<TForm[TKey]>>,
-      "name" | "label" | "fields"
+      "type" | "name" | "label" | "fields"
     > & {
       fields: ArrayFieldBuilder<TForm[TKey]>
     }
@@ -192,7 +193,10 @@ type FieldItem<
 
 // #endregion
 
-interface ArrayFieldBase<TArray> extends FieldBase<TArray> {
+// #region Array form types
+
+export interface ArrayFieldBase<TArray> extends FieldBase<TArray> {
+  type: "array"
   fields: FieldCollection<ArrayItemType<TArray>>
 }
 
@@ -201,3 +205,5 @@ type ArrayItemType<TArray> = TArray extends Array<infer TItem> ? TItem : never
 type ArrayFieldBuilder<TArray> = (
   field: FieldBuilder<ArrayItemType<TArray>>
 ) => FieldCollection<ArrayItemType<TArray>>
+
+// #endregion
