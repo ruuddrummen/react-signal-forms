@@ -8,6 +8,7 @@ import { FormValues } from "./types"
 const noop = () => ({}) as any
 
 const ReactFormContext = createContext<IFormContext>({
+  fieldSpecs: {},
   fields: {},
   isSubmitting: false,
   peekValues: noop,
@@ -18,6 +19,7 @@ const ReactFormContext = createContext<IFormContext>({
 export const useFormSignals = () => useContext(ReactFormContext)
 
 export interface IFormContext<TForm = any> {
+  fieldSpecs: FieldCollection<TForm>
   fields: FieldContextCollection<TForm>
   isSubmitting: boolean
   peekValues(): FormValues
@@ -56,6 +58,7 @@ class FormContext implements IFormContext {
   private __isSubmittingSignal: Signal<boolean>
   private __onSubmit: ((values: FormValues) => Promise<void>) | undefined
   fields: FieldContextCollection<any>
+  fieldSpecs: FieldCollection<any>
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value
@@ -66,6 +69,7 @@ class FormContext implements IFormContext {
     extensions: Array<SignalFormPlugin<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
+    this.fieldSpecs = fields
     this.__isSubmittingSignal = signal(false)
     this.__onSubmit = onSubmit
 

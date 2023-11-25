@@ -195,7 +195,7 @@ type FieldItem<
 
 // #region Array form types
 
-export interface ArrayFieldBase<TArray> extends FieldBase<TArray> {
+export interface ArrayFieldBase<TArray = any> extends FieldBase<TArray> {
   type: "array"
   fields: FieldCollection<ArrayItemType<TArray>>
 }

@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { ArrayFormItem } from "@/arrays/ArrayForm"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
@@ -16,6 +17,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
+import { ArrayForm } from "react-signal-forms/arrays"
 import {
   applicableIf,
   minLength,
@@ -66,6 +68,10 @@ interface FormData {
 
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
+
+  arrayField: Array<{
+    textFieldInArray: string
+  }>
 }
 
 /* Create a specification for your fields */
@@ -150,6 +156,14 @@ const fields = signalForm<FormData>().withFields((field) => ({
       })),
     ],
   }),
+
+  // Array forms.
+
+  ...field("arrayField").asArray({
+    fields: (arrayField) => ({
+      ...arrayField("textFieldInArray", "Text field in array"),
+    }),
+  }),
 }))
 
 /* Render your form */
@@ -231,7 +245,7 @@ export const DemoForm = React.memo(() => {
             <GridHeader>
               <JoinFullIcon /> Combining rules
             </GridHeader>
-            <Grid item md={12}>
+            <Grid item xs={12}>
               <Paragraph>
                 Rules can be combined. Priority on error messages is based on
                 the order in which the rules are specified. Also, validation
@@ -244,6 +258,22 @@ export const DemoForm = React.memo(() => {
             <Grid item md={6} xs={12}>
               <TextInput field={fields.complicatedField} />
             </Grid>
+          </Grid>
+
+          <GridDivider />
+          <GridHeader>Array forms</GridHeader>
+          <Grid item xs={12}>
+            <ArrayForm field={fields.arrayField}>
+              {(items) =>
+                items.map((item, i) => (
+                  <ArrayFormItem item={item} key={i}>
+                    {(arrayFields) => (
+                      <TextInput field={arrayFields.textFieldInArray} />
+                    )}
+                  </ArrayFormItem>
+                ))
+              }
+            </ArrayForm>
           </Grid>
         </SubmitBackdrop>
         <Box

@@ -47,7 +47,9 @@ export function configureSignalForm<
       }
 
       const formContext = useFormSignals()
-      return formContext.fields[field.name] as IFieldContext &
+      const fieldContext = formContext.fields[field.name]
+
+      return fieldContext as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
     },
     useFormSignals: function () {
