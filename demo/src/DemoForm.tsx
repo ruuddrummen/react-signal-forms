@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
@@ -19,6 +20,8 @@ import {
   applicableIf,
   minLength,
   mustBeEqualToField,
+  readonly,
+  readonlyIf,
   required,
   requiredIf,
   validIf,
@@ -57,6 +60,10 @@ interface FormData {
   showSecretField: boolean
   secret: string
 
+  alwaysReadonly: string
+  makeFieldReadonly: boolean
+  canBeReadOnly: string
+
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
 }
@@ -64,6 +71,8 @@ interface FormData {
 /* Create a specification for your fields */
 
 const fields = signalForm<FormData>().withFields((field) => ({
+  // Just fields.
+
   ...field("text", "A text field", {
     defaultValue: "Welcome to the demo",
   }),
@@ -85,6 +94,9 @@ const fields = signalForm<FormData>().withFields((field) => ({
       },
     ],
   }),
+
+  // Required rules.
+
   ...field("alwaysRequired", "Required field", {
     rules: [required()],
   }),
@@ -100,6 +112,9 @@ const fields = signalForm<FormData>().withFields((field) => ({
       requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ],
   }),
+
+  // Applicability rules.
+
   ...field("showSecretField", "Show secret field"),
   ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
@@ -107,6 +122,20 @@ const fields = signalForm<FormData>().withFields((field) => ({
       applicableIf(({ fields }) => fields.showSecretField.value === true),
     ],
   }),
+
+  // Readonly rules.
+
+  ...field("alwaysReadonly", "Readonly field", {
+    defaultValue: "Always readonly",
+    rules: [readonly()],
+  }),
+  ...field("makeFieldReadonly", "Make the next field readonly"),
+  ...field("canBeReadOnly", "Can be readonly", {
+    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
+  }),
+
+  // Combining rules.
+
   ...field("makeComplicatedFieldApplicable", "Make the field applicable"),
   ...field("complicatedField", "Only validated if applicable", {
     rules: [
@@ -182,6 +211,20 @@ export const DemoForm = React.memo(() => {
             </Grid>
             <Grid item md={6} xs={12}>
               <TextInput field={fields.secret} />
+            </Grid>
+
+            <GridDivider />
+            <GridHeader>
+              <EditOffIcon /> Readonly rules
+            </GridHeader>
+            <Grid item xs={12}>
+              <TextInput field={fields.alwaysReadonly} />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Switch field={fields.makeFieldReadonly} />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextInput field={fields.canBeReadOnly} />
             </Grid>
 
             <GridDivider />

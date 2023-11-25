@@ -1,5 +1,6 @@
 import { applicabilityRulesPlugin } from "./applicabilityRules/plugin"
 import { diffChangesPlugin } from "./planned/diffChanges"
+import { readonlyRulesPlugin } from "./readonlyRules/plugin"
 import { touchedFieldsPlugin } from "./touchedFields/plugin"
 import { validationRulesPlugin } from "./validation/plugin"
 
@@ -14,6 +15,7 @@ export const plugins = {
   applicabilityRules: applicabilityRulesPlugin,
   validationRules: validationRulesPlugin,
   touchedFields: touchedFieldsPlugin,
+  readonlyRules: readonlyRulesPlugin,
   diffChanges: diffChangesPlugin, // planned
 }
 
