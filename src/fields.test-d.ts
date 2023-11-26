@@ -75,7 +75,8 @@ describe("Test field builder and collection types", () => {
     arrayField: Array<IArrayFieldData>
   }
 
-  interface IArrayFieldData {
+  // TODO: Must be a type. Interface does not work. Figure out why.
+  type IArrayFieldData = {
     textFieldInArray: string
     booleanFieldInArray: boolean
   }
