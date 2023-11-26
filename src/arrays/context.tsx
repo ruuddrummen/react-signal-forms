@@ -12,7 +12,6 @@ export const ArrayFormContextProvider = ArrayFormContext.Provider
 export const useArrayFormContext = () => useContext(ArrayFormContext)
 
 interface IArrayItemContext {
-  item: any
   index: number
 }
 

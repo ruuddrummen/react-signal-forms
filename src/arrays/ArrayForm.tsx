@@ -69,20 +69,17 @@ export const ArrayForm = <TArray extends FormValues[]>({
   )
 }
 
-interface ArrayItemProps<TItem> {
-  item: TItem
+interface ArrayItemProps {
   index: number
   children?: React.ReactNode
 }
 
-export const ArrayFormItem = <TItem,>({
-  item,
-  index,
-  children,
-}: ArrayItemProps<TItem>) => {
-  return (
-    <ArrayFormItemContextProvider value={{ item, index }}>
-      {children}
-    </ArrayFormItemContextProvider>
-  )
-}
+export const ArrayFormItem = React.memo(
+  ({ index, children }: ArrayItemProps) => {
+    return (
+      <ArrayFormItemContextProvider value={{ index }}>
+        {children}
+      </ArrayFormItemContextProvider>
+    )
+  }
+)
