@@ -1,6 +1,13 @@
-# React Signal Forms
+# React Signal Forms &middot; [![npm][npm-badge]][npm] [![build][build-badge]][build] [![github-pages][github-pages-badge]][github-pages]
 
-> ⚠️ This library is brand new and under heavy development. You can follow its progress in the [releases](https://github.com/ruuddrummen/react-signal-forms/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
+[npm-badge]: https://img.shields.io/npm/v/react-signal-forms?style=flat-square&color=blue
+[npm]: https://www.npmjs.com/package/react-signal-forms
+[build-badge]: https://img.shields.io/github/actions/workflow/status/ruuddrummen/react-signal-forms/main.yml?style=flat-square
+[build]: https://github.com/ruuddrummen/react-signal-forms/actions/workflows/main.yml?query=branch%3Amain
+[github-pages-badge]: https://img.shields.io/github/deployments/ruuddrummen/react-signal-forms/github-pages?label=demo&style=flat-square
+[github-pages]: https://ruuddrummen.github.io/react-signal-forms/
+
+> ⚠️ This library is still new, so everything is still subject to change. You can follow its development in the [project](https://github.com/users/ruuddrummen/projects/1) and [releases](https://github.com/ruuddrummen/react-signal-forms/releases). The docs will be updated as development progresses.
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
