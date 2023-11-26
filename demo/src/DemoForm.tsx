@@ -1,16 +1,19 @@
 /** @jsxImportSource @emotion/react */
-// import DeleteIcon from "@mui/icons-material/Delete"
+
+import DataArrayIcon from "@mui/icons-material/DataArray"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
+import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import {
   Box,
   Button,
   Divider,
   Grid,
+  Link,
   Paper,
   Stack,
   Typography,
@@ -158,7 +161,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
     ],
   }),
 
-  // Array forms.
+  // Array forms (WIP).
 
   ...field("arrayField").asArray({
     fields: (arrayField) => ({
@@ -261,11 +264,11 @@ export const DemoForm = React.memo(() => {
               <JoinFullIcon /> Combining rules
             </GridHeader>
             <Grid item xs={12}>
-              <Paragraph>
+              <P>
                 Rules can be combined. Priority on error messages is based on
                 the order in which the rules are specified. Also, validation
                 rules are not applied if a field is not applicable.
-              </Paragraph>
+              </P>
             </Grid>
             <Grid item md={6} xs={12}>
               <Switch field={fields.makeComplicatedFieldApplicable} />
@@ -275,7 +278,24 @@ export const DemoForm = React.memo(() => {
             </Grid>
 
             <GridDivider />
-            <GridHeader>Array forms</GridHeader>
+            <GridHeader>
+              <DataArrayIcon /> Array forms
+            </GridHeader>
+            <Grid item xs={12}>
+              <P>
+                <Span color="warning.main">
+                  <WarningAmberIcon />
+                </Span>{" "}
+                This feature is in development. Expect changes to DX, extended
+                context awareness to field rules, and render optimizations.
+                Progress is tracked in{" "}
+                <Link href="https://github.com/ruuddrummen/react-signal-forms/issues/61">
+                  #61
+                </Link>
+                .
+              </P>
+            </Grid>
+
             <ArrayForm arrayField={fields.arrayField}>
               {({ items, arrayFields, removeItem, addItem }) => (
                 <>
@@ -347,8 +367,22 @@ const GridDivider = () => (
   </Grid>
 )
 
-const Paragraph = ({ children }: React.PropsWithChildren<object>) => (
-  <Typography paragraph>{children}</Typography>
+const P = ({
+  children,
+  color,
+}: React.PropsWithChildren<{ color?: string }>) => (
+  <Typography paragraph color={color}>
+    {children}
+  </Typography>
+)
+
+const Span = ({
+  children,
+  color,
+}: React.PropsWithChildren<{ color?: string }>) => (
+  <Typography display="inline" color={color}>
+    {children}
+  </Typography>
 )
 
 const TouchAllFieldsButton = () => {

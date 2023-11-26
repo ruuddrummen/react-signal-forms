@@ -1,11 +1,15 @@
 import React from "react"
-import { useArrayFormContext, useArrayFormItemContext } from "./arrays/context"
-import { IArrayFieldContext, IFieldContext } from "./fieldContext"
+import { IArrayFieldContext } from "./arrays/fieldContext"
+import {
+  useArrayFormContext,
+  useArrayFormItemContext,
+} from "./arrays/reactContext"
+import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
   IFormContext,
+  useFormContext,
   useFormContextProvider,
-  useFormSignals,
 } from "./formContext"
 import {
   ExpandFieldContextProperties,
@@ -48,7 +52,7 @@ export function configureSignalForm<
         )
       }
 
-      const formContext = useFormSignals()
+      const formContext = useFormContext()
       const arrayFormContext = useArrayFormContext()
       const arrayFormItemContext = useArrayFormItemContext()
 
@@ -70,7 +74,7 @@ export function configureSignalForm<
     },
 
     useFormSignals: function () {
-      const formContext = useFormSignals()
+      const formContext = useFormContext()
 
       return formContext as IFormContext &
         ExpandFormContextProperties<TExtensions>

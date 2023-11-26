@@ -1,18 +1,16 @@
-import {
-  IArrayFieldContext,
-  createContextForArrayFieldItem,
-} from "@/fieldContext"
 import { ArrayFieldBase, ArrayItemType, FieldCollection } from "@/fields"
-import {
-  addFieldExtensionsToArrayItems,
-  useFormSignals as useFormContext,
-} from "@/formContext"
+import { useFormContext } from "@/formContext"
 import { FormValues } from "@/types"
 import React from "react"
 import {
+  IArrayFieldContext,
+  addFieldExtensionsToArrayItems,
+  createContextForArrayFieldItem,
+} from "./fieldContext"
+import {
   ArrayFormContextProvider,
   ArrayFormItemContextProvider,
-} from "./context"
+} from "./reactContext"
 
 interface ArrayFormProps<TArray extends FormValues[]> {
   arrayField: ArrayFieldBase<TArray>
@@ -34,7 +32,7 @@ export const ArrayForm = <TArray extends FormValues[]>({
   ] as IArrayFieldContext<TArray>
   const values = arrayFieldContext.peekValue()
 
-  // Subscribe to `arrayItems` signals.
+  // Subscribe to `arrayItems` signal.
   arrayFieldContext.arrayItems!.value
 
   const addItem = () => {

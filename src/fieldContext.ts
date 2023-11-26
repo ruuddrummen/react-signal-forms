@@ -5,8 +5,12 @@ import {
 } from "@/plugins/types"
 import { KeyOf, KeysOf } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
-import { ArrayFieldBase, ArrayItemType, Field, isArrayField } from "./fields"
-import { IFormContextLike } from "./formContext"
+import {
+  ArrayFieldItemContext,
+  IArrayFieldContext,
+  createContextForArrayField,
+} from "./arrays/fieldContext"
+import { Field, isArrayField } from "./fields"
 import { FormValues } from "./types"
 
 export type FieldContextCollection<TForm = any> = {
@@ -18,11 +22,6 @@ export interface IFieldContext<TValue = any> {
   setValue(value: TValue | null): void
   peekValue(): TValue
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
-}
-
-export interface IArrayFieldContext<TValue = FormValues[]>
-  extends IFieldContext<TValue> {
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
 }
 
 export class FieldContext<TValue = any>
@@ -120,41 +119,5 @@ export class FieldContext<TValue = any>
       })
 
     return jsonObj
-  }
-}
-
-export interface ArrayFieldItemContext<TValue = FormValues[]>
-  extends IFormContextLike<ArrayItemType<TValue>> {}
-
-function createContextForArrayField<TValue extends FormValues[] = FormValues[]>(
-  field: ArrayFieldBase<TValue>
-): ArrayFieldItemContext<TValue>[] {
-  if (field.defaultValue == null) {
-    return []
-  }
-
-  const items = field.defaultValue.map<ArrayFieldItemContext<TValue>>(
-    (itemValue) =>
-      createContextForArrayFieldItem<TValue>(
-        field,
-        itemValue as ArrayItemType<TValue>
-      )
-  )
-
-  return items
-}
-
-export function createContextForArrayFieldItem<
-  TValue extends FormValues[] = FormValues[],
->(
-  field: ArrayFieldBase<TValue>,
-  itemValue: ArrayItemType<TValue>
-): ArrayFieldItemContext<TValue> {
-  return {
-    fields: KeysOf(field.fields).reduce((contextItems, key) => {
-      contextItems[key] = new FieldContext(field.fields[key], itemValue[key])
-
-      return contextItems
-    }, {} as FieldContextCollection),
   }
 }

@@ -1,12 +1,9 @@
 import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
 import { Field, FieldCollection } from "."
-import {
-  ArrayFieldItemContext,
-  FieldContext,
-  FieldContextCollection,
-} from "./fieldContext"
-import { ArrayFieldBase, FieldBase, isArrayField } from "./fields"
+import { addFieldExtensionsToArrayItems } from "./arrays/fieldContext"
+import { FieldContext, FieldContextCollection } from "./fieldContext"
+import { FieldBase, isArrayField } from "./fields"
 import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
 import { forEachKeyOf } from "./utils"
@@ -23,10 +20,10 @@ const ReactFormContext = createContext<IFormContext>({
   submit: noop,
 })
 
-export const useFormSignals = () => useContext(ReactFormContext)
+export const useFormContext = () => useContext(ReactFormContext)
 
 export interface IFormContextLike<TForm = any> {
-  // Add parent form context here or in array form context.
+  // TODO: Add parent form context here or in array form context.
   fields: FieldContextCollection<TForm>
 }
 
@@ -156,7 +153,7 @@ class FormContext implements IFormContext {
   }
 }
 
-function addFieldExtensions(
+export function addFieldExtensions(
   formContext: IFormContextLike,
   field: Field<any, string, FieldBase<any>>,
   plugins: SignalFormPlugin<any, any, any>[]
@@ -176,23 +173,8 @@ function addFieldExtensions(
   if (isArrayField(field)) {
     addFieldExtensionsToArrayItems(
       field,
-      // formContext,
       fieldContext.arrayItems!.value,
       plugins
     )
   }
-}
-
-export function addFieldExtensionsToArrayItems(
-  field: ArrayFieldBase<any>,
-  // formContext: IFormContextLike<any>,
-  items: ArrayFieldItemContext<FormValues[]>[],
-  plugins: SignalFormPlugin<any, any, any>[]
-) {
-  forEachKeyOf(field.fields, (key) => {
-    // const fieldContext = formContext.fields[field.name] as IArrayFieldContext
-    items.forEach((item) => {
-      addFieldExtensions(item, field.fields[key], plugins)
-    })
-  })
 }

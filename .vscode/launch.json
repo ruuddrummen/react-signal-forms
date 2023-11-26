@@ -11,17 +11,6 @@
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/demo",
       "sourceMaps": true
-      // "pathMapping": {
-      //   "url": "http://localhost:3000",
-      //   "path": "${workspaceFolder}",
-      //   "@fs": ""
-      // }
-      // "sourceMapPathOverrides": {
-      //   "@fs/*": "*",
-      //   "meteor://💻app/*": "${workspaceFolder}/*",
-      //   "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-      //   "webpack://?:*/*": "${workspaceFolder}/*"
-      // }
     }
   ]
 }
