@@ -1,14 +1,19 @@
 /** @jsxImportSource @emotion/react */
+
+import DataArrayIcon from "@mui/icons-material/DataArray"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
+import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import {
   Box,
   Button,
   Divider,
   Grid,
+  Link,
   Paper,
   Stack,
   Typography,
@@ -16,6 +21,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
+import { ArrayForm, ArrayFormItem } from "react-signal-forms/arrays"
 import {
   applicableIf,
   minLength,
@@ -66,6 +72,10 @@ interface FormData {
 
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
+
+  arrayField: Array<{
+    textFieldInArray: string
+  }>
 }
 
 /* Create a specification for your fields */
@@ -150,6 +160,28 @@ const fields = signalForm<FormData>().withFields((field) => ({
       })),
     ],
   }),
+
+  // Array forms (WIP).
+
+  ...field("arrayField").asArray({
+    fields: (arrayField) => ({
+      ...arrayField("textFieldInArray", "Text field in array", {
+        defaultValue: "New item",
+        rules: [required()],
+      }),
+    }),
+    defaultValue: [
+      {
+        textFieldInArray: "Item 1",
+      },
+      {
+        textFieldInArray: "Item 2",
+      },
+      {
+        textFieldInArray: "Item 3",
+      },
+    ],
+  }),
 }))
 
 /* Render your form */
@@ -231,12 +263,12 @@ export const DemoForm = React.memo(() => {
             <GridHeader>
               <JoinFullIcon /> Combining rules
             </GridHeader>
-            <Grid item md={12}>
-              <Paragraph>
+            <Grid item xs={12}>
+              <P>
                 Rules can be combined. Priority on error messages is based on
                 the order in which the rules are specified. Also, validation
                 rules are not applied if a field is not applicable.
-              </Paragraph>
+              </P>
             </Grid>
             <Grid item md={6} xs={12}>
               <Switch field={fields.makeComplicatedFieldApplicable} />
@@ -244,6 +276,54 @@ export const DemoForm = React.memo(() => {
             <Grid item md={6} xs={12}>
               <TextInput field={fields.complicatedField} />
             </Grid>
+
+            <GridDivider />
+            <GridHeader>
+              <DataArrayIcon /> Array forms
+            </GridHeader>
+            <Grid item xs={12}>
+              <P>
+                <Span color="warning.main">
+                  <WarningAmberIcon />
+                </Span>{" "}
+                This feature is in development. Expect changes to DX, extended
+                context awareness to field rules, and render optimizations.
+                Progress is tracked in{" "}
+                <Link href="https://github.com/ruuddrummen/react-signal-forms/issues/61">
+                  #61
+                </Link>
+                .
+              </P>
+            </Grid>
+
+            <ArrayForm arrayField={fields.arrayField}>
+              {({ items, arrayFields, removeItem, addItem }) => (
+                <>
+                  {items.map((_item, i) => (
+                    <ArrayFormItem index={i} key={i}>
+                      <Grid item xs={6}>
+                        <TextInput field={arrayFields.textFieldInArray} />
+                        <Button
+                          onClick={() => removeItem(i)}
+                          color="error"
+                          sx={{ width: "100%" }}
+                        >
+                          <DeleteOutlineIcon /> Remove item
+                        </Button>
+                      </Grid>
+                    </ArrayFormItem>
+                  ))}
+                  <Grid item xs={6}>
+                    <Button
+                      onClick={addItem}
+                      sx={{ width: "100%", height: "100%" }}
+                    >
+                      Add item
+                    </Button>
+                  </Grid>
+                </>
+              )}
+            </ArrayForm>
           </Grid>
         </SubmitBackdrop>
         <Box
@@ -287,8 +367,22 @@ const GridDivider = () => (
   </Grid>
 )
 
-const Paragraph = ({ children }: React.PropsWithChildren<object>) => (
-  <Typography paragraph>{children}</Typography>
+const P = ({
+  children,
+  color,
+}: React.PropsWithChildren<{ color?: string }>) => (
+  <Typography paragraph color={color}>
+    {children}
+  </Typography>
+)
+
+const Span = ({
+  children,
+  color,
+}: React.PropsWithChildren<{ color?: string }>) => (
+  <Typography display="inline" color={color}>
+    {children}
+  </Typography>
 )
 
 const TouchAllFieldsButton = () => {

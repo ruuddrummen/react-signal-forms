@@ -1,10 +1,15 @@
 import React from "react"
+import { IArrayFieldContext } from "./arrays/fieldContext"
+import {
+  useArrayFormContext,
+  useArrayFormItemContext,
+} from "./arrays/reactContext"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
   IFormContext,
+  useFormContext,
   useFormContextProvider,
-  useFormSignals,
 } from "./formContext"
 import {
   ExpandFieldContextProperties,
@@ -39,6 +44,7 @@ export function configureSignalForm<
     SignalForm: (props) => {
       return <SignalForm {...props} extensions={extensions} />
     },
+
     useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
       if (field == null) {
         throw new Error(
@@ -46,12 +52,29 @@ export function configureSignalForm<
         )
       }
 
-      const formContext = useFormSignals()
-      return formContext.fields[field.name] as IFieldContext &
+      const formContext = useFormContext()
+      const arrayFormContext = useArrayFormContext()
+      const arrayFormItemContext = useArrayFormItemContext()
+
+      if (arrayFormContext != null && arrayFormItemContext != null) {
+        const arrayFieldContext = formContext.fields[
+          arrayFormContext.arrayField.name
+        ] as IArrayFieldContext
+
+        const fieldContext =
+          arrayFieldContext.arrayItems!.value[arrayFormItemContext.index]
+            .fields[field.name]
+        return fieldContext as IFieldContext &
+          ExpandFieldContextProperties<TExtensions>
+      }
+
+      const fieldContext = formContext.fields[field.name]
+      return fieldContext as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
     },
+
     useFormSignals: function () {
-      const formContext = useFormSignals()
+      const formContext = useFormContext()
 
       return formContext as IFormContext &
         ExpandFormContextProperties<TExtensions>

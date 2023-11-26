@@ -4,6 +4,7 @@ import { KeyOf } from "./utils"
 // #region Field types
 
 export interface FieldBase<TValue = unknown> {
+  type?: string
   name: string
   label: string | null
   defaultValue?: TValue
@@ -53,6 +54,7 @@ export const signalForm = <TForm>() => ({
 
     // Clean up descriptor methods.
     delete (fields as any).as
+    delete (fields as any).asArray
     delete (fields as any).asHidden
 
     return fields
@@ -95,6 +97,7 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
 ): FieldDescriptor<TForm, TKey, never> {
   return {
     [field.name]: field,
+
     as: <TFieldBase extends FieldBase<TForm[TKey]>>(
       properties: Field<TForm, TKey, TFieldBase>
     ) => {
@@ -102,6 +105,28 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
         [field.name]: { ...field, ...properties },
       }
     },
+
+    asArray: (properties) => {
+      const fieldBuilder = createFieldBuilder<ArrayItemType<TForm[TKey]>>()
+      const { fields: fieldsFn, ...otherProperties } = properties
+      const fields = fieldsFn(fieldBuilder)
+
+      // Clean up descriptor methods.
+      delete (fields as any).as
+      delete (fields as any).asArray
+      delete (fields as any).asHidden
+
+      return {
+        [field.name]: {
+          name: field.name,
+          type: "array",
+          label: null,
+          fields,
+          ...otherProperties,
+        },
+      }
+    },
+
     asHidden: () => {
       return {
         [field.name]: field,
@@ -144,6 +169,15 @@ type FieldDescriptor<
     properties: Omit<Field<TForm, TKey, TFieldBase>, TExcept>
   ) => FieldItem<TForm, TKey, TFieldBase>
 
+  asArray: (
+    properties: Omit<
+      Field<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>,
+      "type" | "name" | "label" | "fields"
+    > & {
+      fields: ArrayFieldBuilder<TForm[TKey]>
+    }
+  ) => FieldItem<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>
+
   /**
    * Configures the field as hidden.
    */
@@ -156,6 +190,32 @@ type FieldItem<
   TFieldBase extends FieldBase<TForm[TKey]>,
 > = {
   [name in TKey]: Field<TForm, TKey, TFieldBase>
+}
+
+// #endregion
+
+// #region Array form types
+
+type AsArrayValueType<TValue> = TValue extends FormValues[] ? TValue : never
+
+export interface ArrayFieldBase<TArray extends FormValues[] = FormValues[]>
+  extends FieldBase<TArray> {
+  type: "array"
+  fields: FieldCollection<ArrayItemType<TArray>>
+}
+
+export type ArrayItemType<TArray> = TArray extends Array<infer TItem>
+  ? TItem
+  : never
+
+type ArrayFieldBuilder<TArray> = (
+  field: FieldBuilder<ArrayItemType<TArray>>
+) => FieldCollection<ArrayItemType<TArray>>
+
+export function isArrayField<TValue>(
+  field: FieldBase<TValue>
+): field is ArrayFieldBase<TValue & FormValues[]> {
+  return field.type === "array"
 }
 
 // #endregion

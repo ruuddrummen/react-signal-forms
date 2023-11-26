@@ -23,6 +23,7 @@
     "paths": {
       "react-signal-forms": ["../src"],
       "react-signal-forms/plugins": ["../src/plugins"],
+      "react-signal-forms/arrays": ["../src/arrays"],
       "react-signal-forms/rules": ["../src/rules"],
       "@/*": ["../src/*"]
     },
