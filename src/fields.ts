@@ -171,12 +171,12 @@ type FieldDescriptor<
 
   asArray: (
     properties: Omit<
-      Field<TForm, TKey, ArrayFieldBase<TForm[TKey]>>,
+      Field<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>,
       "type" | "name" | "label" | "fields"
     > & {
       fields: ArrayFieldBuilder<TForm[TKey]>
     }
-  ) => FieldItem<TForm, TKey, ArrayFieldBase<TForm[TKey]>>
+  ) => FieldItem<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>
 
   /**
    * Configures the field as hidden.
@@ -196,7 +196,10 @@ type FieldItem<
 
 // #region Array form types
 
-export interface ArrayFieldBase<TArray = any> extends FieldBase<TArray> {
+type AsArrayValueType<TValue> = TValue extends FormValues[] ? TValue : never
+
+export interface ArrayFieldBase<TArray extends FormValues[] = FormValues[]>
+  extends FieldBase<TArray> {
   type: "array"
   fields: FieldCollection<ArrayItemType<TArray>>
 }
@@ -211,7 +214,7 @@ type ArrayFieldBuilder<TArray> = (
 
 export function isArrayField<TValue>(
   field: FieldBase<TValue>
-): field is ArrayFieldBase<TValue> {
+): field is ArrayFieldBase<TValue & FormValues[]> {
   return field.type === "array"
 }
 

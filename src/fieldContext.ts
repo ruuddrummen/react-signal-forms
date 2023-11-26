@@ -5,8 +5,8 @@ import {
 } from "@/plugins/types"
 import { KeyOf, KeysOf } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
-import { ArrayItemType, Field, FieldBase, isArrayField } from "./fields"
-import { IFormContextBase } from "./formContext"
+import { ArrayFieldBase, ArrayItemType, Field, isArrayField } from "./fields"
+import { IFormContextLike } from "./formContext"
 import { FormValues } from "./types"
 
 export type FieldContextCollection<TForm = any> = {
@@ -22,7 +22,7 @@ export interface IFieldContext<TValue = any> {
 
 export interface IArrayFieldContext<TValue = FormValues[]>
   extends IFieldContext<TValue> {
-  arrayItems: ArrayFieldContextItem<TValue>[] | undefined
+  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
 }
 
 export class FieldContext<TValue = any>
@@ -40,9 +40,9 @@ export class FieldContext<TValue = any>
     this.__extensions = {}
 
     if (isArrayField(field)) {
-      this.arrayItems = createContextItemsForArrayField(field)
+      this.arrayItems = signal(createContextForArrayField(field))
       this.__valueSignal = computed<TValue>(() => {
-        return this.arrayItems!.map((item) => {
+        return this.arrayItems!.value.map((item) => {
           return KeysOf(item.fields).reduce((itemValues, key) => {
             itemValues[key] = item.fields[key].value
 
@@ -99,7 +99,7 @@ export class FieldContext<TValue = any>
   /**
    * Only relevant for array form fields.
    */
-  arrayItems: ArrayFieldContextItem<TValue>[] | undefined
+  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
 
   toJSON() {
     const proto = Object.getPrototypeOf(this)
@@ -123,30 +123,38 @@ export class FieldContext<TValue = any>
   }
 }
 
-function createContextItemsForArrayField<
-  TValue extends FormValues[] = FormValues[],
->(field: FieldBase<TValue>): ArrayFieldContextItem<TValue>[] {
-  if (!isArrayField(field) || field.defaultValue == null) {
+export interface ArrayFieldItemContext<TValue = FormValues[]>
+  extends IFormContextLike<ArrayItemType<TValue>> {}
+
+function createContextForArrayField<TValue extends FormValues[] = FormValues[]>(
+  field: ArrayFieldBase<TValue>
+): ArrayFieldItemContext<TValue>[] {
+  if (field.defaultValue == null) {
     return []
   }
 
-  const items = field.defaultValue.map<ArrayFieldContextItem<TValue>>(
-    (itemValue) => {
-      return {
-        fields: Object.keys(field.fields).reduce((contextItems, key) => {
-          contextItems[key] = new FieldContext(
-            field.fields[key],
-            itemValue[key]
-          )
-
-          return contextItems
-        }, {} as FieldContextCollection),
-      }
-    }
+  const items = field.defaultValue.map<ArrayFieldItemContext<TValue>>(
+    (itemValue) =>
+      createContextForArrayFieldItem<TValue>(
+        field,
+        itemValue as ArrayItemType<TValue>
+      )
   )
 
   return items
 }
 
-export interface ArrayFieldContextItem<TValue = FormValues[]>
-  extends IFormContextBase<ArrayItemType<TValue>> {}
+export function createContextForArrayFieldItem<
+  TValue extends FormValues[] = FormValues[],
+>(
+  field: ArrayFieldBase<TValue>,
+  itemValue: ArrayItemType<TValue>
+): ArrayFieldItemContext<TValue> {
+  return {
+    fields: KeysOf(field.fields).reduce((contextItems, key) => {
+      contextItems[key] = new FieldContext(field.fields[key], itemValue[key])
+
+      return contextItems
+    }, {} as FieldContextCollection),
+  }
+}

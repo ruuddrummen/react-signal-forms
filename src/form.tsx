@@ -58,9 +58,8 @@ export function configureSignalForm<
         ] as IArrayFieldContext
 
         const fieldContext =
-          arrayFieldContext.arrayItems![arrayFormItemContext.index].fields[
-            field.name
-          ]
+          arrayFieldContext.arrayItems!.value[arrayFormItemContext.index]
+            .fields[field.name]
         return fieldContext as IFieldContext &
           ExpandFieldContextProperties<TExtensions>
       }

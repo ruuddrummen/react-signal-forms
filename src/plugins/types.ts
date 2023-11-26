@@ -1,4 +1,4 @@
-import { IFormContextBase } from "@/formContext"
+import { IFormContextLike } from "@/formContext"
 import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
 import { FormValues } from "@/types"
 import { KeyOf } from "@/utils"
@@ -18,14 +18,14 @@ export type ContextProperties = Record<string, unknown>
  * Interface for describing a signal form plugin.
  */
 export interface SignalFormPlugin<
-  TFieldContextExtension extends FieldContextExtension,
-  TFieldContextProperties extends ContextProperties,
-  TFormContextProperties extends ContextProperties,
+  TFieldContextExtension extends FieldContextExtension = FieldContextExtension,
+  TFieldContextProperties extends ContextProperties = ContextProperties,
+  TFormContextProperties extends ContextProperties = ContextProperties,
 > {
   name: string
   createFieldExtension(
     field: Field,
-    formContext: IFormContextBase
+    formContext: IFormContextLike
   ): TFieldContextExtension
   createFieldProperties?(
     extension: TFieldContextExtension

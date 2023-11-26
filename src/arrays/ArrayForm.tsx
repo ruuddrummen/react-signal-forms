@@ -1,31 +1,70 @@
+import {
+  IArrayFieldContext,
+  createContextForArrayFieldItem,
+} from "@/fieldContext"
 import { ArrayFieldBase, ArrayItemType, FieldCollection } from "@/fields"
-import { useFormSignals } from "@/formContext"
+import {
+  addFieldExtensionsToArrayItems,
+  useFormSignals as useFormContext,
+} from "@/formContext"
+import { FormValues } from "@/types"
 import React from "react"
-import { IFieldContext } from ".."
 import {
   ArrayFormContextProvider,
   ArrayFormItemContextProvider,
 } from "./context"
 
-interface ArrayFormProps<TArray> {
+interface ArrayFormProps<TArray extends FormValues[]> {
   arrayField: ArrayFieldBase<TArray>
   children?: (args: {
     items: TArray
     arrayFields: FieldCollection<ArrayItemType<TArray>>
+    addItem: () => void
+    removeItem: (index: number) => void
   }) => React.ReactNode
 }
 
-export const ArrayForm = <TArray,>({
+export const ArrayForm = <TArray extends FormValues[]>({
   arrayField,
   children,
 }: ArrayFormProps<TArray>) => {
-  const { fields: allFieldSignals } = useFormSignals()
-  const fieldSignals = allFieldSignals[arrayField.name] as IFieldContext<TArray>
-  const items = fieldSignals.peekValue()
+  const { fields, plugins } = useFormContext()
+  const arrayFieldContext = fields[
+    arrayField.name
+  ] as IArrayFieldContext<TArray>
+  const values = arrayFieldContext.peekValue()
+
+  // Subscribe to `arrayItems` signals.
+  arrayFieldContext.arrayItems!.value
+
+  const addItem = () => {
+    const newItem = createContextForArrayFieldItem(
+      arrayField,
+      arrayField.defaultValue as ArrayItemType<TArray>
+    )
+
+    addFieldExtensionsToArrayItems(arrayField, [newItem], plugins)
+
+    arrayFieldContext.arrayItems!.value = [
+      ...arrayFieldContext.arrayItems!.value,
+      newItem,
+    ]
+  }
+
+  const removeItem = (index: number) => {
+    arrayFieldContext.arrayItems!.value =
+      arrayFieldContext.arrayItems!.value.filter((_value, i) => i !== index)
+  }
 
   return (
     <ArrayFormContextProvider value={{ arrayField }}>
-      {children && children({ items, arrayFields: arrayField.fields })}
+      {children &&
+        children({
+          items: values,
+          arrayFields: arrayField.fields,
+          addItem,
+          removeItem,
+        })}
     </ArrayFormContextProvider>
   )
 }

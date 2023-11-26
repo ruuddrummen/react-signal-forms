@@ -277,20 +277,27 @@ export const DemoForm = React.memo(() => {
             <GridDivider />
             <GridHeader>Array forms</GridHeader>
             <ArrayForm arrayField={fields.arrayField}>
-              {({ items, arrayFields }) => (
+              {({ items, arrayFields, removeItem, addItem }) => (
                 <>
                   {items.map((item, i) => (
                     <ArrayFormItem item={item} index={i} key={i}>
                       <Grid item xs={6}>
                         <TextInput field={arrayFields.textFieldInArray} />
-                        <Button color="error" sx={{ width: "100%" }}>
+                        <Button
+                          onClick={() => removeItem(i)}
+                          color="error"
+                          sx={{ width: "100%" }}
+                        >
                           <DeleteOutlineIcon /> Remove item
                         </Button>
                       </Grid>
                     </ArrayFormItem>
                   ))}
                   <Grid item xs={6}>
-                    <Button sx={{ width: "100%", height: "100%" }}>
+                    <Button
+                      onClick={addItem}
+                      sx={{ width: "100%", height: "100%" }}
+                    >
                       Add item
                     </Button>
                   </Grid>

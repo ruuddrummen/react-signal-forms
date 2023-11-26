@@ -2,11 +2,11 @@ import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
 import { Field, FieldCollection } from "."
 import {
+  ArrayFieldItemContext,
   FieldContext,
   FieldContextCollection,
-  IArrayFieldContext,
 } from "./fieldContext"
-import { FieldBase, isArrayField } from "./fields"
+import { ArrayFieldBase, FieldBase, isArrayField } from "./fields"
 import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
 import { forEachKeyOf } from "./utils"
@@ -15,6 +15,7 @@ const noop = () => ({}) as any
 
 const ReactFormContext = createContext<IFormContext>({
   fieldSpecifications: {},
+  plugins: [],
   fields: {},
   isSubmitting: false,
   peekValues: noop,
@@ -24,13 +25,14 @@ const ReactFormContext = createContext<IFormContext>({
 
 export const useFormSignals = () => useContext(ReactFormContext)
 
-export interface IFormContextBase<TForm = any> {
+export interface IFormContextLike<TForm = any> {
   // Add parent form context here or in array form context.
   fields: FieldContextCollection<TForm>
 }
 
-export interface IFormContext<TForm = any> extends IFormContextBase<TForm> {
+export interface IFormContext<TForm = any> extends IFormContextLike<TForm> {
   fieldSpecifications: FieldCollection<TForm>
+  plugins: Array<SignalFormPlugin>
   isSubmitting: boolean
   peekValues(): FormValues
   setValues(values: FormValues): void
@@ -40,11 +42,11 @@ export interface IFormContext<TForm = any> extends IFormContextBase<TForm> {
 // TODO: add and initialize with `initialValues` parameter.
 export function useFormContextProvider(
   fields: FieldCollection,
-  extensions: Array<SignalFormPlugin<any, any, any>>,
+  plugins: Array<SignalFormPlugin<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
 ) {
   const formContext = useRef<IFormContext>(
-    createFormContext(fields, extensions, onSubmit)
+    createFormContext(fields, plugins, onSubmit)
   )
 
   return {
@@ -57,7 +59,7 @@ function createFormContext(
   fields: FieldCollection,
   extensions: Array<SignalFormPlugin<any, any, any>>,
   onSubmit?: (values: FormValues) => Promise<void>
-) {
+): IFormContext {
   const formContext = new FormContext(fields, extensions, onSubmit)
 
   console.log("(Form) Created field signals", formContext)
@@ -70,6 +72,7 @@ class FormContext implements IFormContext {
   private __onSubmit: ((values: FormValues) => Promise<void>) | undefined
   fields: FieldContextCollection<any>
   fieldSpecifications: FieldCollection<any>
+  plugins: Array<SignalFormPlugin>
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value
@@ -77,10 +80,11 @@ class FormContext implements IFormContext {
 
   constructor(
     fields: FieldCollection,
-    extensions: Array<SignalFormPlugin<any, any, any>>,
+    plugins: Array<SignalFormPlugin<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
     this.fieldSpecifications = fields
+    this.plugins = plugins
     this.__isSubmittingSignal = signal(false)
     this.__onSubmit = onSubmit
 
@@ -96,10 +100,10 @@ class FormContext implements IFormContext {
     forEachKeyOf(fields, (key) => {
       const field = fields[key]
 
-      addFieldExtensions(this, field, extensions)
+      addFieldExtensions(this, field, plugins)
     })
 
-    extensions.forEach((ext) => {
+    plugins.forEach((ext) => {
       if (typeof ext.createFormProperties !== "function") {
         return
       }
@@ -153,28 +157,42 @@ class FormContext implements IFormContext {
 }
 
 function addFieldExtensions(
-  formContext: IFormContextBase,
+  formContext: IFormContextLike,
   field: Field<any, string, FieldBase<any>>,
-  extensions: SignalFormPlugin<any, any, any>[]
+  plugins: SignalFormPlugin<any, any, any>[]
 ) {
   const fieldContext = formContext.fields[field.name] as FieldContext
 
-  extensions.forEach((ext) => {
-    const fieldExtension = ext.createFieldExtension(field, formContext)
+  plugins.forEach((plugin) => {
+    const fieldExtension = plugin.createFieldExtension(field, formContext)
 
     fieldContext.addExtension(
-      ext.name,
+      plugin.name,
       fieldExtension,
-      ext.createFieldProperties?.(fieldExtension)
+      plugin.createFieldProperties?.(fieldExtension)
     )
   })
 
   if (isArrayField(field)) {
-    forEachKeyOf(field.fields, (key) => {
-      const fieldContext = formContext.fields[field.name] as IArrayFieldContext
-      fieldContext.arrayItems?.forEach((item) => {
-        addFieldExtensions(item, field.fields[key], extensions)
-      })
-    })
+    addFieldExtensionsToArrayItems(
+      field,
+      // formContext,
+      fieldContext.arrayItems!.value,
+      plugins
+    )
   }
+}
+
+export function addFieldExtensionsToArrayItems(
+  field: ArrayFieldBase<any>,
+  // formContext: IFormContextLike<any>,
+  items: ArrayFieldItemContext<FormValues[]>[],
+  plugins: SignalFormPlugin<any, any, any>[]
+) {
+  forEachKeyOf(field.fields, (key) => {
+    // const fieldContext = formContext.fields[field.name] as IArrayFieldContext
+    items.forEach((item) => {
+      addFieldExtensions(item, field.fields[key], plugins)
+    })
+  })
 }
