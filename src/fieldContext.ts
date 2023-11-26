@@ -3,8 +3,8 @@ import {
   FieldContextExtensions,
   PropertyDescriptors,
 } from "@/plugins/types"
-import { KeyOf } from "@/utils"
-import { Signal, signal } from "@preact/signals-react"
+import { KeyOf, KeysOf } from "@/utils"
+import { Signal, computed, signal } from "@preact/signals-react"
 import { ArrayItemType, Field, FieldBase, isArrayField } from "./fields"
 import { FormValues } from "./types"
 
@@ -37,9 +37,16 @@ export class FieldContext<TValue = any>
     this.__extensions = {}
 
     if (isArrayField(field)) {
-      this.__valueSignal = signal(initialValue ?? field.defaultValue ?? [])
-      this.arrayItems = createContextItemsForArrayField(field)
-      // console.log("arrayItems:", this.arrayItems)
+      this.arrayItems = createContextItemsForArrayField<FormValues[]>(field)
+      this.__valueSignal = computed<TValue>(() => {
+        return this.arrayItems!.map((item) => {
+          return KeysOf(item.fields).reduce((itemValues, key) => {
+            itemValues[key] = item.fields[key].value
+
+            return itemValues
+          }, {} as FormValues)
+        }) as TValue
+      })
     } else {
       this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
     }

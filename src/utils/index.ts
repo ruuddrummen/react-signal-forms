@@ -7,6 +7,10 @@ export function forAllKeysOf<T extends {}>(
   return Object.keys(obj).every((key) => test(key as any))
 }
 
+export function KeysOf<T extends {}>(obj: T): Array<KeyOf<T>> {
+  return Object.keys(obj) as Array<KeyOf<T>>
+}
+
 export function forEachKeyOf<T extends {}>(
   obj: T,
   action: (key: KeyOf<T>) => void

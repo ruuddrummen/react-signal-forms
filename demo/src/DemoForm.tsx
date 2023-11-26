@@ -168,17 +168,19 @@ const fields = signalForm<FormData>().withFields((field) => ({
 
   ...field("arrayField").asArray({
     fields: (arrayField) => ({
-      ...arrayField("textFieldInArray", "Text field in array"),
+      ...arrayField("textFieldInArray", "Text field in array", {
+        defaultValue: "New item",
+      }),
     }),
     defaultValue: [
       {
-        textFieldInArray: "Default value 1",
+        textFieldInArray: "Item 1",
       },
       {
-        textFieldInArray: "Default value 2",
+        textFieldInArray: "Item 2",
       },
       {
-        textFieldInArray: "Default value 3",
+        textFieldInArray: "Item 3",
       },
     ],
   }),
@@ -280,14 +282,12 @@ export const DemoForm = React.memo(() => {
             <GridDivider />
             <GridHeader>Array forms</GridHeader>
             <ArrayForm arrayField={fields.arrayField}>
-              {(items) =>
+              {({ items, arrayFields: fieldsInArray }) =>
                 items.map((item, i) => (
                   <ArrayFormItem item={item} index={i} key={i}>
-                    {(arrayFields) => (
-                      <Grid item xs={6}>
-                        <TextInput field={arrayFields.textFieldInArray} />
-                      </Grid>
-                    )}
+                    <Grid item xs={6}>
+                      <TextInput field={fieldsInArray.textFieldInArray} />
+                    </Grid>
                   </ArrayFormItem>
                 ))
               }

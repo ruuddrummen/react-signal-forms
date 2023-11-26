@@ -56,6 +56,7 @@ export function configureSignalForm<
         const arrayFieldContext = formContext.fieldSignals[
           arrayFormContext.arrayField.name
         ] as IArrayFieldContext
+
         const fieldContext =
           arrayFieldContext.arrayItems![arrayFormItemContext.index].fields[
             field.name
