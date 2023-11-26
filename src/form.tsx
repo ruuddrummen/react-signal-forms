@@ -52,23 +52,19 @@ export function configureSignalForm<
       const arrayFormContext = useArrayFormContext()
       const arrayFormItemContext = useArrayFormItemContext()
 
-      if (field.type === "array") {
-        // const items = fieldContext.value as any[]
-        if (arrayFormContext == null || arrayFormItemContext == null) {
-          throw new Error(
-            "array form fields must be rendered inside `ArrayForm` and `ArrayFormItem` components."
-          )
-        }
-        const arrayFieldContext = formContext.fields[
-          arrayFormContext.field.name
+      if (arrayFormContext != null && arrayFormItemContext != null) {
+        const arrayFieldContext = formContext.fieldSignals[
+          arrayFormContext.arrayField.name
         ] as IArrayFieldContext
         const fieldContext =
-          arrayFieldContext.items[arrayFormItemContext.index].fields[field.name]
+          arrayFieldContext.arrayItems![arrayFormItemContext.index].fields[
+            field.name
+          ]
         return fieldContext as IFieldContext &
           ExpandFieldContextProperties<TExtensions>
       }
 
-      const fieldContext = formContext.fields[field.name]
+      const fieldContext = formContext.fieldSignals[field.name]
       return fieldContext as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
     },

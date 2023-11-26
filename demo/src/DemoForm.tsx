@@ -115,7 +115,9 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("makeFieldRequired", "Make next field required"),
   ...field("canBeRequired", "Required depending on other values", {
     rules: [
-      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
+      requiredIf(
+        ({ form }) => form.fieldSignals.makeFieldRequired.value === true
+      ),
     ],
   }),
 
@@ -125,7 +127,9 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
     rules: [
-      applicableIf(({ fields }) => fields.showSecretField.value === true),
+      applicableIf(
+        ({ fieldSignals: fields }) => fields.showSecretField.value === true
+      ),
     ],
   }),
 
@@ -137,7 +141,9 @@ const fields = signalForm<FormData>().withFields((field) => ({
   }),
   ...field("makeFieldReadonly", "Make the next field readonly"),
   ...field("canBeReadOnly", "Can be readonly", {
-    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
+    rules: [
+      readonlyIf((form) => form.fieldSignals.makeFieldReadonly.value === true),
+    ],
   }),
 
   // Combining rules.
@@ -146,7 +152,8 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("complicatedField", "Only validated if applicable", {
     rules: [
       applicableIf(
-        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
+        ({ fieldSignals: fields }) =>
+          fields.makeComplicatedFieldApplicable.value === true
       ),
       required(),
       minLength(5),
@@ -163,6 +170,17 @@ const fields = signalForm<FormData>().withFields((field) => ({
     fields: (arrayField) => ({
       ...arrayField("textFieldInArray", "Text field in array"),
     }),
+    defaultValue: [
+      {
+        textFieldInArray: "Default value 1",
+      },
+      {
+        textFieldInArray: "Default value 2",
+      },
+      {
+        textFieldInArray: "Default value 3",
+      },
+    ],
   }),
 }))
 
@@ -258,17 +276,17 @@ export const DemoForm = React.memo(() => {
             <Grid item md={6} xs={12}>
               <TextInput field={fields.complicatedField} />
             </Grid>
-          </Grid>
 
-          <GridDivider />
-          <GridHeader>Array forms</GridHeader>
-          <Grid item xs={12}>
-            <ArrayForm field={fields.arrayField}>
+            <GridDivider />
+            <GridHeader>Array forms</GridHeader>
+            <ArrayForm arrayField={fields.arrayField}>
               {(items) =>
                 items.map((item, i) => (
-                  <ArrayFormItem item={item} key={i}>
+                  <ArrayFormItem item={item} index={i} key={i}>
                     {(arrayFields) => (
-                      <TextInput field={arrayFields.textFieldInArray} />
+                      <Grid item xs={6}>
+                        <TextInput field={arrayFields.textFieldInArray} />
+                      </Grid>
                     )}
                   </ArrayFormItem>
                 ))

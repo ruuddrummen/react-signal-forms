@@ -8,8 +8,8 @@ import { FormValues } from "./types"
 const noop = () => ({}) as any
 
 const ReactFormContext = createContext<IFormContext>({
-  fieldSpecs: {},
   fields: {},
+  fieldSignals: {},
   isSubmitting: false,
   peekValues: noop,
   setValues: noop,
@@ -19,8 +19,8 @@ const ReactFormContext = createContext<IFormContext>({
 export const useFormSignals = () => useContext(ReactFormContext)
 
 export interface IFormContext<TForm = any> {
-  fieldSpecs: FieldCollection<TForm>
-  fields: FieldContextCollection<TForm>
+  fields: FieldCollection<TForm>
+  fieldSignals: FieldContextCollection<TForm>
   isSubmitting: boolean
   peekValues(): FormValues
   setValues(values: FormValues): void
@@ -58,8 +58,8 @@ function createFormContext(
 class FormContext implements IFormContext {
   private __isSubmittingSignal: Signal<boolean>
   private __onSubmit: ((values: FormValues) => Promise<void>) | undefined
-  fields: FieldContextCollection<any>
-  fieldSpecs: FieldCollection<any>
+  fieldSignals: FieldContextCollection<any>
+  fields: FieldCollection<any>
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value
@@ -70,11 +70,11 @@ class FormContext implements IFormContext {
     extensions: Array<SignalFormPlugin<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
-    this.fieldSpecs = fields
+    this.fields = fields
     this.__isSubmittingSignal = signal(false)
     this.__onSubmit = onSubmit
 
-    this.fields = Object.keys(fields).reduce<FieldContextCollection>(
+    this.fieldSignals = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, key) => {
         prev[key] = new FieldContext(fields[key]) // TODO add initial value.
 
@@ -85,7 +85,7 @@ class FormContext implements IFormContext {
 
     Object.keys(fields).forEach((key) => {
       const field = fields[key]
-      const fieldContext = this.fields[key] as FieldContext
+      const fieldContext = this.fieldSignals[key] as FieldContext
 
       extensions.forEach((ext) => {
         const fieldExtension = ext.createFieldExtension(field, this)
@@ -102,7 +102,9 @@ class FormContext implements IFormContext {
       if (typeof ext.createFormProperties !== "function") {
         return
       }
-      const fieldSignals = Object.keys(fields).map((key) => this.fields[key])
+      const fieldSignals = Object.keys(fields).map(
+        (key) => this.fieldSignals[key]
+      )
       const fieldExtensions = fieldSignals.map((field) =>
         (field as FieldContext).getExtension(ext.name)
       )
@@ -116,17 +118,20 @@ class FormContext implements IFormContext {
   }
 
   peekValues = () => {
-    return Object.keys(this.fields).reduce<FormValues>((values, current) => {
-      const field = this.fields[current] as FieldContext
-      values[current] = field.peekValue()
+    return Object.keys(this.fieldSignals).reduce<FormValues>(
+      (values, current) => {
+        const field = this.fieldSignals[current] as FieldContext
+        values[current] = field.peekValue()
 
-      return values
-    }, {})
+        return values
+      },
+      {}
+    )
   }
 
   setValues = (values: FormValues): void => {
     Object.keys(values).forEach((key) => {
-      const field = this.fields[key]
+      const field = this.fieldSignals[key]
 
       if (field != null) {
         field.setValue(values[key])

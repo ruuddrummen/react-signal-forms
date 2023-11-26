@@ -12,8 +12,6 @@ export const readonlyRulesPlugin = createPlugin(PLUGIN_NAME, {
         const rules = (field.rules?.filter((r) => r.plugin === PLUGIN_NAME) ??
           []) as ReadonlyFieldRule<any, any>[]
 
-        console.log(`(${field.name}) Checking ${rules.length} readonly rules.`)
-
         return rules.some((r) => r.test(formContext))
       }),
     }

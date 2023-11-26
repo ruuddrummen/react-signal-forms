@@ -2,7 +2,7 @@ import { ArrayFieldBase } from "@/fields"
 import React, { useContext } from "react"
 
 interface IArrayContext {
-  field: ArrayFieldBase
+  arrayField: ArrayFieldBase
 }
 
 const ArrayFormContext = React.createContext<IArrayContext | null>(null)

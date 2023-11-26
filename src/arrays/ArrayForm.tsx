@@ -5,23 +5,24 @@ import { IFieldContext } from ".."
 import {
   ArrayFormContextProvider,
   ArrayFormItemContextProvider,
+  useArrayFormContext,
 } from "./context"
 
 interface ArrayFormProps<TArray> {
-  field: ArrayFieldBase<TArray>
+  arrayField: ArrayFieldBase<TArray>
   children?: (items: TArray) => React.ReactNode
 }
 
 export const ArrayForm = <TArray,>({
-  field,
+  arrayField,
   children,
 }: ArrayFormProps<TArray>) => {
-  const { fields } = useFormSignals()
-  const fieldSignals = fields[field.name] as IFieldContext<TArray>
+  const { fieldSignals: fields } = useFormSignals()
+  const fieldSignals = fields[arrayField.name] as IFieldContext<TArray>
   const items = fieldSignals.peekValue()
 
   return (
-    <ArrayFormContextProvider value={{ field: field }}>
+    <ArrayFormContextProvider value={{ arrayField }}>
       {children && children(items)}
     </ArrayFormContextProvider>
   )
@@ -29,19 +30,20 @@ export const ArrayForm = <TArray,>({
 
 interface ArrayItemProps<TItem> {
   item: TItem
-  key: number
+  index: number
   children?: (fields: FieldCollection<TItem>) => React.ReactNode
 }
 
 export const ArrayFormItem = <TItem,>({
-  key,
+  index,
   children,
 }: ArrayItemProps<TItem>) => {
-  const { fieldSpecs } = useFormSignals()
+  const arrayFormContext = useArrayFormContext()
+  const arrayField = arrayFormContext?.arrayField! as ArrayFieldBase<TItem[]>
 
   return (
-    <ArrayFormItemContextProvider value={{ index: key }}>
-      {children && children(fieldSpecs)}
+    <ArrayFormItemContextProvider value={{ index }}>
+      {children && children(arrayField.fields)}
     </ArrayFormItemContextProvider>
   )
 }

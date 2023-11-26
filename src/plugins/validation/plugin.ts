@@ -58,7 +58,7 @@ function createFieldExtension(
   field: Field,
   formContext: IFormContext
 ): ValidationFieldExtension {
-  const fieldContext = formContext.fields[field.name]
+  const fieldContext = formContext.fieldSignals[field.name]
   const rules = (field.rules?.filter(isValidationRule) ??
     []) as ValidationFieldRule[]
 

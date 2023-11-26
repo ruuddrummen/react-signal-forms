@@ -21,7 +21,7 @@ export interface IFieldContext<TValue = any> {
 
 export interface IArrayFieldContext<TValue = FormValues[]>
   extends IFieldContext<TValue> {
-  items: ArrayFieldContextItem<TValue>[]
+  arrayItems: ArrayFieldContextItem<TValue>[] | undefined
 }
 
 export class FieldContext<TValue = any>
@@ -34,10 +34,17 @@ export class FieldContext<TValue = any>
   > = []
 
   constructor(field: Field, initialValue?: TValue) {
-    this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
     this.__extensions = {}
 
-    this.items = isArrayField(field)
+    if (isArrayField(field)) {
+      this.__valueSignal = signal(initialValue ?? field.defaultValue ?? [])
+      this.arrayItems = createContextItemsForArrayField(field)
+      // console.log("arrayItems:", this.arrayItems)
+    } else {
+      this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
+    }
+
+    this.arrayItems = isArrayField(field)
       ? createContextItemsForArrayField(field)
       : []
   }
@@ -83,7 +90,7 @@ export class FieldContext<TValue = any>
   /**
    * Only relevant for array form fields.
    */
-  items: ArrayFieldContextItem<TValue>[]
+  arrayItems: ArrayFieldContextItem<TValue>[] | undefined
 
   toJSON() {
     const proto = Object.getPrototypeOf(this)
