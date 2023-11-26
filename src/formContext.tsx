@@ -1,15 +1,21 @@
 import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
-import { FieldCollection } from "."
-import { FieldContext, FieldContextCollection } from "./fieldContext"
+import { Field, FieldCollection } from "."
+import {
+  FieldContext,
+  FieldContextCollection,
+  IArrayFieldContext,
+} from "./fieldContext"
+import { FieldBase, isArrayField } from "./fields"
 import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
+import { forEachKeyOf } from "./utils"
 
 const noop = () => ({}) as any
 
 const ReactFormContext = createContext<IFormContext>({
+  fieldSpecifications: {},
   fields: {},
-  fieldSignals: {},
   isSubmitting: false,
   peekValues: noop,
   setValues: noop,
@@ -18,9 +24,13 @@ const ReactFormContext = createContext<IFormContext>({
 
 export const useFormSignals = () => useContext(ReactFormContext)
 
-export interface IFormContext<TForm = any> {
-  fields: FieldCollection<TForm>
-  fieldSignals: FieldContextCollection<TForm>
+export interface IFormContextBase<TForm = any> {
+  // Add parent form context here or in array form context.
+  fields: FieldContextCollection<TForm>
+}
+
+export interface IFormContext<TForm = any> extends IFormContextBase<TForm> {
+  fieldSpecifications: FieldCollection<TForm>
   isSubmitting: boolean
   peekValues(): FormValues
   setValues(values: FormValues): void
@@ -58,8 +68,8 @@ function createFormContext(
 class FormContext implements IFormContext {
   private __isSubmittingSignal: Signal<boolean>
   private __onSubmit: ((values: FormValues) => Promise<void>) | undefined
-  fieldSignals: FieldContextCollection<any>
-  fields: FieldCollection<any>
+  fields: FieldContextCollection<any>
+  fieldSpecifications: FieldCollection<any>
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value
@@ -70,11 +80,11 @@ class FormContext implements IFormContext {
     extensions: Array<SignalFormPlugin<any, any, any>>,
     onSubmit?: (values: FormValues) => Promise<void>
   ) {
-    this.fields = fields
+    this.fieldSpecifications = fields
     this.__isSubmittingSignal = signal(false)
     this.__onSubmit = onSubmit
 
-    this.fieldSignals = Object.keys(fields).reduce<FieldContextCollection>(
+    this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, key) => {
         prev[key] = new FieldContext(fields[key]) // TODO add initial value.
 
@@ -83,28 +93,17 @@ class FormContext implements IFormContext {
       {}
     )
 
-    Object.keys(fields).forEach((key) => {
+    forEachKeyOf(fields, (key) => {
       const field = fields[key]
-      const fieldContext = this.fieldSignals[key] as FieldContext
 
-      extensions.forEach((ext) => {
-        const fieldExtension = ext.createFieldExtension(field, this)
-
-        fieldContext.addExtension(
-          ext.name,
-          fieldExtension,
-          ext.createFieldProperties?.(fieldExtension)
-        )
-      })
+      addFieldExtensions(this, field, extensions)
     })
 
     extensions.forEach((ext) => {
       if (typeof ext.createFormProperties !== "function") {
         return
       }
-      const fieldSignals = Object.keys(fields).map(
-        (key) => this.fieldSignals[key]
-      )
+      const fieldSignals = Object.keys(fields).map((key) => this.fields[key])
       const fieldExtensions = fieldSignals.map((field) =>
         (field as FieldContext).getExtension(ext.name)
       )
@@ -118,20 +117,17 @@ class FormContext implements IFormContext {
   }
 
   peekValues = () => {
-    return Object.keys(this.fieldSignals).reduce<FormValues>(
-      (values, current) => {
-        const field = this.fieldSignals[current] as FieldContext
-        values[current] = field.peekValue()
+    return Object.keys(this.fields).reduce<FormValues>((values, current) => {
+      const field = this.fields[current] as FieldContext
+      values[current] = field.peekValue()
 
-        return values
-      },
-      {}
-    )
+      return values
+    }, {})
   }
 
   setValues = (values: FormValues): void => {
     Object.keys(values).forEach((key) => {
-      const field = this.fieldSignals[key]
+      const field = this.fields[key]
 
       if (field != null) {
         field.setValue(values[key])
@@ -153,5 +149,32 @@ class FormContext implements IFormContext {
     formContextProperties: PropertyDescriptors<TContext>
   ) => {
     Object.defineProperties(this, formContextProperties)
+  }
+}
+
+function addFieldExtensions(
+  formContext: IFormContextBase,
+  field: Field<any, string, FieldBase<any>>,
+  extensions: SignalFormPlugin<any, any, any>[]
+) {
+  const fieldContext = formContext.fields[field.name] as FieldContext
+
+  extensions.forEach((ext) => {
+    const fieldExtension = ext.createFieldExtension(field, formContext)
+
+    fieldContext.addExtension(
+      ext.name,
+      fieldExtension,
+      ext.createFieldProperties?.(fieldExtension)
+    )
+  })
+
+  if (isArrayField(field)) {
+    forEachKeyOf(field.fields, (key) => {
+      const fieldContext = formContext.fields[field.name] as IArrayFieldContext
+      fieldContext.arrayItems?.forEach((item) => {
+        addFieldExtensions(item, field.fields[key], extensions)
+      })
+    })
   }
 }

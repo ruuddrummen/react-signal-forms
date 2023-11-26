@@ -44,8 +44,8 @@ export const minLength = createValidationRule<number>(
  */
 export const mustBeEqualToField = createValidationRule<string>(
   ({ form, value }, fieldName) =>
-    value === form.fieldSignals[fieldName].value ||
-    `Must be equal to "${form.fieldSignals[fieldName].value}"`
+    value === form.fields[fieldName].value ||
+    `Must be equal to "${form.fields[fieldName].value}"`
 )
 
 type ValidIfArgs = {

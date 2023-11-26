@@ -53,7 +53,7 @@ export function configureSignalForm<
       const arrayFormItemContext = useArrayFormItemContext()
 
       if (arrayFormContext != null && arrayFormItemContext != null) {
-        const arrayFieldContext = formContext.fieldSignals[
+        const arrayFieldContext = formContext.fields[
           arrayFormContext.arrayField.name
         ] as IArrayFieldContext
 
@@ -65,7 +65,7 @@ export function configureSignalForm<
           ExpandFieldContextProperties<TExtensions>
       }
 
-      const fieldContext = formContext.fieldSignals[field.name]
+      const fieldContext = formContext.fields[field.name]
       return fieldContext as IFieldContext &
         ExpandFieldContextProperties<TExtensions>
     },

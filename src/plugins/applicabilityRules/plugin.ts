@@ -31,7 +31,7 @@ function createApplicabilitySignal(
   formContext: IFormContext<any>
 ): Signal<boolean> {
   const rules = field.rules?.filter(isApplicabilityRule) ?? []
-  const fieldContext = formContext.fieldSignals[field.name]
+  const fieldContext = formContext.fields[field.name]
 
   if (rules.length > 0) {
     const isApplicableSignal = computed(() => {

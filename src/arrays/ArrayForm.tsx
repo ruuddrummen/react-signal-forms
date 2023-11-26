@@ -19,7 +19,7 @@ export const ArrayForm = <TArray,>({
   arrayField,
   children,
 }: ArrayFormProps<TArray>) => {
-  const { fieldSignals: allFieldSignals } = useFormSignals()
+  const { fields: allFieldSignals } = useFormSignals()
   const fieldSignals = allFieldSignals[arrayField.name] as IFieldContext<TArray>
   const items = fieldSignals.peekValue()
 

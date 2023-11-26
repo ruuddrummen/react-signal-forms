@@ -34,7 +34,7 @@ function createFieldExtension(
 ): {
   touchedSignal: Signal<boolean>
 } {
-  const fieldContext = formContext.fieldSignals[field.name] as FieldContext
+  const fieldContext = formContext.fields[field.name] as FieldContext
   const touchedSignal = signal(false)
 
   fieldContext.addBlurEffect(() => {

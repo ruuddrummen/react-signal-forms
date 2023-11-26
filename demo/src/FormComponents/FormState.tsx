@@ -14,9 +14,9 @@ import { useFormSignals } from "./SignalForm"
 export const FormState: React.FC = () => {
   const formContext = useFormSignals()
   const atLeastTabletSize = useMediaQuery("(min-width: 768px)")
-  const values = Object.keys(formContext.fieldSignals).reduce(
+  const values = Object.keys(formContext.fields).reduce(
     (result, key) => {
-      result[key] = formContext.fieldSignals[key].value
+      result[key] = formContext.fields[key].value
 
       return result
     },

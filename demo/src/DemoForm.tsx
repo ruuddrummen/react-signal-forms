@@ -115,9 +115,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("makeFieldRequired", "Make next field required"),
   ...field("canBeRequired", "Required depending on other values", {
     rules: [
-      requiredIf(
-        ({ form }) => form.fieldSignals.makeFieldRequired.value === true
-      ),
+      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
     ],
   }),
 
@@ -128,7 +126,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
     defaultValue: "Default value",
     rules: [
       applicableIf(
-        ({ fieldSignals: fields }) => fields.showSecretField.value === true
+        ({ fields: fields }) => fields.showSecretField.value === true
       ),
     ],
   }),
@@ -141,9 +139,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   }),
   ...field("makeFieldReadonly", "Make the next field readonly"),
   ...field("canBeReadOnly", "Can be readonly", {
-    rules: [
-      readonlyIf((form) => form.fieldSignals.makeFieldReadonly.value === true),
-    ],
+    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
   }),
 
   // Combining rules.
@@ -152,7 +148,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("complicatedField", "Only validated if applicable", {
     rules: [
       applicableIf(
-        ({ fieldSignals: fields }) =>
+        ({ fields: fields }) =>
           fields.makeComplicatedFieldApplicable.value === true
       ),
       required(),
@@ -282,11 +278,11 @@ export const DemoForm = React.memo(() => {
             <GridDivider />
             <GridHeader>Array forms</GridHeader>
             <ArrayForm arrayField={fields.arrayField}>
-              {({ items, arrayFields: fieldsInArray }) =>
+              {({ items, arrayFields }) =>
                 items.map((item, i) => (
                   <ArrayFormItem item={item} index={i} key={i}>
                     <Grid item xs={6}>
-                      <TextInput field={fieldsInArray.textFieldInArray} />
+                      <TextInput field={arrayFields.textFieldInArray} />
                     </Grid>
                   </ArrayFormItem>
                 ))

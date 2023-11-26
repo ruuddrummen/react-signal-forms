@@ -6,6 +6,7 @@ import {
 import { KeyOf, KeysOf } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
 import { ArrayItemType, Field, FieldBase, isArrayField } from "./fields"
+import { IFormContextBase } from "./formContext"
 import { FormValues } from "./types"
 
 export type FieldContextCollection<TForm = any> = {
@@ -37,7 +38,7 @@ export class FieldContext<TValue = any>
     this.__extensions = {}
 
     if (isArrayField(field)) {
-      this.arrayItems = createContextItemsForArrayField<FormValues[]>(field)
+      this.arrayItems = createContextItemsForArrayField(field)
       this.__valueSignal = computed<TValue>(() => {
         return this.arrayItems!.map((item) => {
           return KeysOf(item.fields).reduce((itemValues, key) => {
@@ -71,6 +72,7 @@ export class FieldContext<TValue = any>
   }
 
   setValue = (value: TValue) => {
+    // TODO: handle computed array field values, which cannot be set.
     this.__valueSignal.value = value
   }
 
@@ -131,19 +133,14 @@ function createContextItemsForArrayField<
   const items = field.defaultValue.map<ArrayFieldContextItem<TValue>>(
     (itemValue) => {
       return {
-        fields: Object.keys(field.fields).reduce(
-          (contextItems, key) => {
-            contextItems[key] = new FieldContext(
-              field.fields[key],
-              itemValue[key]
-            )
+        fields: Object.keys(field.fields).reduce((contextItems, key) => {
+          contextItems[key] = new FieldContext(
+            field.fields[key],
+            itemValue[key]
+          )
 
-            // TODO: Add extensions.
-
-            return contextItems
-          },
-          {} as Record<string, IFieldContext<any>>
-        ),
+          return contextItems
+        }, {} as FieldContextCollection),
       }
     }
   )
@@ -151,6 +148,5 @@ function createContextItemsForArrayField<
   return items
 }
 
-interface ArrayFieldContextItem<TValue> {
-  fields: Record<KeyOf<ArrayItemType<TValue>>, IFieldContext<any>>
-}
+export interface ArrayFieldContextItem<TValue = FormValues[]>
+  extends IFormContextBase<ArrayItemType<TValue>> {}
