@@ -7,7 +7,7 @@
 [github-pages-badge]: https://img.shields.io/github/deployments/ruuddrummen/react-signal-forms/github-pages?label=demo&style=flat-square
 [github-pages]: https://ruuddrummen.github.io/react-signal-forms/
 
-> ⚠️ This library is brand new and under heavy development. You can follow its progress in the [releases](https://github.com/ruuddrummen/react-signal-forms/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
+> ⚠️ This library is still new, so everything is still subject to change. You can follow its development in the [project](https://github.com/users/ruuddrummen/projects/1) and [releases](https://github.com/ruuddrummen/react-signal-forms/releases). The docs will be updated as development progresses.
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
