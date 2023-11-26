@@ -28,6 +28,7 @@ export interface IArrayFieldContext<TValue = FormValues[]>
 export class FieldContext<TValue = any>
   implements IFieldContext<TValue>, IArrayFieldContext<TValue>
 {
+  private __field: Field
   private __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
   private _blurEffects: Array<
@@ -35,6 +36,7 @@ export class FieldContext<TValue = any>
   > = []
 
   constructor(field: Field, initialValue?: TValue) {
+    this.__field = field
     this.__extensions = {}
 
     if (isArrayField(field)) {
@@ -51,10 +53,6 @@ export class FieldContext<TValue = any>
     } else {
       this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
     }
-
-    this.arrayItems = isArrayField(field)
-      ? createContextItemsForArrayField(field)
-      : []
   }
 
   addBlurEffect = (
@@ -73,7 +71,9 @@ export class FieldContext<TValue = any>
 
   setValue = (value: TValue) => {
     // TODO: handle computed array field values, which cannot be set.
-    this.__valueSignal.value = value
+    if (!isArrayField(this.__field)) {
+      this.__valueSignal.value = value
+    }
   }
 
   handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {

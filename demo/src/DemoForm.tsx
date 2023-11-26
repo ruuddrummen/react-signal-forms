@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { ArrayFormItem } from "@/arrays/ArrayForm"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
@@ -17,7 +16,7 @@ import {
 } from "@mui/material"
 import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
-import { ArrayForm } from "react-signal-forms/arrays"
+import { ArrayForm, ArrayFormItem } from "react-signal-forms/arrays"
 import {
   applicableIf,
   minLength,
@@ -125,9 +124,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
     rules: [
-      applicableIf(
-        ({ fields: fields }) => fields.showSecretField.value === true
-      ),
+      applicableIf(({ fields }) => fields.showSecretField.value === true),
     ],
   }),
 
@@ -148,8 +145,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
   ...field("complicatedField", "Only validated if applicable", {
     rules: [
       applicableIf(
-        ({ fields: fields }) =>
-          fields.makeComplicatedFieldApplicable.value === true
+        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
       ),
       required(),
       minLength(5),
@@ -166,6 +162,7 @@ const fields = signalForm<FormData>().withFields((field) => ({
     fields: (arrayField) => ({
       ...arrayField("textFieldInArray", "Text field in array", {
         defaultValue: "New item",
+        rules: [required()],
       }),
     }),
     defaultValue: [
@@ -278,15 +275,20 @@ export const DemoForm = React.memo(() => {
             <GridDivider />
             <GridHeader>Array forms</GridHeader>
             <ArrayForm arrayField={fields.arrayField}>
-              {({ items, arrayFields }) =>
-                items.map((item, i) => (
-                  <ArrayFormItem item={item} index={i} key={i}>
-                    <Grid item xs={6}>
-                      <TextInput field={arrayFields.textFieldInArray} />
-                    </Grid>
-                  </ArrayFormItem>
-                ))
-              }
+              {({ items, arrayFields }) => (
+                <>
+                  {items.map((item, i) => (
+                    <ArrayFormItem item={item} index={i} key={i}>
+                      <Grid item xs={6}>
+                        <TextInput field={arrayFields.textFieldInArray} />
+                      </Grid>
+                    </ArrayFormItem>
+                  ))}
+                  <Grid item xs={6}>
+                    <Button>Add item</Button>
+                  </Grid>
+                </>
+              )}
             </ArrayForm>
           </Grid>
         </SubmitBackdrop>
