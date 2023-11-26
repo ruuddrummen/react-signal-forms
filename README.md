@@ -2,12 +2,12 @@
 
 > ⚠️ This library is brand new and under heavy development. You can follow its progress in the [releases](https://github.com/ruuddrummen/react-signal-forms/releases) and [project](https://github.com/users/ruuddrummen/projects/1). For now everything is still subject to change, as we are only just getting started. The docs will be updated as development progresses.
 
-The form library that conforms to your needs. Start with what you need now, plug in what you need later. A forms library which aims to provide a high performance modular and extensible experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
+A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
 - Easy to use, easy to extend. Built from the ground with an DX friendly [plugin model](#plugins).
-  - Pick and choose what you need.
+  - Pick and choose from the built-in plugins that fit your needs.
   - Plug in your own.
-- Add built-in context aware rules to your fields or create your own.
+- Add built-in context aware and typesafe rules to your fields or create your own.
   - Like `required()`, `requiredIf(...)`, `applicableIf(...)`, `computed(...)`, etc.
 - Only calculates and renders what is necessary [without you needing to think about it](#rules-and-signals).
 - Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
@@ -49,15 +49,18 @@ Create field specifications for your forms:
 
 ```tsx
 interface IYourData {
-  yourTextField: string
-  yourSelectField: string
+  justText: string
+  aFieldWithRules: string
+  aSelectField: string
 }
 
 const fields = signalForm<IYourData>().withFields((field) => {
   //                      ^ All specifications and rules will be strongly
   //                        typed based on your data interface.
 
-  ...field("yourTextField", "Text field", {
+  ...field("justText", "Just a text field"),
+  
+  ...field("aFieldWithRules", "A field with some rules", {
     defaultValue: "Demo",
 
     // Add rules to your field. Some examples:
@@ -69,7 +72,7 @@ const fields = signalForm<IYourData>().withFields((field) => {
     ]
   })
 
-  ...field("yourSelectField", "Select field").as<SelectField>({
+  ...field("aSelectField", "Select field").as<SelectField>({
     //          Plug in any field type you need, ^
     //          built-in or your own.
     options: [
@@ -122,8 +125,9 @@ const MyForm = () => {
       initialValues={valuesFromStore}
       onSubmit={handleSubmit}
     >
-      <TextInput field={field.yourTextField} />
-      <SelectInput field={field.yourSelectField} />
+      <TextInput field={fields.justText} />
+      <TextInput field={fields.aFieldWithRules} />
+      <SelectInput field={fields.aSelectField} />
     </SignalForm>
   )
 }
@@ -146,3 +150,7 @@ If you have specific needs for solving more irregular or complex scenarios, you 
 
 - Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
 - Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
+
+## Array forms
+
+Currently in development in [#61](https://github.com/ruuddrummen/react-signal-forms/issues/61).
