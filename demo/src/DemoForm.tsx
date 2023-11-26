@@ -1,4 +1,6 @@
 /** @jsxImportSource @emotion/react */
+// import DeleteIcon from "@mui/icons-material/Delete"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
@@ -281,11 +283,16 @@ export const DemoForm = React.memo(() => {
                     <ArrayFormItem item={item} index={i} key={i}>
                       <Grid item xs={6}>
                         <TextInput field={arrayFields.textFieldInArray} />
+                        <Button color="error" sx={{ width: "100%" }}>
+                          <DeleteOutlineIcon /> Remove item
+                        </Button>
                       </Grid>
                     </ArrayFormItem>
                   ))}
                   <Grid item xs={6}>
-                    <Button>Add item</Button>
+                    <Button sx={{ width: "100%", height: "100%" }}>
+                      Add item
+                    </Button>
                   </Grid>
                 </>
               )}
