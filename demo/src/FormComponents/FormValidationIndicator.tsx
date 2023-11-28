@@ -4,7 +4,7 @@ import { useFormSignals } from "./SignalForm"
 
 export const FormValidationIndicator = () => {
   const form = useFormSignals()
-  const renderCount = `(rendered ${useRenderCount()} times)`
+  const renderCount = useRenderCount()
 
   return form.isValid ? (
     <Typography variant="button" color="success.main">

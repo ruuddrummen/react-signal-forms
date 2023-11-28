@@ -13,7 +13,7 @@ export const SubmitButton: React.FC = () => {
       onClick={() => submit(peekValues())}
       disabled={isSubmitting}
     >
-      Save (rendered {renderCount} times)
+      Save {renderCount}
     </Button>
   )
 }
