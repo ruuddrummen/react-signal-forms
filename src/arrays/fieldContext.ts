@@ -21,17 +21,21 @@ export interface ArrayFieldItemContext<TValue = FormValues[]>
 
 export function createContextForArrayField<
   TValue extends FormValues[] = FormValues[],
->(field: ArrayFieldBase<TValue>): ArrayFieldItemContext<TValue>[] {
-  if (field.defaultValue == null) {
+>(
+  field: ArrayFieldBase<TValue>,
+  initialValues?: FormValues[]
+): ArrayFieldItemContext<TValue>[] {
+  const values = initialValues ?? field.defaultValue
+
+  if (values == null) {
     return []
   }
 
-  const items = field.defaultValue.map<ArrayFieldItemContext<TValue>>(
-    (itemValue) =>
-      createContextForArrayFieldItem<TValue>(
-        field,
-        itemValue as ArrayItemType<TValue>
-      )
+  const items = values.map<ArrayFieldItemContext<TValue>>((itemValue) =>
+    createContextForArrayFieldItem<TValue>(
+      field,
+      itemValue as ArrayItemType<TValue>
+    )
   )
 
   return items

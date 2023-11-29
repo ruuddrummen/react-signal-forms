@@ -40,10 +40,11 @@ export interface IFormContext<TForm = any> extends IFormContextLike<TForm> {
 export function useFormContextProvider(
   fields: FieldCollection,
   plugins: Array<SignalFormPlugin<any, any, any>>,
-  onSubmit?: (values: FormValues) => Promise<void>
+  onSubmit?: (values: FormValues) => Promise<void>,
+  initialValues?: FormValues
 ) {
   const formContext = useRef<IFormContext>(
-    createFormContext(fields, plugins, onSubmit)
+    createFormContext(fields, plugins, onSubmit, initialValues)
   )
 
   return {
@@ -55,9 +56,15 @@ export function useFormContextProvider(
 function createFormContext(
   fields: FieldCollection,
   extensions: Array<SignalFormPlugin<any, any, any>>,
-  onSubmit?: (values: FormValues) => Promise<void>
+  onSubmit?: (values: FormValues) => Promise<void>,
+  initialValues?: FormValues
 ): IFormContext {
-  const formContext = new FormContext(fields, extensions, onSubmit)
+  const formContext = new FormContext(
+    fields,
+    extensions,
+    onSubmit,
+    initialValues
+  )
 
   console.log("(Form) Created field signals", formContext)
 
@@ -78,7 +85,8 @@ class FormContext implements IFormContext {
   constructor(
     fields: FieldCollection,
     plugins: Array<SignalFormPlugin<any, any, any>>,
-    onSubmit?: (values: FormValues) => Promise<void>
+    onSubmit?: (values: FormValues) => Promise<void>,
+    initialValues?: FormValues
   ) {
     this.fieldSpecifications = fields
     this.plugins = plugins
@@ -87,7 +95,7 @@ class FormContext implements IFormContext {
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, key) => {
-        prev[key] = new FieldContext(fields[key]) // TODO add initial value.
+        prev[key] = new FieldContext(fields[key], initialValues?.[key])
 
         return prev
       },

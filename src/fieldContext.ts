@@ -39,7 +39,9 @@ export class FieldContext<TValue = any>
     this.__extensions = {}
 
     if (isArrayField(field)) {
-      this.arrayItems = signal(createContextForArrayField(field))
+      this.arrayItems = signal(
+        createContextForArrayField(field, initialValue as FormValues[])
+      )
       this.__valueSignal = computed<TValue>(() => {
         return this.arrayItems!.value.map((item) => {
           return KeysOf(item.fields).reduce((itemValues, key) => {

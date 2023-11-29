@@ -21,7 +21,7 @@ import { FormValues } from "./types"
 interface SignalsFormProps {
   fields: FieldCollection
   children: React.ReactNode
-  initialValues?: any
+  initialValues?: FormValues
   onSubmit?: (values: FormValues) => Promise<void>
 }
 
@@ -92,12 +92,9 @@ const SignalForm: React.FC<SignalsFormInnerProps> = ({
   const { ContextProvider, formContext } = useFormContextProvider(
     fields,
     extensions,
-    onSubmit
+    onSubmit,
+    initialValues
   )
-
-  if (initialValues != null) {
-    formContext.current.setValues(initialValues)
-  }
 
   return (
     <ContextProvider value={formContext.current}>{children}</ContextProvider>
