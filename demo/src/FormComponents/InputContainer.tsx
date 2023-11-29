@@ -15,8 +15,12 @@ export const InputContainer = ({
 
   return (
     <>
-      <Box height={120} overflow="hidden">
-        <Paper variant="elevation" elevation={2}>
+      <Paper
+        variant="elevation"
+        elevation={2}
+        sx={{ borderRadius: "4px 4px 0 0" }}
+      >
+        <Box height={120} overflow="hidden">
           <Collapse in={isApplicable}>
             <Box padding={3} height={120} display="flex" alignItems="center">
               {children}
@@ -27,8 +31,8 @@ export const InputContainer = ({
               Not applicable
             </Typography>
           </Box>
-        </Paper>
-      </Box>
+        </Box>
+      </Paper>
       <FieldInfo for={field} />
     </>
   )
