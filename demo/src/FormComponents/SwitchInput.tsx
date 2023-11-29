@@ -24,11 +24,11 @@ export const Switch: React.FC<FormInputProps> = ({ field }) => {
   }
 
   return (
-    <InputContainer field={field} paddingLeft={4}>
-      <FormControl margin="normal" fullWidth error={!isValid}>
+    <InputContainer field={field}>
+      <FormControl fullWidth error={!isValid}>
         <FormControlLabel
           control={<MuiSwitch />}
-          label={`${field.label} (rendered ${renderCount} times)`}
+          label={`${field.label} ${renderCount}`}
           checked={value ?? false}
           onChange={(_e, checked) => setValue(checked)}
           onBlurCapture={handleBlur}

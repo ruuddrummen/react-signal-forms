@@ -11,12 +11,12 @@ interface SelectInputProps {
 export const SelectInput = ({ field }: SelectInputProps) => {
   const { value, setValue, handleBlur } = useFieldSignals(field)
   const renderCount = useRenderCount()
-  const label = `${field.label} (rendered ${renderCount} times)`
+  const label = `${field.label} ${renderCount}`
   const labelId = field.name + "-select-label"
 
   return (
     <InputContainer field={field}>
-      <FormControl fullWidth margin="dense">
+      <FormControl fullWidth>
         <InputLabel id={labelId}>{label}</InputLabel>
         <Select
           variant="standard"

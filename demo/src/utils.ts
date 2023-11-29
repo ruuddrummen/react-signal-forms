@@ -7,5 +7,5 @@ export const useRenderCount = () => {
     count.current++
   })
 
-  return count.current
+  return `(rendered ${count.current} times)`
 }

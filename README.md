@@ -66,7 +66,7 @@ const fields = signalForm<IYourData>().withFields((field) => {
   //                        typed based on your data interface.
 
   ...field("justText", "Just a text field"),
-  
+
   ...field("aFieldWithRules", "A field with some rules", {
     defaultValue: "Demo",
 
@@ -151,7 +151,7 @@ A simple example to illustrate what this means for performance: if field A is on
 
 ## Plugins
 
-All form features other than value handling - e.g. validation and applicability rules - are implemented as plugins. The goal behind this idea is to make the form implementation both scalable and extensible. In most simpler cases though, the native plugins should be enough to get you going.
+All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins can be added or replaced to fulfill on specialized requirements.
 
 If you have specific needs for solving more irregular or complex scenarios, you have some options:
 

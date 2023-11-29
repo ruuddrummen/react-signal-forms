@@ -301,7 +301,7 @@ export const DemoForm = React.memo(() => {
                 <>
                   {items.map((_item, i) => (
                     <ArrayFormItem index={i} key={i}>
-                      <Grid item xs={6}>
+                      <Grid item md={6} xs={12}>
                         <TextInput field={arrayFields.textFieldInArray} />
                         <Button
                           onClick={() => removeItem(i)}
@@ -313,7 +313,7 @@ export const DemoForm = React.memo(() => {
                       </Grid>
                     </ArrayFormItem>
                   ))}
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={12}>
                     <Button
                       onClick={addItem}
                       sx={{ width: "100%", height: "100%" }}
@@ -380,7 +380,7 @@ const Span = ({
   children,
   color,
 }: React.PropsWithChildren<{ color?: string }>) => (
-  <Typography display="inline" color={color}>
+  <Typography component="span" color={color}>
     {children}
   </Typography>
 )
