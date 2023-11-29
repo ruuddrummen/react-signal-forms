@@ -191,7 +191,7 @@ export function addFieldExtensions(
   if (isArrayField(field) && isArrayFieldContext(fieldContext)) {
     addFieldExtensionsToArrayItems(
       field,
-      fieldContext.arrayItems!.value,
+      fieldContext.arrayItems.value,
       plugins
     )
   }

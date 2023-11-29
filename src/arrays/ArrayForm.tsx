@@ -33,7 +33,7 @@ export const ArrayForm = <TArray extends FormValues[]>({
     arrayField.name
   ] as IArrayFieldContext<TArray>
 
-  const items = arrayFieldContext.arrayItems!.value.map<ArrayItemDescriptor>(
+  const items = arrayFieldContext.arrayItems.value.map<ArrayItemDescriptor>(
     (_item, index) => ({
       id: index,
     })
@@ -47,15 +47,15 @@ export const ArrayForm = <TArray extends FormValues[]>({
 
     addFieldExtensionsToArrayItems(arrayField, [newItem], plugins)
 
-    arrayFieldContext.arrayItems!.value = [
-      ...arrayFieldContext.arrayItems!.value,
+    arrayFieldContext.arrayItems.value = [
+      ...arrayFieldContext.arrayItems.value,
       newItem,
     ]
   }
 
   const removeItem = (item: ArrayItemDescriptor) => {
-    arrayFieldContext.arrayItems!.value =
-      arrayFieldContext.arrayItems!.value.filter((_value, i) => i !== item.id)
+    arrayFieldContext.arrayItems.value =
+      arrayFieldContext.arrayItems.value.filter((_value, i) => i !== item.id)
   }
 
   return (

@@ -34,7 +34,7 @@ export class ArrayFieldContext<TValue extends FormValues[]>
     )
 
     this.__valueSignal = computed<TValue>(() => {
-      return this.arrayItems!.value.map((item) => {
+      return this.arrayItems.value.map((item) => {
         return KeysOf(item.fields).reduce((itemValues, key) => {
           itemValues[key] = item.fields[key].value
 
