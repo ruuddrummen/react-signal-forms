@@ -2,7 +2,7 @@ import { ArrayFieldBase, ArrayItemType, FieldCollection } from "@/fields"
 import { useFormContext } from "@/formContext"
 import { FormValues } from "@/types"
 import { useSignal } from "@preact/signals-react"
-import React, { memo, useCallback } from "react"
+import React, { memo, useCallback, useMemo } from "react"
 import { createPortal } from "react-dom"
 import {
   IArrayFieldContext,
@@ -32,15 +32,19 @@ interface ArrayFormProps<TArray extends FormValues[]> {
 const PortaledArrayFormItem = memo(
   ({
     id,
-    fields,
+    // fields,
+    arrayField,
     renderItem,
   }: {
     id: number
-    fields: FieldCollection
+    arrayField: ArrayFieldBase
+    // fields: FieldCollection
     renderItem: (fields: FieldCollection) => React.ReactNode
   }) => (
     <React.Fragment>
-      <ArrayFormItem id={id}>{renderItem(fields)}</ArrayFormItem>
+      <ArrayFormItem id={id} arrayField={arrayField}>
+        {renderItem(arrayField.fields)}
+      </ArrayFormItem>
     </React.Fragment>
   )
 )
@@ -98,8 +102,10 @@ export const ArrayForm = <TArray extends FormValues[]>({
     []
   )
 
+  const contextValue = useMemo(() => ({ arrayField }), [])
+
   return (
-    <ArrayFormContextProvider value={{ arrayField }}>
+    <ArrayFormContextProvider value={contextValue}>
       {children &&
         children({
           items: items,
@@ -113,7 +119,8 @@ export const ArrayForm = <TArray extends FormValues[]>({
           <PortaledArrayFormItem
             key={id}
             id={Number(id)}
-            fields={arrayField.fields}
+            // fields={arrayField.fields}
+            arrayField={arrayField}
             renderItem={renderItemCallback}
           ></PortaledArrayFormItem>,
           ref
@@ -125,14 +132,21 @@ export const ArrayForm = <TArray extends FormValues[]>({
 
 interface ArrayItemProps {
   id: number
+  arrayField: ArrayFieldBase
   // item: ArrayItemDescriptor
   children?: React.ReactNode
 }
 
-export const ArrayFormItem = React.memo(({ id, children }: ArrayItemProps) => {
-  return (
-    <ArrayFormItemContextProvider value={{ id }}>
-      {children}
-    </ArrayFormItemContextProvider>
-  )
-})
+export const ArrayFormItem = React.memo(
+  ({ id, arrayField, children }: ArrayItemProps) => {
+    const contextValue = useMemo(() => ({ arrayField, id }), [arrayField, id])
+
+    console.log("Rendering ArrayFormItemContextProvider")
+
+    return (
+      <ArrayFormItemContextProvider value={contextValue}>
+        {children}
+      </ArrayFormItemContextProvider>
+    )
+  }
+)

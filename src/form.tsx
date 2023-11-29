@@ -1,6 +1,6 @@
 import React from "react"
 import { IArrayFieldContext } from "./arrays/fieldContext"
-import { useArrayFormContext, useArrayFormItem } from "./arrays/reactContext"
+import { useArrayFormItem } from "./arrays/reactContext"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
@@ -50,16 +50,16 @@ export function configureSignalForm<
       }
 
       const formContext = useFormContext()
-      const arrayFormContext = useArrayFormContext()
+      // const arrayFormContext = useArrayFormContext()
       const arrayFormItemContext = useArrayFormItem()
 
-      if (arrayFormContext != null && arrayFormItemContext != null) {
+      if (arrayFormItemContext != null) {
         const arrayFieldContext = formContext.fields[
-          arrayFormContext.arrayField.name
+          arrayFormItemContext.arrayField.name
         ] as IArrayFieldContext
 
         const fieldContext =
-          arrayFieldContext.arrayItems.value[arrayFormItemContext.id].fields[
+          arrayFieldContext.arrayItems.peek()[arrayFormItemContext.id].fields[
             field.name
           ]
 
@@ -94,6 +94,8 @@ const SignalForm: React.FC<SignalsFormInnerProps> = ({
     onSubmit,
     initialValues
   )
+
+  console.log("Rendering SignalForm")
 
   return (
     <ContextProvider value={formContext.current}>{children}</ContextProvider>

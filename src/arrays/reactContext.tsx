@@ -16,7 +16,10 @@ export interface ArrayItemDescriptor {
   ref: (ref: HTMLDivElement) => void
 }
 
-const ArrayFormItemContext = React.createContext<{ id: number } | null>(null)
+const ArrayFormItemContext = React.createContext<{
+  arrayField: ArrayFieldBase
+  id: number
+} | null>(null)
 
 export const ArrayFormItemContextProvider = ArrayFormItemContext.Provider
 
