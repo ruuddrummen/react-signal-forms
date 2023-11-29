@@ -7,6 +7,8 @@ interface InputContainerProps {
   field: Field
 }
 
+const CONTAINER_HEIGHT = 120
+
 export const InputContainer = ({
   field,
   children,
@@ -20,13 +22,18 @@ export const InputContainer = ({
         elevation={2}
         sx={{ borderRadius: "4px 4px 0 0" }}
       >
-        <Box height={120} overflow="hidden">
+        <Box height={CONTAINER_HEIGHT} overflow="hidden">
           <Collapse in={isApplicable}>
-            <Box padding={3} height={120} display="flex" alignItems="center">
+            <Box
+              height={CONTAINER_HEIGHT}
+              padding={3}
+              display="flex"
+              alignItems="center"
+            >
               {children}
             </Box>
           </Collapse>
-          <Box height={120} display="flex" alignItems="center">
+          <Box height={CONTAINER_HEIGHT} display="flex" alignItems="center">
             <Typography variant="button" width={1} textAlign="center">
               Not applicable
             </Typography>
