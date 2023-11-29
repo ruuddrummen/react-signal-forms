@@ -1,37 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
-import DataArrayIcon from "@mui/icons-material/DataArray"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditOffIcon from "@mui/icons-material/EditOff"
 import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
-import WarningAmberIcon from "@mui/icons-material/WarningAmber"
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Link,
-  Paper,
-  Stack,
-  Typography,
-  css,
-} from "@mui/material"
+import { Box, Button, Grid, Paper, Stack, css } from "@mui/material"
 import React from "react"
-import { SelectField, signalForm } from "react-signal-forms"
-import { ArrayForm, ArrayFormItem } from "react-signal-forms/arrays"
-import {
-  applicableIf,
-  minLength,
-  mustBeEqualToField,
-  readonly,
-  readonlyIf,
-  required,
-  requiredIf,
-  validIf,
-} from "react-signal-forms/rules"
+import { DemoArrayForm } from "./DemoArrayForm"
 import {
   FormState,
   NumberInput,
@@ -45,146 +21,8 @@ import {
 } from "./FormComponents"
 import { FormValidationIndicator } from "./FormComponents/FormValidationIndicator"
 import { SelectInput } from "./FormComponents/SelectInput"
-
-/* Define a form data interface or type */
-
-interface FormData {
-  text: string
-  number: number
-  boolean: boolean
-
-  select: string
-
-  alwaysRequired: string
-  mustBeEqualToOtherField: string
-
-  hasMinimumLength: string
-
-  makeFieldRequired: boolean
-  canBeRequired: string
-
-  showSecretField: boolean
-  secret: string
-
-  alwaysReadonly: string
-  makeFieldReadonly: boolean
-  canBeReadOnly: string
-
-  makeComplicatedFieldApplicable: boolean
-  complicatedField: string
-
-  arrayField: Array<{
-    textFieldInArray: string
-  }>
-}
-
-/* Create a specification for your fields */
-
-const fields = signalForm<FormData>().withFields((field) => ({
-  // Just fields.
-
-  ...field("text", "A text field", {
-    defaultValue: "Welcome to the demo",
-  }),
-  ...field("number", "A number field"),
-  ...field("boolean", "A boolean field"),
-  ...field("select", "A select field").as<SelectField>({
-    options: [
-      {
-        label: "Option 1",
-        value: "Value 1",
-      },
-      {
-        label: "Option 2",
-        value: "Value 2",
-      },
-      {
-        label: "Option 3",
-        value: "Value 3",
-      },
-    ],
-  }),
-
-  // Required rules.
-
-  ...field("alwaysRequired", "Required field", {
-    rules: [required()],
-  }),
-  ...field("mustBeEqualToOtherField", "Must be equal to required field", {
-    rules: [mustBeEqualToField("alwaysRequired")],
-  }),
-  ...field("hasMinimumLength", "At least 6 characters long", {
-    rules: [required(), minLength(6)],
-  }),
-  ...field("makeFieldRequired", "Make next field required"),
-  ...field("canBeRequired", "Required depending on other values", {
-    rules: [
-      requiredIf(({ form }) => form.fields.makeFieldRequired.value === true),
-    ],
-  }),
-
-  // Applicability rules.
-
-  ...field("showSecretField", "Show secret field"),
-  ...field("secret", "Value is cleared when not applicable", {
-    defaultValue: "Default value",
-    rules: [
-      applicableIf(({ fields }) => fields.showSecretField.value === true),
-    ],
-  }),
-
-  // Readonly rules.
-
-  ...field("alwaysReadonly", "Readonly field", {
-    defaultValue: "Always readonly",
-    rules: [readonly()],
-  }),
-  ...field("makeFieldReadonly", "Make the next field readonly"),
-  ...field("canBeReadOnly", "Can be readonly", {
-    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
-  }),
-
-  // Combining rules.
-
-  ...field("makeComplicatedFieldApplicable", "Make the field applicable"),
-  ...field("complicatedField", "Only validated if applicable", {
-    rules: [
-      applicableIf(
-        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
-      ),
-      required(),
-      minLength(5),
-      validIf(({ value }) => ({
-        validIf: value?.endsWith("signals") ?? false,
-        errorMessage: "Value must end with 'signals'",
-      })),
-    ],
-  }),
-
-  // Array forms (WIP).
-
-  ...field("arrayField").asArray({
-    fields: (arrayField) => ({
-      ...arrayField("textFieldInArray", "Text field in array", {
-        defaultValue: "New item",
-        rules: [required()],
-      }),
-    }),
-    defaultValue: [
-      {
-        textFieldInArray: "Item 1",
-      },
-      {
-        textFieldInArray: "Item 2",
-      },
-      {
-        textFieldInArray: "Item 3",
-      },
-    ],
-  }),
-}))
-
-/* Render your form */
+import { GridDivider, GridHeader, P } from "./Layout"
+import { fields } from "./fields"
 
 export const DemoForm = React.memo(() => {
   const store = useLocalStorageStore()
@@ -278,52 +116,8 @@ export const DemoForm = React.memo(() => {
             </Grid>
 
             <GridDivider />
-            <GridHeader>
-              <DataArrayIcon /> Array forms
-            </GridHeader>
-            <Grid item xs={12}>
-              <P>
-                <Span color="warning.main">
-                  <WarningAmberIcon />
-                </Span>{" "}
-                This feature is in development. Expect changes to DX, extended
-                context awareness to field rules, and render optimizations.
-                Progress is tracked in{" "}
-                <Link href="https://github.com/ruuddrummen/react-signal-forms/issues/61">
-                  #61
-                </Link>
-                .
-              </P>
-            </Grid>
 
-            <ArrayForm arrayField={fields.arrayField}>
-              {({ items, arrayFields, removeItem, addItem }) => (
-                <>
-                  {items.map((item) => (
-                    <ArrayFormItem item={item} key={item.id}>
-                      <Grid item md={6} xs={12}>
-                        <TextInput field={arrayFields.textFieldInArray} />
-                        <Button
-                          onClick={() => removeItem(item)}
-                          color="error"
-                          sx={{ width: "100%" }}
-                        >
-                          <DeleteOutlineIcon /> Remove item
-                        </Button>
-                      </Grid>
-                    </ArrayFormItem>
-                  ))}
-                  <Grid item md={6} xs={12}>
-                    <Button
-                      onClick={addItem}
-                      sx={{ width: "100%", height: "100%" }}
-                    >
-                      Add item
-                    </Button>
-                  </Grid>
-                </>
-              )}
-            </ArrayForm>
+            <DemoArrayForm />
           </Grid>
         </SubmitBackdrop>
         <Box
@@ -354,36 +148,6 @@ export const DemoForm = React.memo(() => {
     </SignalForm>
   )
 })
-
-const GridHeader = ({ children }: React.PropsWithChildren<object>) => (
-  <Grid item xs={12} marginTop={2}>
-    <Typography variant="h4">{children}</Typography>
-  </Grid>
-)
-
-const GridDivider = () => (
-  <Grid item xs={12} marginTop={2}>
-    <Divider />
-  </Grid>
-)
-
-const P = ({
-  children,
-  color,
-}: React.PropsWithChildren<{ color?: string }>) => (
-  <Typography paragraph color={color}>
-    {children}
-  </Typography>
-)
-
-const Span = ({
-  children,
-  color,
-}: React.PropsWithChildren<{ color?: string }>) => (
-  <Typography component="span" color={color}>
-    {children}
-  </Typography>
-)
 
 const TouchAllFieldsButton = () => {
   const form = useFormSignals()
