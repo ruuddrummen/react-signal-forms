@@ -1,9 +1,6 @@
 import React from "react"
 import { IArrayFieldContext } from "./arrays/fieldContext"
-import {
-  useArrayFormContext,
-  useArrayFormItemContext,
-} from "./arrays/reactContext"
+import { useArrayFormContext, useArrayFormItem } from "./arrays/reactContext"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
@@ -54,7 +51,7 @@ export function configureSignalForm<
 
       const formContext = useFormContext()
       const arrayFormContext = useArrayFormContext()
-      const arrayFormItemContext = useArrayFormItemContext()
+      const arrayFormItemContext = useArrayFormItem()
 
       if (arrayFormContext != null && arrayFormItemContext != null) {
         const arrayFieldContext = formContext.fields[
@@ -62,8 +59,10 @@ export function configureSignalForm<
         ] as IArrayFieldContext
 
         const fieldContext =
-          arrayFieldContext.arrayItems!.value[arrayFormItemContext.index]
-            .fields[field.name]
+          arrayFieldContext.arrayItems!.value[arrayFormItemContext.id].fields[
+            field.name
+          ]
+
         return fieldContext as IFieldContext &
           ExpandFieldContextProperties<TExtensions>
       }

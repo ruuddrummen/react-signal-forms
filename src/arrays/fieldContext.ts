@@ -4,20 +4,48 @@ import {
   IFieldContext,
 } from "@/fieldContext"
 
-import { ArrayFieldBase, ArrayItemType } from "@/fields"
+import { ArrayFieldBase, ArrayItemType, Field } from "@/fields"
 import { IFormContextLike, addFieldExtensions } from "@/formContext"
 import { SignalFormPlugin } from "@/plugins/types"
 import { FormValues } from "@/types"
 import { KeysOf, forEachKeyOf } from "@/utils"
-import { Signal } from "@preact/signals-react"
+import { Signal, computed, signal } from "@preact/signals-react"
 
 export interface IArrayFieldContext<TValue = FormValues[]>
   extends IFieldContext<TValue> {
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
+  arrayItems: Signal<ArrayFieldItemContext<TValue>[]>
 }
 
 export interface ArrayFieldItemContext<TValue = FormValues[]>
   extends IFormContextLike<ArrayItemType<TValue>> {}
+
+export class ArrayFieldContext<TValue extends FormValues[]>
+  extends FieldContext<TValue>
+  implements IArrayFieldContext<TValue>
+{
+  constructor(
+    field: Field<any, any, ArrayFieldBase<TValue>>,
+    initialValue?: TValue
+  ) {
+    super(field, initialValue)
+
+    this.arrayItems = signal(
+      createContextForArrayField(field, initialValue as FormValues[])
+    )
+
+    this.__valueSignal = computed<TValue>(() => {
+      return this.arrayItems!.value.map((item) => {
+        return KeysOf(item.fields).reduce((itemValues, key) => {
+          itemValues[key] = item.fields[key].value
+
+          return itemValues
+        }, {} as FormValues)
+      }) as TValue
+    })
+  }
+
+  arrayItems: Signal<ArrayFieldItemContext<TValue>[]>
+}
 
 export function createContextForArrayField<
   TValue extends FormValues[] = FormValues[],
@@ -67,3 +95,14 @@ export function addFieldExtensionsToArrayItems(
     })
   })
 }
+
+export function isArrayFieldContext<TValue>(
+  fieldContext: IFieldContext<TValue>
+): fieldContext is ArrayFieldContext<AsArrayFieldValue<TValue>> {
+  return (
+    (fieldContext as ArrayFieldContext<AsArrayFieldValue<TValue>>).arrayItems !=
+    null
+  )
+}
+
+type AsArrayFieldValue<TValue> = TValue extends FormValues[] ? TValue : never

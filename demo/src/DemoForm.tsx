@@ -299,12 +299,12 @@ export const DemoForm = React.memo(() => {
             <ArrayForm arrayField={fields.arrayField}>
               {({ items, arrayFields, removeItem, addItem }) => (
                 <>
-                  {items.map((_item, i) => (
-                    <ArrayFormItem index={i} key={i}>
+                  {items.map((item) => (
+                    <ArrayFormItem item={item} key={item.id}>
                       <Grid item md={6} xs={12}>
                         <TextInput field={arrayFields.textFieldInArray} />
                         <Button
-                          onClick={() => removeItem(i)}
+                          onClick={() => removeItem(item)}
                           color="error"
                           sx={{ width: "100%" }}
                         >

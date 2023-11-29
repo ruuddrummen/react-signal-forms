@@ -11,12 +11,14 @@ export const ArrayFormContextProvider = ArrayFormContext.Provider
 
 export const useArrayFormContext = () => useContext(ArrayFormContext)
 
-interface IArrayItemContext {
-  index: number
+export interface ArrayItemDescriptor {
+  id: number
 }
 
-const ArrayFormItemContext = React.createContext<IArrayItemContext | null>(null)
+const ArrayFormItemContext = React.createContext<ArrayItemDescriptor | null>(
+  null
+)
 
 export const ArrayFormItemContextProvider = ArrayFormItemContext.Provider
 
-export const useArrayFormItemContext = () => useContext(ArrayFormItemContext)
+export const useArrayFormItem = () => useContext(ArrayFormItemContext)

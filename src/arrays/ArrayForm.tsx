@@ -10,15 +10,16 @@ import {
 import {
   ArrayFormContextProvider,
   ArrayFormItemContextProvider,
+  ArrayItemDescriptor,
 } from "./reactContext"
 
 interface ArrayFormProps<TArray extends FormValues[]> {
   arrayField: ArrayFieldBase<TArray>
   children?: (args: {
-    items: TArray
+    items: ArrayItemDescriptor[]
     arrayFields: FieldCollection<ArrayItemType<TArray>>
     addItem: () => void
-    removeItem: (index: number) => void
+    removeItem: (item: ArrayItemDescriptor) => void
   }) => React.ReactNode
 }
 
@@ -27,13 +28,16 @@ export const ArrayForm = <TArray extends FormValues[]>({
   children,
 }: ArrayFormProps<TArray>) => {
   const { fields, plugins } = useFormContext()
+
   const arrayFieldContext = fields[
     arrayField.name
   ] as IArrayFieldContext<TArray>
-  const values = arrayFieldContext.peekValue()
 
-  // Subscribe to `arrayItems` signal.
-  arrayFieldContext.arrayItems!.value
+  const items = arrayFieldContext.arrayItems!.value.map<ArrayItemDescriptor>(
+    (_item, index) => ({
+      id: index,
+    })
+  )
 
   const addItem = () => {
     const newItem = createContextForArrayFieldItem(
@@ -49,16 +53,16 @@ export const ArrayForm = <TArray extends FormValues[]>({
     ]
   }
 
-  const removeItem = (index: number) => {
+  const removeItem = (item: ArrayItemDescriptor) => {
     arrayFieldContext.arrayItems!.value =
-      arrayFieldContext.arrayItems!.value.filter((_value, i) => i !== index)
+      arrayFieldContext.arrayItems!.value.filter((_value, i) => i !== item.id)
   }
 
   return (
     <ArrayFormContextProvider value={{ arrayField }}>
       {children &&
         children({
-          items: values,
+          items: items,
           arrayFields: arrayField.fields,
           addItem,
           removeItem,
@@ -68,14 +72,14 @@ export const ArrayForm = <TArray extends FormValues[]>({
 }
 
 interface ArrayItemProps {
-  index: number
+  item: ArrayItemDescriptor
   children?: React.ReactNode
 }
 
 export const ArrayFormItem = React.memo(
-  ({ index, children }: ArrayItemProps) => {
+  ({ item, children }: ArrayItemProps) => {
     return (
-      <ArrayFormItemContextProvider value={{ index }}>
+      <ArrayFormItemContextProvider value={item}>
         {children}
       </ArrayFormItemContextProvider>
     )

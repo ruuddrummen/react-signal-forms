@@ -3,15 +3,9 @@ import {
   FieldContextExtensions,
   PropertyDescriptors,
 } from "@/plugins/types"
-import { KeyOf, KeysOf } from "@/utils"
-import { Signal, computed, signal } from "@preact/signals-react"
-import {
-  ArrayFieldItemContext,
-  IArrayFieldContext,
-  createContextForArrayField,
-} from "./arrays/fieldContext"
+import { KeyOf } from "@/utils"
+import { Signal, signal } from "@preact/signals-react"
 import { Field, isArrayField } from "./fields"
-import { FormValues } from "./types"
 
 export type FieldContextCollection<TForm = any> = {
   [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>
@@ -24,11 +18,9 @@ export interface IFieldContext<TValue = any> {
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
 }
 
-export class FieldContext<TValue = any>
-  implements IFieldContext<TValue>, IArrayFieldContext<TValue>
-{
+export class FieldContext<TValue = any> implements IFieldContext<TValue> {
+  protected __valueSignal: Signal<TValue>
   private __field: Field
-  private __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
   private _blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void
@@ -37,23 +29,7 @@ export class FieldContext<TValue = any>
   constructor(field: Field, initialValue?: TValue) {
     this.__field = field
     this.__extensions = {}
-
-    if (isArrayField(field)) {
-      this.arrayItems = signal(
-        createContextForArrayField(field, initialValue as FormValues[])
-      )
-      this.__valueSignal = computed<TValue>(() => {
-        return this.arrayItems!.value.map((item) => {
-          return KeysOf(item.fields).reduce((itemValues, key) => {
-            itemValues[key] = item.fields[key].value
-
-            return itemValues
-          }, {} as FormValues)
-        }) as TValue
-      })
-    } else {
-      this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
-    }
+    this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
   }
 
   addBlurEffect = (
@@ -96,11 +72,6 @@ export class FieldContext<TValue = any>
   getExtension = (name: string) => {
     return this.__extensions[name]
   }
-
-  /**
-   * Only relevant for array form fields.
-   */
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
 
   toJSON() {
     const proto = Object.getPrototypeOf(this)

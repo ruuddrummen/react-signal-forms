@@ -1,7 +1,11 @@
 import { Signal, signal } from "@preact/signals-react"
 import { createContext, useContext, useRef } from "react"
 import { Field, FieldCollection } from "."
-import { addFieldExtensionsToArrayItems } from "./arrays/fieldContext"
+import {
+  ArrayFieldContext,
+  addFieldExtensionsToArrayItems,
+  isArrayFieldContext,
+} from "./arrays/fieldContext"
 import { FieldContext, FieldContextCollection } from "./fieldContext"
 import { FieldBase, isArrayField } from "./fields"
 import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
@@ -95,7 +99,13 @@ class FormContext implements IFormContext {
 
     this.fields = Object.keys(fields).reduce<FieldContextCollection>(
       (prev, key) => {
-        prev[key] = new FieldContext(fields[key], initialValues?.[key])
+        const field = fields[key]
+
+        const fieldInitialValues = initialValues?.[key]
+
+        prev[key] = isArrayField(field)
+          ? new ArrayFieldContext(field, fieldInitialValues as FormValues[])
+          : new FieldContext(fields[key], fieldInitialValues)
 
         return prev
       },
@@ -178,7 +188,7 @@ export function addFieldExtensions(
     )
   })
 
-  if (isArrayField(field)) {
+  if (isArrayField(field) && isArrayFieldContext(fieldContext)) {
     addFieldExtensionsToArrayItems(
       field,
       fieldContext.arrayItems!.value,
