@@ -380,7 +380,7 @@ const Span = ({
   children,
   color,
 }: React.PropsWithChildren<{ color?: string }>) => (
-  <Typography display="inline" color={color}>
+  <Typography component="span" color={color}>
     {children}
   </Typography>
 )
