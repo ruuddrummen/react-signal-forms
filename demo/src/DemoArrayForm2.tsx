@@ -1,57 +1,19 @@
-import { IArrayFieldContext } from "@/arrays/fieldContext"
-import { ArrayFormItemContextProvider } from "@/arrays/reactContext"
-import { ArrayFieldBase } from "@/fields"
-import { useFormContext } from "@/formContext"
-import { FormValues } from "@/types"
 import DataArrayIcon from "@mui/icons-material/DataArray"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { Button, Grid, Link } from "@mui/material"
-import { PropsWithChildren } from "react"
+import { FC, memo } from "react"
+import {
+  ArrayItem,
+  ArrayItemDescriptor,
+  useArrayField,
+} from "react-signal-forms/arrays"
 import { TextInput } from "./FormComponents"
 import { GridHeader, P, Span } from "./Layout"
 import { fields } from "./fields"
 
-interface ArrayFormItemDescriptor {
-  arrayField: ArrayFieldBase
-  id: number
-}
-
-const useArrayField = <TArray extends FormValues[]>(
-  field: ArrayFieldBase<TArray>
-) => {
-  const { fields } = useFormContext()
-
-  const arrayFieldContext = fields[field.name] as IArrayFieldContext
-
-  const items = arrayFieldContext.arrayItems.value.map<ArrayFormItemDescriptor>(
-    (_item) => ({
-      arrayField: field,
-      id: _item.id,
-    })
-  )
-
-  return {
-    items,
-    arrayFields: field.fields,
-    add: () => arrayFieldContext.addItem(),
-  }
-}
-
-const ArrayFormItem: React.FC<
-  PropsWithChildren<{ item: ArrayFormItemDescriptor }>
-> = ({ item, children }) => {
-  return (
-    <ArrayFormItemContextProvider
-      value={{ arrayField: item.arrayField, id: item.id }}
-    >
-      {children}
-    </ArrayFormItemContextProvider>
-  )
-}
-
 export const DemoArrayForm2 = () => {
-  const { items, arrayFields, add } = useArrayField(fields.arrayField)
+  const { items, add } = useArrayField(fields.arrayField)
 
   return (
     <>
@@ -74,25 +36,42 @@ export const DemoArrayForm2 = () => {
         </P>
       </Grid>
 
-      {items.map((item, i) => (
-        <ArrayFormItem item={item} key={i}>
-          <Grid item md={6} xs={12}>
-            <TextInput field={arrayFields.textFieldInArray} />
-            <RemoveArrayItemButton />
-          </Grid>
-        </ArrayFormItem>
+      {items.map((item) => (
+        // ⚠ Make sure to set the `key` prop to `item.id`.
+        <DemoArrayFormItem key={item.id} item={item} />
       ))}
 
       <Grid item md={6} xs={12}>
-        <AddArrayItemButton addItem={add} />
+        <AddArrayItemButton onClick={add} />
       </Grid>
     </>
   )
 }
 
-const AddArrayItemButton = ({ addItem }: { addItem: () => void }) => (
+/**
+ * Adding and removing items will trigger a render on the array form. By default
+ * React will re-render all children when this happens. To prevent all items
+ * from re-rendering, you can wrap your items in a component with memo.
+ *
+ * Check out the React docs if you want to read more about memo:
+ * https://react.dev/reference/react/memo.
+ */
+const DemoArrayFormItem: FC<{ item: ArrayItemDescriptor }> = memo((props) => {
+  const arrayFields = fields.arrayField.fields
+
+  return (
+    <ArrayItem item={props.item}>
+      <Grid item md={6} xs={12}>
+        <TextInput field={arrayFields.textFieldInArray} />
+        <RemoveArrayItemButton onClick={props.item.remove} />
+      </Grid>
+    </ArrayItem>
+  )
+})
+
+const AddArrayItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
   <Button
-    onClick={addItem}
+    onClick={onClick}
     sx={{
       width: "100%",
       height: "100%",
@@ -102,8 +81,9 @@ const AddArrayItemButton = ({ addItem }: { addItem: () => void }) => (
   </Button>
 )
 
-const RemoveArrayItemButton = () => (
-  <Button // onClick={() => removeItem(item)}
+const RemoveArrayItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
+  <Button
+    onClick={onClick}
     color="error"
     sx={{
       width: "100%",

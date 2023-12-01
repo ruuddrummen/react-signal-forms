@@ -74,8 +74,8 @@ export class ArrayFieldContext<TValue extends FormValues[]>
     this.arrayItems.value = [...this.arrayItems.value, newItem]
   }
 
-  removeItem = (_id: number) => {
-    throw new Error("Not implemented")
+  removeItem = (id: number) => {
+    this.arrayItems.value = this.arrayItems.value.filter((i) => i.id !== id)
   }
 
   arrayItems: Signal<ArrayFieldItemContext<TValue>[]>
