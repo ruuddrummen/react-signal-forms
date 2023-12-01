@@ -72,10 +72,16 @@ function createFieldExtension(
     return defaultContextExtension
   }
 
+  let initialized = false
   let previousErrors: string[] = []
 
   const validationResults = computed(() => {
-    // Rules must be executed to create subscriptions on the necessary signals.
+    // If value is undefined validation is not applicable. Skip during
+    // initialization to subscribe to signals.
+    if (initialized && fieldContext.peekValue() === undefined) {
+      return emptyResults
+    }
+
     const results = rules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
     )
@@ -90,10 +96,7 @@ function createFieldExtension(
       }
     }
 
-    // If value is undefined results are not applicable.
-    if (fieldContext.peekValue() === undefined) {
-      return emptyResults
-    }
+    initialized = true
 
     return results
   })
@@ -106,6 +109,7 @@ function createFieldExtension(
         return emptyResults
       }
 
+      // Return the previous reference if errors have not changed.
       if (arrayEquals(errors, previousErrors)) {
         return previousErrors
       }
