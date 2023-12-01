@@ -73,16 +73,9 @@ function createFieldExtension(
     return defaultContextExtension
   }
 
-  let initialized = false
   let previousErrors: string[] = []
 
   const validationResults = computed(() => {
-    // If value is undefined validation is not applicable. Skip during
-    // first run to let rules subscribe to signals.
-    if (initialized && fieldContext.peekValue() === undefined) {
-      return emptyResults
-    }
-
     const results = validationRules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
     )
@@ -96,8 +89,9 @@ function createFieldExtension(
         results.push("Not all array items are valid")
       }
     }
-
-    initialized = true
+    if (fieldContext.peekValue() === undefined) {
+      return emptyResults
+    }
 
     return results
   })
