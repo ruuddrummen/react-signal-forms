@@ -1,1 +1,1 @@
-export { ArrayForm, ArrayFormItem } from "./ArrayForm"
+export { ArrayForm } from "./ArrayForm"

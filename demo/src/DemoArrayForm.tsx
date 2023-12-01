@@ -12,6 +12,7 @@ export const DemoArrayForm = () => (
     <GridHeader>
       <DataArrayIcon /> Array forms
     </GridHeader>
+
     <Grid item xs={12}>
       <P>
         <Span color="warning.main">
@@ -26,46 +27,49 @@ export const DemoArrayForm = () => (
         .
       </P>
     </Grid>
+
     <ArrayForm
       arrayField={fields.arrayField}
       renderItem={(fields) => (
         <>
-          {/* <Grid item md={6} xs={12}> */}
           <TextInput field={fields.textFieldInArray} />
-          <Button
-            // onClick={() => removeItem(item)}
-            color="error"
-            sx={{
-              width: "100%",
-            }}
-          >
-            <DeleteOutlineIcon /> Remove item
-          </Button>
-          {/* </Grid> */}
+          <RemoveArrayItemButton />
         </>
       )}
     >
       {({ items, addItem }) => (
         <>
           {items.map((item, i) => (
-            <Grid ref={item.ref} key={i} item md={6} xs={12} />
+            <Grid ref={item.containerRef} key={i} item md={6} xs={12} />
           ))}
-          {/* {itemComponents.map((item, i) => (
-            <React.Fragment key={i}>{item}</React.Fragment>
-          ))} */}
           <Grid item md={6} xs={12}>
-            <Button
-              onClick={addItem}
-              sx={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              Add item
-            </Button>
+            <AddArrayItemButton addItem={addItem} />
           </Grid>
         </>
       )}
     </ArrayForm>
   </>
+)
+
+const AddArrayItemButton = ({ addItem }: { addItem: () => void }) => (
+  <Button
+    onClick={addItem}
+    sx={{
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    Add item
+  </Button>
+)
+
+const RemoveArrayItemButton = () => (
+  <Button // onClick={() => removeItem(item)}
+    color="error"
+    sx={{
+      width: "100%",
+    }}
+  >
+    <DeleteOutlineIcon /> Remove item
+  </Button>
 )

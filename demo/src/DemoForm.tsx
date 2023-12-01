@@ -7,7 +7,7 @@ import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import { Box, Button, Grid, Paper, Stack, css } from "@mui/material"
 import React from "react"
-import { DemoArrayForm } from "./DemoArrayForm"
+import { DemoArrayForm2 } from "./DemoArrayForm2"
 import {
   FormState,
   NumberInput,
@@ -117,7 +117,7 @@ export const DemoForm = React.memo(() => {
 
             <GridDivider />
 
-            <DemoArrayForm />
+            <DemoArrayForm2 />
           </Grid>
         </SubmitBackdrop>
         <Box

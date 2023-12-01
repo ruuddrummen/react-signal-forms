@@ -19,8 +19,8 @@ export interface IFieldContext<TValue = any> {
 }
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
+  protected __field: Field
   protected __valueSignal: Signal<TValue>
-  private __field: Field
   private __extensions: FieldContextExtensions
   private _blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void

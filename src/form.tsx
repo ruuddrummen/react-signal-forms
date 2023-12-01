@@ -58,10 +58,9 @@ export function configureSignalForm<
           arrayFormItemContext.arrayField.name
         ] as IArrayFieldContext
 
-        const fieldContext =
-          arrayFieldContext.arrayItems.peek()[arrayFormItemContext.id].fields[
-            field.name
-          ]
+        const fieldContext = arrayFieldContext.arrayItems
+          .peek()
+          .find((i) => i.id === arrayFormItemContext.id)?.fields[field.name]
 
         return fieldContext as IFieldContext &
           ExpandFieldContextProperties<TExtensions>

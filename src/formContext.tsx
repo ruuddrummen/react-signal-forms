@@ -104,7 +104,11 @@ class FormContext implements IFormContext {
         const fieldInitialValues = initialValues?.[key]
 
         prev[key] = isArrayField(field)
-          ? new ArrayFieldContext(field, fieldInitialValues as FormValues[])
+          ? new ArrayFieldContext(
+              field,
+              fieldInitialValues as FormValues[],
+              plugins
+            )
           : new FieldContext(fields[key], fieldInitialValues)
 
         return prev

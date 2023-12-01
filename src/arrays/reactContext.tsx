@@ -13,7 +13,7 @@ export const useArrayFormContext = () => useContext(ArrayFormContext)
 
 export interface ArrayItemDescriptor {
   id: number
-  ref: (ref: HTMLDivElement) => void
+  containerRef: (ref: HTMLDivElement) => void
 }
 
 const ArrayFormItemContext = React.createContext<{
