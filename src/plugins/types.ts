@@ -40,33 +40,43 @@ export interface SignalFormPlugin<
  * Recursively merges the types of the second type parameters, which
  * describes the field context properties.
  **/
-type MergeFieldContextProperties<T extends SignalFormPlugin<any, any, any>[]> =
-  T extends [firstItem: SignalFormPlugin<any, infer X, any>, ...rest: infer R]
-    ? R extends SignalFormPlugin<any, any, any>[]
-      ? X & MergeFieldContextProperties<R>
-      : never
-    : {}
+type MergeFieldContextProperties<T extends SignalFormPlugin[]> = T extends [
+  firstItem: SignalFormPlugin<any, infer X, any>,
+  ...rest: infer R,
+]
+  ? R extends SignalFormPlugin[]
+    ? X & MergeFieldContextProperties<R>
+    : never
+  : {}
 
 /**
  * Recursively merges the types of the third type parameters, which
  * describes the form context properties.
  **/
-type MergeFormContextProperties<T extends SignalFormPlugin<any, any, any>[]> =
-  T extends [firstItem: SignalFormPlugin<any, any, infer X>, ...rest: infer R]
-    ? R extends SignalFormPlugin<any, any, any>[]
-      ? X & MergeFormContextProperties<R>
-      : never
-    : {}
+type MergeFormContextProperties<T extends SignalFormPlugin[]> = T extends [
+  firstItem: SignalFormPlugin<any, any, infer X>,
+  ...rest: infer R,
+]
+  ? R extends SignalFormPlugin[]
+    ? X & MergeFormContextProperties<R>
+    : never
+  : {}
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 
-export type ExpandFieldContextProperties<
-  T extends SignalFormPlugin<any, any, any>[],
-> = Expand<MergeFieldContextProperties<T>>
+/**
+ * Expands all field properties defined in the given plugins.
+ */
+export type ExpandFieldContextProperties<T extends SignalFormPlugin[]> = Expand<
+  MergeFieldContextProperties<T>
+>
 
-export type ExpandFormContextProperties<
-  T extends SignalFormPlugin<any, any, any>[],
-> = Expand<MergeFormContextProperties<T>>
+/**
+ * Expands all form properties defined in the given plugins.
+ */
+export type ExpandFormContextProperties<T extends SignalFormPlugin[]> = Expand<
+  MergeFormContextProperties<T>
+>
 
 interface PropertyDescriptor<T> {
   get?(): T

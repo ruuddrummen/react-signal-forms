@@ -8,11 +8,7 @@ import {
   useFormContext,
   useFormContextProvider,
 } from "./formContext"
-import {
-  ExpandFieldContextProperties,
-  ExpandFormContextProperties,
-  SignalFormPlugin,
-} from "./plugins/types"
+import { ExpandFieldContextProperties, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
 
 interface SignalsFormProps {
@@ -23,26 +19,26 @@ interface SignalsFormProps {
 }
 
 interface SignalsFormInnerProps extends SignalsFormProps {
-  extensions: Array<SignalFormPlugin<any, any, any>>
+  plugins: Array<SignalFormPlugin<any, any, any>>
 }
 
 export function configureSignalForm<
-  TExtensions extends SignalFormPlugin<any, any, any>[],
+  TPlugins extends SignalFormPlugin<any, any, any>[],
 >(
-  ...extensions: TExtensions
+  ...plugins: TPlugins
 ): {
   SignalForm: React.ComponentType<SignalsFormProps>
   useField: <TValue>(
     field: FieldBase<TValue>
-  ) => IFieldContext<TValue> & ExpandFieldContextProperties<TExtensions>
-  useForm: () => IFormContext & ExpandFormContextProperties<TExtensions>
+  ) => IFieldContext<TValue, TPlugins>
+  useForm: () => IFormContext<FormValues, TPlugins>
 } {
   return {
-    SignalForm: (props) => {
-      return <SignalForm {...props} extensions={extensions} />
+    SignalForm(props) {
+      return <SignalForm {...props} plugins={plugins} />
     },
 
-    useField: function <TValue>(field: FieldBase<TValue>) {
+    useField<TValue>(field: FieldBase<TValue>) {
       if (field == null) {
         throw new Error(
           `Missing field configuration. Did you forget to add a field in createFields?`
@@ -61,20 +57,18 @@ export function configureSignalForm<
           .peek()
           .find((i) => i.id === arrayFormItemContext.itemId)?.fields[field.name]
 
-        return fieldContext as IFieldContext &
-          ExpandFieldContextProperties<TExtensions>
+        return fieldContext as IFieldContext<any, TPlugins>
       }
 
       const fieldContext = formContext.fields[field.name]
       return fieldContext as IFieldContext &
-        ExpandFieldContextProperties<TExtensions>
+        ExpandFieldContextProperties<TPlugins>
     },
 
-    useForm: function () {
+    useForm() {
       const formContext = useFormContext()
 
-      return formContext as IFormContext &
-        ExpandFormContextProperties<TExtensions>
+      return formContext as IFormContext<FormValues, TPlugins> // & ExpandFormContextProperties<TPlugins>
     },
   }
 }
@@ -82,13 +76,13 @@ export function configureSignalForm<
 const SignalForm: React.FC<SignalsFormInnerProps> = ({
   fields,
   initialValues,
-  extensions,
+  plugins,
   onSubmit,
   children,
 }) => {
   const { ContextProvider, formContext } = useFormContextProvider(
     fields,
-    extensions,
+    plugins,
     onSubmit,
     initialValues
   )

@@ -1,23 +1,31 @@
 import {
+  ExpandFieldContextProperties,
   FieldContextExtension,
   FieldContextExtensions,
   PropertyDescriptors,
+  SignalFormPlugin,
 } from "@/plugins/types"
 import { KeyOf } from "@/utils"
 import { Signal, signal } from "@preact/signals-react"
 import { Field, isArrayField } from "./fields"
 
-export type FieldContextCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>
+export type FieldContextCollection<
+  TForm = any,
+  TPlugins extends SignalFormPlugin[] = [],
+> = {
+  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
 }
 
-export interface IFieldContext<TValue = any> {
+export type IFieldContext<
+  TValue = any,
+  TPlugins extends SignalFormPlugin[] = [],
+> = {
   name: string
   value: TValue | null
   setValue(value: TValue | null): void
   peekValue(): TValue
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
-}
+} & ExpandFieldContextProperties<TPlugins>
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   protected __field: Field
@@ -88,21 +96,20 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
       proto = Object.getPrototypeOf(proto)
     }
 
-    const jsonObj: any = {}
-    // Object.entries(Object.getOwnPropertyDescriptors(proto))
-    //   .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
-    entries
+    const jsonObj = entries
       .filter(([_key, descriptor]) => typeof descriptor.get === "function")
-      .forEach(([key, descriptor]) => {
+      .reduce((obj, [key, descriptor]) => {
         if (descriptor && key[0] !== "_") {
           try {
             const val = (this as any)[key]
-            jsonObj[key] = val
+            obj[key] = val
           } catch (error) {
             console.error(`Error calling getter ${key}`, error)
           }
         }
-      })
+
+        return obj
+      }, {} as any)
 
     return jsonObj
   }

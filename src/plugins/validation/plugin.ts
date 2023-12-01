@@ -1,9 +1,8 @@
 import { isArrayFieldContext } from "@/arrays/fieldContext"
-import { FieldContextCollection } from "@/fieldContext"
 import { isArrayField } from "@/fields"
-import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
+import { Field, FieldRule, IFormContext } from "@/index"
 import { RuleContext } from "@/plugins"
-import { PluginFieldProperties, createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/create"
 import { FormValues } from "@/types"
 import { KeyOf, arrayEquals } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
@@ -45,10 +44,6 @@ export const validationRulesPlugin = createPlugin(PLUGIN_NAME, {
   },
 })
 
-type ValidationFieldProperties = PluginFieldProperties<
-  typeof validationRulesPlugin
->
-
 type ValidationFieldExtension = {
   errorsSignal: Signal<string[]>
   isRequiredSignal: Signal<boolean>
@@ -65,9 +60,13 @@ function createFieldExtension(
   field: Field,
   formContext: IFormContext
 ): ValidationFieldExtension {
-  const fieldContext = formContext.fields[field.name]
-  const rules = (field.rules?.filter(isValidationRule) ??
-    []) as ValidationFieldRule[]
+  const validationFormContext = formContext as IFormContext<
+    FormValues,
+    [typeof validationRulesPlugin]
+  >
+
+  const fieldContext = validationFormContext.fields[field.name]
+  const rules = field.rules?.filter(isValidationRule) ?? []
 
   if (rules.length === 0 && !isArrayField(field)) {
     return defaultContextExtension
@@ -76,8 +75,6 @@ function createFieldExtension(
   let previousErrors: string[] = []
 
   const validationResults = computed(() => {
-    console.log(`(${field.name}) Checking validation rules`)
-
     // Rules must be executed to create subscriptions on the necessary signals.
     const results = rules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
@@ -85,10 +82,7 @@ function createFieldExtension(
 
     if (isArrayFieldContext(fieldContext)) {
       const allItemsAreValid = fieldContext.arrayItems.value.every((item) =>
-        Object.values(item.fields as FieldContextCollection<any>).every(
-          (field) =>
-            (field as IFieldContext & ValidationFieldProperties).isValid
-        )
+        Object.values(item.fields).every((field) => field.isValid)
       )
 
       if (!allItemsAreValid) {

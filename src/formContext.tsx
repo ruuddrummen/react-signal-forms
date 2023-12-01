@@ -8,7 +8,11 @@ import {
 } from "./arrays/fieldContext"
 import { FieldContext, FieldContextCollection } from "./fieldContext"
 import { FieldBase, isArrayField } from "./fields"
-import { PropertyDescriptors, SignalFormPlugin } from "./plugins/types"
+import {
+  ExpandFormContextProperties,
+  PropertyDescriptors,
+  SignalFormPlugin,
+} from "./plugins/types"
 import { FormValues } from "./types"
 import { forEachKeyOf } from "./utils"
 
@@ -26,12 +30,18 @@ const ReactFormContext = createContext<IFormContext>({
 
 export const useFormContext = () => useContext(ReactFormContext)
 
-export interface IFormContextLike<TForm = FormValues> {
+export type IFormContextLike<
+  TForm = FormValues,
+  TPlugins extends SignalFormPlugin[] = [],
+> = {
   // TODO: Add parent form context here or in array form context.
-  fields: FieldContextCollection<TForm>
-}
+  fields: FieldContextCollection<TForm, TPlugins>
+} & ExpandFormContextProperties<TPlugins>
 
-export interface IFormContext<TForm = any> extends IFormContextLike<TForm> {
+export type IFormContext<
+  TForm = FormValues,
+  TPlugins extends SignalFormPlugin[] = [],
+> = IFormContextLike<TForm, TPlugins> & {
   fieldSpecifications: FieldCollection<TForm>
   plugins: Array<SignalFormPlugin>
   isSubmitting: boolean

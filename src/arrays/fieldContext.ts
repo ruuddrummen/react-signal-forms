@@ -11,15 +11,19 @@ import { FormValues } from "@/types"
 import { KeysOf, forEachKeyOf } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
 
-export interface IArrayFieldContext<TValue = FormValues[]>
-  extends IFieldContext<TValue> {
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]>
+export type IArrayFieldContext<
+  TValue extends FormValues[] = FormValues[],
+  TPlugins extends SignalFormPlugin[] = [],
+> = IFieldContext<TValue, TPlugins> & {
+  arrayItems: Signal<ArrayFieldItemContext<TValue, TPlugins>[]>
   addItem: () => void
   removeItem: (id: number) => void
 }
 
-export interface ArrayFieldItemContext<TValue = FormValues[]>
-  extends IFormContextLike<ArrayItemType<TValue>> {
+export type ArrayFieldItemContext<
+  TValue = FormValues[],
+  TPlugins extends SignalFormPlugin[] = [],
+> = IFormContextLike<ArrayItemType<TValue>, TPlugins> & {
   id: any
 }
 
@@ -59,9 +63,9 @@ export class ArrayFieldContext<TValue extends FormValues[]>
   }
 
   addItem = () => {
-    const newItem = createContextForArrayFieldItem(
+    const newItem = createContextForArrayFieldItem<TValue>(
       this.createItemId(),
-      this.__field as ArrayFieldBase,
+      this.__field as ArrayFieldBase<TValue>,
       this.__field.defaultValue as ArrayItemType<TValue>
     )
 
@@ -125,7 +129,7 @@ export function createContextForArrayFieldItem<
 }
 
 export function addFieldExtensionsToArrayItems(
-  field: ArrayFieldBase<any>,
+  field: ArrayFieldBase,
   items: ArrayFieldItemContext<FormValues[]>[],
   plugins: SignalFormPlugin<any, any, any>[]
 ) {
@@ -136,12 +140,15 @@ export function addFieldExtensionsToArrayItems(
   })
 }
 
-export function isArrayFieldContext<TValue>(
-  fieldContext: IFieldContext<TValue>
-): fieldContext is ArrayFieldContext<AsArrayFieldValue<TValue>> {
+export function isArrayFieldContext<
+  TValue,
+  TPlugins extends SignalFormPlugin[] = [],
+>(
+  fieldContext: IFieldContext<TValue, TPlugins>
+): fieldContext is IArrayFieldContext<AsArrayFieldValue<TValue>, TPlugins> {
   return (
-    (fieldContext as ArrayFieldContext<AsArrayFieldValue<TValue>>).arrayItems !=
-    null
+    (fieldContext as IArrayFieldContext<AsArrayFieldValue<TValue>, TPlugins>)
+      .arrayItems != null
   )
 }
 
