@@ -1,7 +1,7 @@
 import { ArrayFieldBase } from "@/fields"
 import { useFormContext } from "@/formContext"
 import { FormValues } from "@/types"
-import React, { PropsWithChildren, useMemo, useRef } from "react"
+import React, { PropsWithChildren, useRef } from "react"
 import { IArrayFieldContext } from "./fieldContext"
 import { ArrayFormItemContextProvider } from "./reactContext"
 
@@ -41,13 +41,10 @@ export const useArrayField = <TArray extends FormValues[]>(
 export const ArrayItem: React.FC<
   PropsWithChildren<{ item: ArrayItemDescriptor }>
 > = ({ item, children }) => {
-  const value = useMemo(
-    () => ({ arrayField: item.arrayField, id: item.id }),
-    [item.arrayField, item.id]
-  )
-
   return (
-    <ArrayFormItemContextProvider value={value}>
+    <ArrayFormItemContextProvider
+      value={{ itemId: item.id, arrayField: item.arrayField }}
+    >
       {children}
     </ArrayFormItemContextProvider>
   )
