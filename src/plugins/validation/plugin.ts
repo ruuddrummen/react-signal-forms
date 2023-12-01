@@ -60,15 +60,16 @@ function createFieldExtension(
   field: Field,
   formContext: IFormContext
 ): ValidationFieldExtension {
+  // Cast form context to include validation properties.
   const validationFormContext = formContext as IFormContext<
     FormValues,
     [typeof validationRulesPlugin]
   >
 
   const fieldContext = validationFormContext.fields[field.name]
-  const rules = field.rules?.filter(isValidationRule) ?? []
+  const validationRules = field.rules?.filter(isValidationRule) ?? []
 
-  if (rules.length === 0 && !isArrayField(field)) {
+  if (validationRules.length === 0 && !isArrayField(field)) {
     return defaultContextExtension
   }
 
@@ -77,12 +78,12 @@ function createFieldExtension(
 
   const validationResults = computed(() => {
     // If value is undefined validation is not applicable. Skip during
-    // initialization to subscribe to signals.
+    // first run to let rules subscribe to signals.
     if (initialized && fieldContext.peekValue() === undefined) {
       return emptyResults
     }
 
-    const results = rules.map((r) =>
+    const results = validationRules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
     )
 
