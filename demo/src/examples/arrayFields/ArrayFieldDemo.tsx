@@ -3,9 +3,17 @@
 import DataArrayIcon from "@mui/icons-material/DataArray"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
-import { Button, Collapse, Grid, Link } from "@mui/material"
-import { SignalForm, Switch, TextInput } from "demo/FormComponents"
-import { GridHeader, P, Span } from "demo/Layout"
+import { Box, Button, Collapse, Grid, Link, Stack } from "@mui/material"
+import {
+  FormState,
+  SignalForm,
+  SubmitBackdrop,
+  Switch,
+  TextInput,
+  useLocalStorageStore,
+} from "demo/FormComponents"
+import { FormFooter } from "demo/FormComponents/FormFooter"
+import { Header, P, Span } from "demo/Layout"
 import { FC, memo } from "react"
 import {
   ArrayItem,
@@ -16,13 +24,15 @@ import TransitionGroup from "react-transition-group/TransitionGroup"
 import { fields } from "./config"
 
 export const ArrayFieldDemoForm = () => {
-  return (
-    <SignalForm fields={fields}>
-      <GridHeader>
-        <DataArrayIcon /> Array forms
-      </GridHeader>
+  const { getValues, setValues } = useLocalStorageStore("array-field")
 
-      <Grid item xs={12}>
+  return (
+    <>
+      <Box padding={2}>
+        <Header id="array-fields">
+          <DataArrayIcon /> Array fields
+        </Header>
+
         <P>
           <Span color="warning.main">
             <WarningAmberIcon />
@@ -35,10 +45,26 @@ export const ArrayFieldDemoForm = () => {
           </Link>
           .
         </P>
-      </Grid>
+      </Box>
 
-      <ArrayFieldDemo />
-    </SignalForm>
+      <SignalForm
+        fields={fields}
+        initialValues={getValues()}
+        onSubmit={setValues}
+      >
+        <Stack spacing={2}>
+          <Box padding={2}>
+            <SubmitBackdrop>
+              <ArrayFieldDemo />
+            </SubmitBackdrop>
+
+            <FormState />
+          </Box>
+
+          <FormFooter />
+        </Stack>
+      </SignalForm>
+    </>
   )
 }
 
@@ -46,7 +72,7 @@ const ArrayFieldDemo = () => {
   const { items, add } = useArrayField(fields.arrayField)
 
   return (
-    <Grid item container spacing={2}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         <TransitionGroup>
           {items.map((item) => (
@@ -100,7 +126,6 @@ const AddItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
     onClick={onClick}
     sx={{
       width: "100%",
-      height: "100%",
     }}
   >
     Add item

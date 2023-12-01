@@ -1,11 +1,32 @@
 import { Divider, Grid, Typography } from "@mui/material"
-import React from "react"
+import React, { PropsWithChildren } from "react"
+
+export const Header = ({
+  id,
+  children,
+}: PropsWithChildren<{ id?: string }>) => (
+  <>
+    {id && (
+      <a
+        style={{
+          display: "block",
+          visibility: "hidden",
+          position: "relative",
+          top: "-80px",
+        }}
+        id={id}
+      />
+    )}
+    <Typography variant="h4">{children}</Typography>
+  </>
+)
 
 export const GridHeader = ({ children }: React.PropsWithChildren<object>) => (
   <Grid item xs={12} marginTop={2}>
     <Typography variant="h4">{children}</Typography>
   </Grid>
 )
+
 export const GridDivider = () => (
   <Grid item xs={12} marginTop={2}>
     <Divider />

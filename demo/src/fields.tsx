@@ -89,25 +89,4 @@ export const fields = signalForm<FormData>().withFields((field) => ({
       })),
     ],
   }),
-
-  // Array forms (WIP).
-  ...field("arrayField").asArray({
-    fields: (arrayField) => ({
-      ...arrayField("textFieldInArray", "Text field in array", {
-        defaultValue: "New item",
-        rules: [required()],
-      }),
-    }),
-    defaultValue: [
-      {
-        textFieldInArray: "Item 1",
-      },
-      {
-        textFieldInArray: "Item 2",
-      },
-      {
-        textFieldInArray: "Item 3",
-      },
-    ],
-  }),
 }))

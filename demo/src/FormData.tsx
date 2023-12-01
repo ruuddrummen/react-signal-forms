@@ -25,8 +25,4 @@ export interface FormData {
 
   makeComplicatedFieldApplicable: boolean
   complicatedField: string
-
-  arrayField: Array<{
-    textFieldInArray: string
-  }>
 }

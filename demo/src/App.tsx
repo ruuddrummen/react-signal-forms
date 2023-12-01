@@ -76,9 +76,9 @@ const Header = () => {
               height="4rem"
               spacing={2}
             >
-              <Button onClick={reload}>Reload form</Button>
+              <Button onClick={reload}>Reload forms</Button>
               <Button color="primary" onClick={reset}>
-                Clear store
+                Clear stores
               </Button>
               <Divider variant="inset" orientation="vertical" flexItem />
               <Link
