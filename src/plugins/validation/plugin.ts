@@ -1,6 +1,9 @@
-import { Field, FieldRule, IFormContext } from "@/index"
+import { isArrayFieldContext } from "@/arrays/fieldContext"
+import { FieldContextCollection } from "@/fieldContext"
+import { isArrayField } from "@/fields"
+import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
 import { RuleContext } from "@/plugins"
-import { createPlugin } from "@/plugins/create"
+import { PluginFieldProperties, createPlugin } from "@/plugins/create"
 import { FormValues } from "@/types"
 import { KeyOf, arrayEquals } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
@@ -42,6 +45,10 @@ export const validationRulesPlugin = createPlugin(PLUGIN_NAME, {
   },
 })
 
+type ValidationFieldProperties = PluginFieldProperties<
+  typeof validationRulesPlugin
+>
+
 type ValidationFieldExtension = {
   errorsSignal: Signal<string[]>
   isRequiredSignal: Signal<boolean>
@@ -62,7 +69,7 @@ function createFieldExtension(
   const rules = (field.rules?.filter(isValidationRule) ??
     []) as ValidationFieldRule[]
 
-  if (rules.length === 0) {
+  if (rules.length === 0 && !isArrayField(field)) {
     return defaultContextExtension
   }
 
@@ -75,6 +82,19 @@ function createFieldExtension(
     const results = rules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
     )
+
+    if (isArrayFieldContext(fieldContext)) {
+      const allItemsAreValid = fieldContext.arrayItems.value.every((item) =>
+        Object.values(item.fields as FieldContextCollection<any>).every(
+          (field) =>
+            (field as IFieldContext & ValidationFieldProperties).isValid
+        )
+      )
+
+      if (!allItemsAreValid) {
+        results.push("Not all array items are valid")
+      }
+    }
 
     // If value is undefined results are not applicable.
     if (fieldContext.peekValue() === undefined) {

@@ -1,15 +1,9 @@
 import { ArrayFieldBase } from "@/fields"
 import { useFormContext } from "@/formContext"
 import { FormValues } from "@/types"
-import React, { PropsWithChildren, useRef } from "react"
+import { useRef } from "react"
+import { ArrayItemDescriptor } from "./ArrayItem"
 import { IArrayFieldContext } from "./fieldContext"
-import { ArrayFormItemContextProvider } from "./reactContext"
-
-export interface ArrayItemDescriptor {
-  id: number
-  arrayField: ArrayFieldBase
-  remove: () => void
-}
 
 export const useArrayField = <TArray extends FormValues[]>(
   field: ArrayFieldBase<TArray>
@@ -36,16 +30,4 @@ export const useArrayField = <TArray extends FormValues[]>(
     arrayFields: field.fields,
     add: () => arrayFieldContext.addItem(),
   }
-}
-
-export const ArrayItem: React.FC<
-  PropsWithChildren<{ item: ArrayItemDescriptor }>
-> = ({ item, children }) => {
-  return (
-    <ArrayFormItemContextProvider
-      value={{ itemId: item.id, arrayField: item.arrayField }}
-    >
-      {children}
-    </ArrayFormItemContextProvider>
-  )
 }

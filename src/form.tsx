@@ -1,6 +1,6 @@
 import React from "react"
 import { IArrayFieldContext } from "./arrays/fieldContext"
-import { useArrayFormItem } from "./arrays/reactContext"
+import { useArrayFieldItem } from "./arrays/reactContext"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
@@ -50,8 +50,7 @@ export function configureSignalForm<
       }
 
       const formContext = useFormContext()
-      // const arrayFormContext = useArrayFormContext()
-      const arrayFormItemContext = useArrayFormItem()
+      const arrayFormItemContext = useArrayFieldItem()
 
       if (arrayFormItemContext != null) {
         const arrayFieldContext = formContext.fields[

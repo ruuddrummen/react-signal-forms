@@ -49,11 +49,11 @@ export const DemoArrayForm = () => {
 }
 
 /**
- * Adding and removing items will trigger a render on the array form. By default
- * React will re-render all children when this happens. To prevent all items
- * from re-rendering, you can wrap your items in a component with memo.
+ * Adding and removing items will trigger a render on the array form. By
+ * default, React will re-render all children when this happens. To prevent all
+ * items from re-rendering, you can wrap your items in a component with memo.
  *
- * Check out the React docs if you want to read more about memo:
+ * Check out the React docs to read more about memo:
  * https://react.dev/reference/react/memo.
  */
 const DemoArrayItem: FC<{ item: ArrayItemDescriptor }> = memo(({ item }) => {

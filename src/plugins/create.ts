@@ -71,3 +71,6 @@ export function createPlugin<
     ...args,
   }
 }
+
+export type PluginFieldProperties<TPlugin extends SignalFormPlugin> =
+  TPlugin extends SignalFormPlugin<any, infer R, any> ? R : never

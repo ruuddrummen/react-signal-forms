@@ -8,4 +8,4 @@ const ArrayFormItemContext = React.createContext<{
 
 export const ArrayFormItemContextProvider = ArrayFormItemContext.Provider
 
-export const useArrayFormItem = () => useContext(ArrayFormItemContext)
+export const useArrayFieldItem = () => useContext(ArrayFormItemContext)

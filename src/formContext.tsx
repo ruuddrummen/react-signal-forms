@@ -26,7 +26,7 @@ const ReactFormContext = createContext<IFormContext>({
 
 export const useFormContext = () => useContext(ReactFormContext)
 
-export interface IFormContextLike<TForm = any> {
+export interface IFormContextLike<TForm = FormValues> {
   // TODO: Add parent form context here or in array form context.
   fields: FieldContextCollection<TForm>
 }

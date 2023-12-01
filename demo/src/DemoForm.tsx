@@ -126,7 +126,7 @@ export const DemoForm = React.memo(() => {
             @media (min-width: 769px) {
               position: sticky;
               bottom: -4px;
-              z-index: 100;
+              z-index: 99;
             }
           `}
         >

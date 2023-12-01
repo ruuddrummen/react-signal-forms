@@ -12,6 +12,7 @@ export type FieldContextCollection<TForm = any> = {
 }
 
 export interface IFieldContext<TValue = any> {
+  name: string
   value: TValue | null
   setValue(value: TValue | null): void
   peekValue(): TValue
@@ -22,7 +23,8 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   protected __field: Field
   protected __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
-  private _blurEffects: Array<
+
+  private __blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void
   > = []
 
@@ -32,14 +34,18 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
   }
 
-  addBlurEffect = (
-    effect: (event: React.FocusEvent<HTMLElement, Element>) => void
-  ) => {
-    this._blurEffects.push(effect)
+  get name() {
+    return this.__field.name
   }
 
   get value() {
     return this.__valueSignal.value
+  }
+
+  addBlurEffect = (
+    effect: (event: React.FocusEvent<HTMLElement, Element>) => void
+  ) => {
+    this.__blurEffects.push(effect)
   }
 
   peekValue = () => {
@@ -54,7 +60,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   }
 
   handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
-    this._blurEffects.forEach((effect) => effect(event))
+    this.__blurEffects.forEach((effect) => effect(event))
   }
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(
@@ -74,13 +80,20 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   }
 
   toJSON() {
-    const proto = Object.getPrototypeOf(this)
-    const jsonObj: any = {}
+    const entries = Object.entries(Object.getOwnPropertyDescriptors(this))
+    let proto = Object.getPrototypeOf(this)
 
-    Object.entries(Object.getOwnPropertyDescriptors(proto))
-      .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
+    while (proto != null) {
+      entries.push(...Object.entries(Object.getOwnPropertyDescriptors(proto)))
+      proto = Object.getPrototypeOf(proto)
+    }
+
+    const jsonObj: any = {}
+    // Object.entries(Object.getOwnPropertyDescriptors(proto))
+    //   .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
+    entries
       .filter(([_key, descriptor]) => typeof descriptor.get === "function")
-      .map(([key, descriptor]) => {
+      .forEach(([key, descriptor]) => {
         if (descriptor && key[0] !== "_") {
           try {
             const val = (this as any)[key]
