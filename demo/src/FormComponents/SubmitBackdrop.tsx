@@ -1,11 +1,11 @@
 import { Backdrop, CircularProgress, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { useFormSignals } from "./SignalForm"
+import { useForm } from "./SignalForm"
 
 export const SubmitBackdrop: React.FC<{ children?: ReactNode | undefined }> = ({
   children,
 }) => {
-  const form = useFormSignals()
+  const form = useForm()
 
   return (
     <div style={{ position: "relative" }}>

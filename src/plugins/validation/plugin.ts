@@ -1,3 +1,5 @@
+import { isArrayFieldContext } from "@/arrays/fieldContext"
+import { isArrayField } from "@/fields"
 import { Field, FieldRule, IFormContext } from "@/index"
 import { RuleContext } from "@/plugins"
 import { createPlugin } from "@/plugins/create"
@@ -58,25 +60,35 @@ function createFieldExtension(
   field: Field,
   formContext: IFormContext
 ): ValidationFieldExtension {
-  const fieldContext = formContext.fields[field.name]
-  const rules = (field.rules?.filter(isValidationRule) ??
-    []) as ValidationFieldRule[]
+  // Cast form context to include validation properties.
+  const validationFormContext = formContext as IFormContext<
+    FormValues,
+    [typeof validationRulesPlugin]
+  >
 
-  if (rules.length === 0) {
+  const fieldContext = validationFormContext.fields[field.name]
+  const validationRules = field.rules?.filter(isValidationRule) ?? []
+
+  if (validationRules.length === 0 && !isArrayField(field)) {
     return defaultContextExtension
   }
 
   let previousErrors: string[] = []
 
   const validationResults = computed(() => {
-    console.log(`(${field.name}) Checking validation rules`)
-
-    // Rules must be executed to create subscriptions on the necessary signals.
-    const results = rules.map((r) =>
+    const results = validationRules.map((r) =>
       r.execute({ value: fieldContext.value, form: formContext })
     )
 
-    // If value is undefined results are not applicable.
+    if (isArrayFieldContext(fieldContext)) {
+      const allItemsAreValid = fieldContext.arrayItems.value.every((item) =>
+        Object.values(item.fields).every((field) => field.isValid)
+      )
+
+      if (!allItemsAreValid) {
+        results.push("Not all array items are valid")
+      }
+    }
     if (fieldContext.peekValue() === undefined) {
       return emptyResults
     }
@@ -92,6 +104,7 @@ function createFieldExtension(
         return emptyResults
       }
 
+      // Return the previous reference if errors have not changed.
       if (arrayEquals(errors, previousErrors)) {
         return previousErrors
       }

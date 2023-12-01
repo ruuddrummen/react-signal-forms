@@ -1,69 +1,59 @@
 import {
+  ExpandFieldContextProperties,
   FieldContextExtension,
   FieldContextExtensions,
   PropertyDescriptors,
+  SignalFormPlugin,
 } from "@/plugins/types"
-import { KeyOf, KeysOf } from "@/utils"
-import { Signal, computed, signal } from "@preact/signals-react"
-import {
-  ArrayFieldItemContext,
-  IArrayFieldContext,
-  createContextForArrayField,
-} from "./arrays/fieldContext"
+import { KeyOf } from "@/utils"
+import { Signal, signal } from "@preact/signals-react"
 import { Field, isArrayField } from "./fields"
-import { FormValues } from "./types"
 
-export type FieldContextCollection<TForm = any> = {
-  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key]>
+export type FieldContextCollection<
+  TForm = any,
+  TPlugins extends SignalFormPlugin[] = [],
+> = {
+  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
 }
 
-export interface IFieldContext<TValue = any> {
+export type IFieldContext<
+  TValue = any,
+  TPlugins extends SignalFormPlugin[] = [],
+> = {
+  name: string
   value: TValue | null
   setValue(value: TValue | null): void
   peekValue(): TValue
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
-}
+} & ExpandFieldContextProperties<TPlugins>
 
-export class FieldContext<TValue = any>
-  implements IFieldContext<TValue>, IArrayFieldContext<TValue>
-{
-  private __field: Field
-  private __valueSignal: Signal<TValue>
+export class FieldContext<TValue = any> implements IFieldContext<TValue> {
+  protected __field: Field
+  protected __valueSignal: Signal<TValue>
   private __extensions: FieldContextExtensions
-  private _blurEffects: Array<
+
+  private __blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void
   > = []
 
   constructor(field: Field, initialValue?: TValue) {
     this.__field = field
     this.__extensions = {}
+    this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
+  }
 
-    if (isArrayField(field)) {
-      this.arrayItems = signal(
-        createContextForArrayField(field, initialValue as FormValues[])
-      )
-      this.__valueSignal = computed<TValue>(() => {
-        return this.arrayItems!.value.map((item) => {
-          return KeysOf(item.fields).reduce((itemValues, key) => {
-            itemValues[key] = item.fields[key].value
+  get name() {
+    return this.__field.name
+  }
 
-            return itemValues
-          }, {} as FormValues)
-        }) as TValue
-      })
-    } else {
-      this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
-    }
+  get value() {
+    return this.__valueSignal.value
   }
 
   addBlurEffect = (
     effect: (event: React.FocusEvent<HTMLElement, Element>) => void
   ) => {
-    this._blurEffects.push(effect)
-  }
-
-  get value() {
-    return this.__valueSignal.value
+    this.__blurEffects.push(effect)
   }
 
   peekValue = () => {
@@ -78,7 +68,7 @@ export class FieldContext<TValue = any>
   }
 
   handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
-    this._blurEffects.forEach((effect) => effect(event))
+    this.__blurEffects.forEach((effect) => effect(event))
   }
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(
@@ -97,28 +87,29 @@ export class FieldContext<TValue = any>
     return this.__extensions[name]
   }
 
-  /**
-   * Only relevant for array form fields.
-   */
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
-
   toJSON() {
-    const proto = Object.getPrototypeOf(this)
-    const jsonObj: any = {}
+    const entries = Object.entries(Object.getOwnPropertyDescriptors(this))
+    let proto = Object.getPrototypeOf(this)
 
-    Object.entries(Object.getOwnPropertyDescriptors(proto))
-      .concat(Object.entries(Object.getOwnPropertyDescriptors(this)))
+    while (proto != null) {
+      entries.push(...Object.entries(Object.getOwnPropertyDescriptors(proto)))
+      proto = Object.getPrototypeOf(proto)
+    }
+
+    const jsonObj = entries
       .filter(([_key, descriptor]) => typeof descriptor.get === "function")
-      .map(([key, descriptor]) => {
+      .reduce((obj, [key, descriptor]) => {
         if (descriptor && key[0] !== "_") {
           try {
             const val = (this as any)[key]
-            jsonObj[key] = val
+            obj[key] = val
           } catch (error) {
             console.error(`Error calling getter ${key}`, error)
           }
         }
-      })
+
+        return obj
+      }, {} as any)
 
     return jsonObj
   }

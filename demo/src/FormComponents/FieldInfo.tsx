@@ -6,10 +6,10 @@ import {
   Typography,
 } from "@mui/material"
 import { Field } from "react-signal-forms"
-import { useFieldSignals } from "./SignalForm"
+import { useField } from "./SignalForm"
 
 export const FieldInfo = (props: { for: Field }) => {
-  const fieldSignals = useFieldSignals(props.for)
+  const fieldSignals = useField(props.for)
 
   return (
     <Accordion>

@@ -4,25 +4,94 @@ import {
   IFieldContext,
 } from "@/fieldContext"
 
-import { ArrayFieldBase, ArrayItemType } from "@/fields"
+import { ArrayFieldBase, ArrayItemType, Field } from "@/fields"
 import { IFormContextLike, addFieldExtensions } from "@/formContext"
 import { SignalFormPlugin } from "@/plugins/types"
 import { FormValues } from "@/types"
 import { KeysOf, forEachKeyOf } from "@/utils"
-import { Signal } from "@preact/signals-react"
+import { Signal, computed, signal } from "@preact/signals-react"
 
-export interface IArrayFieldContext<TValue = FormValues[]>
-  extends IFieldContext<TValue> {
-  arrayItems: Signal<ArrayFieldItemContext<TValue>[]> | undefined
+export type IArrayFieldContext<
+  TValue extends FormValues[] = FormValues[],
+  TPlugins extends SignalFormPlugin[] = [],
+> = IFieldContext<TValue, TPlugins> & {
+  arrayItems: Signal<ArrayFieldItemContext<TValue, TPlugins>[]>
+  addItem: () => void
+  removeItem: (id: number) => void
 }
 
-export interface ArrayFieldItemContext<TValue = FormValues[]>
-  extends IFormContextLike<ArrayItemType<TValue>> {}
+export type ArrayFieldItemContext<
+  TValue = FormValues[],
+  TPlugins extends SignalFormPlugin[] = [],
+> = IFormContextLike<ArrayItemType<TValue>, TPlugins> & {
+  id: any
+}
+
+export class ArrayFieldContext<TValue extends FormValues[]>
+  extends FieldContext<TValue>
+  implements IArrayFieldContext<TValue>
+{
+  protected __plugins: SignalFormPlugin[]
+  lastItemId = 0
+
+  constructor(
+    field: Field<any, any, ArrayFieldBase<TValue>>,
+    initialValue: TValue | undefined,
+    plugins: SignalFormPlugin[]
+  ) {
+    super(field, initialValue)
+
+    this.__plugins = plugins
+
+    this.arrayItems = signal(
+      createContextForArrayField(
+        field,
+        this.createItemId,
+        initialValue as FormValues[]
+      )
+    )
+
+    this.__valueSignal = computed<TValue>(() => {
+      return this.arrayItems.value.map((item) => {
+        return KeysOf(item.fields).reduce((itemValues, key) => {
+          itemValues[key] = item.fields[key].value
+
+          return itemValues
+        }, {} as FormValues)
+      }) as TValue
+    })
+  }
+
+  addItem = () => {
+    const newItem = createContextForArrayFieldItem<TValue>(
+      this.createItemId(),
+      this.__field as ArrayFieldBase<TValue>,
+      this.__field.defaultValue as ArrayItemType<TValue>
+    )
+
+    addFieldExtensionsToArrayItems(
+      this.__field as ArrayFieldBase,
+      [newItem],
+      this.__plugins
+    )
+
+    this.arrayItems.value = [...this.arrayItems.value, newItem]
+  }
+
+  removeItem = (id: number) => {
+    this.arrayItems.value = this.arrayItems.value.filter((i) => i.id !== id)
+  }
+
+  arrayItems: Signal<ArrayFieldItemContext<TValue>[]>
+
+  createItemId = () => ++this.lastItemId
+}
 
 export function createContextForArrayField<
   TValue extends FormValues[] = FormValues[],
 >(
   field: ArrayFieldBase<TValue>,
+  createItemId: () => number,
   initialValues?: FormValues[]
 ): ArrayFieldItemContext<TValue>[] {
   const values = initialValues ?? field.defaultValue
@@ -33,6 +102,7 @@ export function createContextForArrayField<
 
   const items = values.map<ArrayFieldItemContext<TValue>>((itemValue) =>
     createContextForArrayFieldItem<TValue>(
+      createItemId(),
       field,
       itemValue as ArrayItemType<TValue>
     )
@@ -44,12 +114,14 @@ export function createContextForArrayField<
 export function createContextForArrayFieldItem<
   TValue extends FormValues[] = FormValues[],
 >(
+  id: any,
   field: ArrayFieldBase<TValue>,
   itemValue: ArrayItemType<TValue>
 ): ArrayFieldItemContext<TValue> {
   return {
+    id,
     fields: KeysOf(field.fields).reduce((contextItems, key) => {
-      contextItems[key] = new FieldContext(field.fields[key], itemValue[key])
+      contextItems[key] = new FieldContext(field.fields[key], itemValue?.[key])
 
       return contextItems
     }, {} as FieldContextCollection),
@@ -57,7 +129,7 @@ export function createContextForArrayFieldItem<
 }
 
 export function addFieldExtensionsToArrayItems(
-  field: ArrayFieldBase<any>,
+  field: ArrayFieldBase,
   items: ArrayFieldItemContext<FormValues[]>[],
   plugins: SignalFormPlugin<any, any, any>[]
 ) {
@@ -67,3 +139,17 @@ export function addFieldExtensionsToArrayItems(
     })
   })
 }
+
+export function isArrayFieldContext<
+  TValue,
+  TPlugins extends SignalFormPlugin[] = [],
+>(
+  fieldContext: IFieldContext<TValue, TPlugins>
+): fieldContext is IArrayFieldContext<AsArrayFieldValue<TValue>, TPlugins> {
+  return (
+    (fieldContext as IArrayFieldContext<AsArrayFieldValue<TValue>, TPlugins>)
+      .arrayItems != null
+  )
+}
+
+type AsArrayFieldValue<TValue> = TValue extends FormValues[] ? TValue : never

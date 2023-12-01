@@ -2,7 +2,7 @@ import { FormControl, TextField as MuiTextField } from "@mui/material"
 import { TextField } from "react-signal-forms"
 import { useRenderCount } from "../utils"
 import { InputContainer } from "./InputContainer"
-import { useFieldSignals } from "./SignalForm"
+import { useField } from "./SignalForm"
 
 interface FormInputProps {
   field: TextField
@@ -18,7 +18,7 @@ export const TextInput = ({ field }: FormInputProps) => {
     readonly,
     isValid,
     errors,
-  } = useFieldSignals(field)
+  } = useField(field)
 
   const renderCount = useRenderCount()
 

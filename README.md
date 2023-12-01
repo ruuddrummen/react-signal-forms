@@ -44,7 +44,7 @@ Start by initializing your form component and field hook, including the plugins 
 
 ```tsx
 // Add plugins, built-in or your own.
-export const { SignalForm, useFieldSignals } = createSignalForm(
+export const { SignalForm, useForm, useField } = createSignalForm(
   ...defaultPlugins, // the defaults, includes validation rules and touched field signals.
   plugins.applicabilityRules // adds applicability rules and field signals.
 )
@@ -90,7 +90,7 @@ const fields = signalForm<IYourData>().withFields((field) => {
 })
 ```
 
-Add the `useFieldSignals` hook to your inputs:
+Add the `useField` hook to your inputs:
 
 ```tsx
 interface TextInputProps {
@@ -106,7 +106,7 @@ const TextInput = ({ field }: TextInputProps) => {
     isApplicable,
     ...otherSignals
     // ^ With intellisense matching your selected plugins.
-  } = useFieldSignals()
+  } = useField(field)
 
   if (!isApplicable) {
     return null

@@ -7,15 +7,14 @@ import React from "react"
 import { BooleanField } from "react-signal-forms"
 import { useRenderCount } from "../utils"
 import { InputContainer } from "./InputContainer"
-import { useFieldSignals } from "./SignalForm"
+import { useField } from "./SignalForm"
 
 interface FormInputProps {
   field: BooleanField
 }
 
 export const Switch: React.FC<FormInputProps> = ({ field }) => {
-  const { value, setValue, handleBlur, isApplicable, isValid } =
-    useFieldSignals(field)
+  const { value, setValue, handleBlur, isApplicable, isValid } = useField(field)
 
   const renderCount = useRenderCount()
 

@@ -1,9 +1,9 @@
 import { Button } from "@mui/material"
 import { useRenderCount } from "../utils"
-import { useFormSignals } from "./SignalForm"
+import { useForm } from "./SignalForm"
 
 export const SubmitButton: React.FC = () => {
-  const { submit, isSubmitting, peekValues } = useFormSignals()
+  const { submit, isSubmitting, peekValues } = useForm()
   const renderCount = useRenderCount()
 
   return (

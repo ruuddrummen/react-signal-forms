@@ -1,8 +1,10 @@
-export function useLocalStorageStore() {
+export function useLocalStorageStore(name: string) {
+  const itemName = `values-${name}`
+
   return {
     getValues: () => {
       const values = JSON.parse(
-        localStorage.getItem("FormState") ?? "{}"
+        localStorage.getItem(itemName) ?? "{}"
       ) as Record<string, unknown>
       console.log("Loaded values from localStorage", values)
       return values
@@ -11,13 +13,17 @@ export function useLocalStorageStore() {
     setValues: async (values: Record<string, unknown>) => {
       console.log("Saving values to localStorage", values)
       await sleep(1000)
-      localStorage.setItem("FormState", JSON.stringify(values))
+      localStorage.setItem(itemName, JSON.stringify(values))
     },
   }
 }
 
 export function clearStorage() {
-  localStorage.removeItem("FormState")
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith("values-")) {
+      localStorage.removeItem(key)
+    }
+  })
 }
 
 function sleep(time: number) {

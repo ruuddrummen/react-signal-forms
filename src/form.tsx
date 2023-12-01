@@ -1,9 +1,6 @@
 import React from "react"
 import { IArrayFieldContext } from "./arrays/fieldContext"
-import {
-  useArrayFormContext,
-  useArrayFormItemContext,
-} from "./arrays/reactContext"
+import { useArrayFieldItem } from "./arrays/reactContext"
 import { IFieldContext } from "./fieldContext"
 import { FieldBase, FieldCollection } from "./fields"
 import {
@@ -11,11 +8,7 @@ import {
   useFormContext,
   useFormContextProvider,
 } from "./formContext"
-import {
-  ExpandFieldContextProperties,
-  ExpandFormContextProperties,
-  SignalFormPlugin,
-} from "./plugins/types"
+import { ExpandFieldContextProperties, SignalFormPlugin } from "./plugins/types"
 import { FormValues } from "./types"
 
 interface SignalsFormProps {
@@ -26,26 +19,26 @@ interface SignalsFormProps {
 }
 
 interface SignalsFormInnerProps extends SignalsFormProps {
-  extensions: Array<SignalFormPlugin<any, any, any>>
+  plugins: Array<SignalFormPlugin<any, any, any>>
 }
 
 export function configureSignalForm<
-  TExtensions extends SignalFormPlugin<any, any, any>[],
+  TPlugins extends SignalFormPlugin<any, any, any>[],
 >(
-  ...extensions: TExtensions
+  ...plugins: TPlugins
 ): {
   SignalForm: React.ComponentType<SignalsFormProps>
-  useFieldSignals: <TValue>(
+  useField: <TValue>(
     field: FieldBase<TValue>
-  ) => IFieldContext<TValue> & ExpandFieldContextProperties<TExtensions>
-  useFormSignals: () => IFormContext & ExpandFormContextProperties<TExtensions>
+  ) => IFieldContext<TValue, TPlugins>
+  useForm: () => IFormContext<FormValues, TPlugins>
 } {
   return {
-    SignalForm: (props) => {
-      return <SignalForm {...props} extensions={extensions} />
+    SignalForm(props) {
+      return <SignalForm {...props} plugins={plugins} />
     },
 
-    useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
+    useField<TValue>(field: FieldBase<TValue>) {
       if (field == null) {
         throw new Error(
           `Missing field configuration. Did you forget to add a field in createFields?`
@@ -53,31 +46,29 @@ export function configureSignalForm<
       }
 
       const formContext = useFormContext()
-      const arrayFormContext = useArrayFormContext()
-      const arrayFormItemContext = useArrayFormItemContext()
+      const arrayFormItemContext = useArrayFieldItem()
 
-      if (arrayFormContext != null && arrayFormItemContext != null) {
+      if (arrayFormItemContext != null) {
         const arrayFieldContext = formContext.fields[
-          arrayFormContext.arrayField.name
+          arrayFormItemContext.arrayField.name
         ] as IArrayFieldContext
 
-        const fieldContext =
-          arrayFieldContext.arrayItems!.value[arrayFormItemContext.index]
-            .fields[field.name]
-        return fieldContext as IFieldContext &
-          ExpandFieldContextProperties<TExtensions>
+        const fieldContext = arrayFieldContext.arrayItems
+          .peek()
+          .find((i) => i.id === arrayFormItemContext.itemId)?.fields[field.name]
+
+        return fieldContext as IFieldContext<any, TPlugins>
       }
 
       const fieldContext = formContext.fields[field.name]
       return fieldContext as IFieldContext &
-        ExpandFieldContextProperties<TExtensions>
+        ExpandFieldContextProperties<TPlugins>
     },
 
-    useFormSignals: function () {
+    useForm() {
       const formContext = useFormContext()
 
-      return formContext as IFormContext &
-        ExpandFormContextProperties<TExtensions>
+      return formContext as IFormContext<FormValues, TPlugins> // & ExpandFormContextProperties<TPlugins>
     },
   }
 }
@@ -85,16 +76,18 @@ export function configureSignalForm<
 const SignalForm: React.FC<SignalsFormInnerProps> = ({
   fields,
   initialValues,
-  extensions,
+  plugins,
   onSubmit,
   children,
 }) => {
   const { ContextProvider, formContext } = useFormContextProvider(
     fields,
-    extensions,
+    plugins,
     onSubmit,
     initialValues
   )
+
+  console.log("Rendering SignalForm")
 
   return (
     <ContextProvider value={formContext.current}>{children}</ContextProvider>
