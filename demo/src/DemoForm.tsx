@@ -5,7 +5,7 @@ import JoinFullIcon from "@mui/icons-material/JoinFull"
 import ListAltIcon from "@mui/icons-material/ListAlt"
 import RuleIcon from "@mui/icons-material/Rule"
 import VisibilityIcon from "@mui/icons-material/Visibility"
-import { Box, Button, Grid, Stack } from "@mui/material"
+import { Button, Grid, Stack } from "@mui/material"
 import React from "react"
 import {
   FormState,
@@ -28,13 +28,15 @@ export const DemoForm = React.memo(() => {
 
   return (
     <Stack spacing={2} marginBottom="20vh">
+      {/* TODO separate examples into separte forms */}
+
       <SignalForm
         fields={fields}
         initialValues={store.getValues()}
         onSubmit={store.setValues}
       >
-        <Box padding={2}>
-          <SubmitBackdrop>
+        <SubmitBackdrop>
+          <Stack padding={2} gap={2}>
             <Grid container spacing={2}>
               <GridHeader>
                 <ListAltIcon /> Just inputs
@@ -115,10 +117,10 @@ export const DemoForm = React.memo(() => {
                 <TextInput field={fields.complicatedField} />
               </Grid>
             </Grid>
-          </SubmitBackdrop>
 
-          <FormState />
-        </Box>
+            <FormState />
+          </Stack>
+        </SubmitBackdrop>
 
         <FormFooter />
       </SignalForm>

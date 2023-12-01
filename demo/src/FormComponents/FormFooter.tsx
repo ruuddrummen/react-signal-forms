@@ -7,9 +7,6 @@ import { FormValidationIndicator } from "./FormValidationIndicator"
 
 export const FormFooter = () => (
   <Box
-    marginTop={2}
-    marginLeft={-2}
-    marginRight={-2}
     css={css`
       @media (min-width: 769px) {
         position: sticky;

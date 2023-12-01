@@ -53,13 +53,13 @@ export const ArrayFieldDemoForm = () => {
         onSubmit={setValues}
       >
         <Stack spacing={2}>
-          <Box padding={2}>
-            <SubmitBackdrop>
+          <SubmitBackdrop>
+            <Stack spacing={2} padding={2}>
               <ArrayFieldDemo />
-            </SubmitBackdrop>
 
-            <FormState />
-          </Box>
+              <FormState />
+            </Stack>
+          </SubmitBackdrop>
 
           <FormFooter />
         </Stack>
@@ -72,22 +72,22 @@ const ArrayFieldDemo = () => {
   const { items, add } = useArrayField(fields.arrayField)
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TransitionGroup>
-          {items.map((item) => (
-            // ⚠ Make sure to set the `key` prop to `item.id`.
-            <Collapse key={item.id}>
-              <DemoArrayItem key={item.id} item={item} />
-            </Collapse>
-          ))}
-        </TransitionGroup>
-      </Grid>
+    <Stack gap={2}>
+      <TransitionGroup>
+        {items.map((item) => (
+          // ⚠ Make sure to set the `key` prop to `item.id`.
+          <Collapse key={item.id}>
+            <DemoArrayItem key={item.id} item={item} />
+          </Collapse>
+        ))}
+      </TransitionGroup>
 
-      <Grid item xs={11}>
-        <AddItemButton onClick={add} />
+      <Grid container>
+        <Grid item xs={11}>
+          <AddItemButton onClick={add} />
+        </Grid>
       </Grid>
-    </Grid>
+    </Stack>
   )
 }
 

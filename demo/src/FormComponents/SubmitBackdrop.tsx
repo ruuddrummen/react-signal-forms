@@ -1,4 +1,10 @@
-import { Backdrop, CircularProgress, Stack, Typography } from "@mui/material"
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material"
 import { ReactNode } from "react"
 import { useForm } from "./SignalForm"
 
@@ -8,7 +14,7 @@ export const SubmitBackdrop: React.FC<{ children?: ReactNode | undefined }> = ({
   const form = useForm()
 
   return (
-    <div style={{ position: "relative" }}>
+    <Box position="relative">
       {children}
       <Backdrop
         sx={{
@@ -28,6 +34,6 @@ export const SubmitBackdrop: React.FC<{ children?: ReactNode | undefined }> = ({
           <Typography variant="button">Submitting...</Typography>
         </Stack>
       </Backdrop>
-    </div>
+    </Box>
   )
 }
