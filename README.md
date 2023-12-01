@@ -44,7 +44,7 @@ Start by initializing your form component and field hook, including the plugins 
 
 ```tsx
 // Add plugins, built-in or your own.
-export const { SignalForm, useField } = createSignalForm(
+export const { SignalForm, useForm, useField } = createSignalForm(
   ...defaultPlugins, // the defaults, includes validation rules and touched field signals.
   plugins.applicabilityRules // adds applicability rules and field signals.
 )
