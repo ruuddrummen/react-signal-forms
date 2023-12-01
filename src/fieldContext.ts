@@ -2,6 +2,7 @@ import {
   ExpandFieldContextProperties,
   FieldContextExtension,
   FieldContextExtensions,
+  FieldExtension,
   PropertyDescriptors,
   SignalFormPlugin,
 } from "@/plugins/types"
@@ -83,8 +84,8 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     }
   }
 
-  getExtension = (name: string) => {
-    return this.__extensions[name]
+  getExtension = <TPlugin extends SignalFormPlugin>(name: string) => {
+    return this.__extensions[name] as FieldExtension<TPlugin>
   }
 
   toJSON() {

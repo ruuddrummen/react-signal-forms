@@ -78,6 +78,9 @@ export type ExpandFormContextProperties<T extends SignalFormPlugin[]> = Expand<
   MergeFormContextProperties<T>
 >
 
+export type FieldExtension<TPlugin extends SignalFormPlugin> =
+  TPlugin extends SignalFormPlugin<infer R, any, any> ? R : never
+
 interface PropertyDescriptor<T> {
   get?(): T
   set?(v: T): void

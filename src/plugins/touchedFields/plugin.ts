@@ -1,5 +1,8 @@
+import { isArrayFieldContext } from "@/arrays/fieldContext"
+import { FieldContextCollection } from "@/fieldContext"
 import { Field, FieldContext, IFormContext } from "@/index"
 import { createPlugin } from "@/plugins/create"
+import { FormValues } from "@/types"
 import { Signal, signal } from "@preact/signals-react"
 
 const PLUGIN_NAME = "touched"
@@ -18,11 +21,29 @@ export const touchedFieldsPlugin = createPlugin(PLUGIN_NAME, {
       },
     }
   },
-  createFormProperties({ extensions }) {
+  createFormProperties({ extensions, fields }) {
     return {
       touchAll: {
-        get: () => () =>
-          extensions.forEach((e) => (e.touchedSignal.value = true)),
+        get: () => () => {
+          extensions.forEach((e) => (e.touchedSignal.value = true))
+
+          fields.forEach((field) => {
+            if (isArrayFieldContext(field)) {
+              // TODO simplify.
+              field.arrayItems.peek().forEach((item) =>
+                Object.values(
+                  item.fields as FieldContextCollection<FormValues>
+                ).forEach((arrayField) => {
+                  const extension = (arrayField as FieldContext).getExtension<
+                    typeof touchedFieldsPlugin
+                  >(PLUGIN_NAME)
+
+                  extension.touchedSignal.value = true
+                })
+              )
+            }
+          })
+        },
       },
     }
   },
