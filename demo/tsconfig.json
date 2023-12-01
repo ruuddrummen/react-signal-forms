@@ -25,7 +25,8 @@
       "react-signal-forms/plugins": ["../src/plugins"],
       "react-signal-forms/arrays": ["../src/arrays"],
       "react-signal-forms/rules": ["../src/rules"],
-      "@/*": ["../src/*"]
+      "@/*": ["../src/*"],
+      "demo/*": ["./src/*"]
     },
 
     "types": ["@emotion/react/types/css-prop"]

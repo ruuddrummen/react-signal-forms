@@ -121,7 +121,7 @@ export function createContextForArrayFieldItem<
   return {
     id,
     fields: KeysOf(field.fields).reduce((contextItems, key) => {
-      contextItems[key] = new FieldContext(field.fields[key], itemValue[key])
+      contextItems[key] = new FieldContext(field.fields[key], itemValue?.[key])
 
       return contextItems
     }, {} as FieldContextCollection),

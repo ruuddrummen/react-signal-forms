@@ -22,6 +22,7 @@ import {
 import { FormValidationIndicator } from "./FormComponents/FormValidationIndicator"
 import { SelectInput } from "./FormComponents/SelectInput"
 import { GridDivider, GridHeader, P } from "./Layout"
+import { ArrayFieldDemoForm } from "./examples/arrayFields/ArrayFieldDemo"
 import { fields } from "./fields"
 
 export const DemoForm = React.memo(() => {
@@ -118,6 +119,8 @@ export const DemoForm = React.memo(() => {
             <GridDivider />
 
             <DemoArrayForm />
+
+            <ArrayFieldDemoForm />
           </Grid>
         </SubmitBackdrop>
         <Box
