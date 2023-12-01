@@ -10,18 +10,18 @@ interface ITestData {
   textField: string
 }
 
-describe("useFieldSignals tests", () => {
+describe("useField tests", () => {
   const fields = signalForm<ITestData>().withFields((field) => ({
     ...field("textField", "Text field"),
   }))
 
   test("should get validation field properties", () => {
-    const { SignalForm, useFieldSignals } = configureSignalForm(
+    const { SignalForm, useField } = configureSignalForm(
       plugins.validationRules
     )
 
     function Input() {
-      const signals = useFieldSignals(fields.textField)
+      const signals = useField(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
         IFieldContext<string> & { isValid: boolean }
@@ -38,12 +38,12 @@ describe("useFieldSignals tests", () => {
   })
 
   test("should get applicability field properties", () => {
-    const { SignalForm, useFieldSignals } = configureSignalForm(
+    const { SignalForm, useField } = configureSignalForm(
       plugins.applicabilityRules
     )
 
     function Input() {
-      const signals = useFieldSignals(fields.textField)
+      const signals = useField(fields.textField)
 
       expectTypeOf(signals).toMatchTypeOf<
         IFieldContext<string> & { isApplicable: boolean }

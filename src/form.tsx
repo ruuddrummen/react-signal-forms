@@ -32,17 +32,17 @@ export function configureSignalForm<
   ...extensions: TExtensions
 ): {
   SignalForm: React.ComponentType<SignalsFormProps>
-  useFieldSignals: <TValue>(
+  useField: <TValue>(
     field: FieldBase<TValue>
   ) => IFieldContext<TValue> & ExpandFieldContextProperties<TExtensions>
-  useFormSignals: () => IFormContext & ExpandFormContextProperties<TExtensions>
+  useForm: () => IFormContext & ExpandFormContextProperties<TExtensions>
 } {
   return {
     SignalForm: (props) => {
       return <SignalForm {...props} extensions={extensions} />
     },
 
-    useFieldSignals: function <TValue>(field: FieldBase<TValue>) {
+    useField: function <TValue>(field: FieldBase<TValue>) {
       if (field == null) {
         throw new Error(
           `Missing field configuration. Did you forget to add a field in createFields?`
@@ -71,7 +71,7 @@ export function configureSignalForm<
         ExpandFieldContextProperties<TExtensions>
     },
 
-    useFormSignals: function () {
+    useForm: function () {
       const formContext = useFormContext()
 
       return formContext as IFormContext &

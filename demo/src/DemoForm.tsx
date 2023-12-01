@@ -16,7 +16,7 @@ import {
   SubmitButton,
   Switch,
   TextInput,
-  useFormSignals,
+  useForm,
   useLocalStorageStore,
 } from "./FormComponents"
 import { FormValidationIndicator } from "./FormComponents/FormValidationIndicator"
@@ -150,7 +150,7 @@ export const DemoForm = React.memo(() => {
 })
 
 const TouchAllFieldsButton = () => {
-  const form = useFormSignals()
+  const form = useForm()
 
   return <Button onClick={() => form.touchAll()}>Touch all fields</Button>
 }

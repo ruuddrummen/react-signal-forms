@@ -38,7 +38,7 @@ export function createPlugin<
     /**
      * Adds properties to a field given the extension created by
      * `createFieldExtension(...)`. These properties can be accessed by calling
-     * `useFieldSignals(field)`.
+     * `useField(field)`.
      * @param extension The extension created by `createFieldExtension(...)`.
      */
     createFieldProperties?(

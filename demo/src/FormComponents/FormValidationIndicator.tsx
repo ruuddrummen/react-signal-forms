@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material"
 import { useRenderCount } from "../utils"
-import { useFormSignals } from "./SignalForm"
+import { useForm } from "./SignalForm"
 
 export const FormValidationIndicator = () => {
-  const form = useFormSignals()
+  const form = useForm()
   const renderCount = useRenderCount()
 
   return form.isValid ? (

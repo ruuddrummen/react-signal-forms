@@ -9,10 +9,10 @@ import {
   useMediaQuery,
 } from "@mui/material"
 import React from "react"
-import { useFormSignals } from "./SignalForm"
+import { useForm } from "./SignalForm"
 
 export const FormState: React.FC = () => {
-  const formContext = useFormSignals()
+  const formContext = useForm()
   const atLeastTabletSize = useMediaQuery("(min-width: 768px)")
   const values = Object.keys(formContext.fields).reduce(
     (result, key) => {

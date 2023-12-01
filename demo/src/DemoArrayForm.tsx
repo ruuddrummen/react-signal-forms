@@ -38,7 +38,7 @@ export const DemoArrayForm = () => {
 
       {items.map((item) => (
         // ⚠ Make sure to set the `key` prop to `item.id`.
-        <DemoArrayFormItem key={item.id} item={item} />
+        <DemoArrayItem key={item.id} item={item} />
       ))}
 
       <Grid item md={6} xs={12}>
@@ -56,20 +56,18 @@ export const DemoArrayForm = () => {
  * Check out the React docs if you want to read more about memo:
  * https://react.dev/reference/react/memo.
  */
-const DemoArrayFormItem: FC<{ item: ArrayItemDescriptor }> = memo(
-  ({ item }) => {
-    const arrayFields = fields.arrayField.fields
+const DemoArrayItem: FC<{ item: ArrayItemDescriptor }> = memo(({ item }) => {
+  const arrayFields = fields.arrayField.fields
 
-    return (
-      <ArrayItem item={item}>
-        <Grid item md={6} xs={12}>
-          <TextInput field={arrayFields.textFieldInArray} />
-          <RemoveItemButton onClick={item.remove} />
-        </Grid>
-      </ArrayItem>
-    )
-  }
-)
+  return (
+    <ArrayItem item={item}>
+      <Grid item md={6} xs={12}>
+        <TextInput field={arrayFields.textFieldInArray} />
+        <RemoveItemButton onClick={item.remove} />
+      </Grid>
+    </ArrayItem>
+  )
+})
 
 const AddItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
   <Button

@@ -1,7 +1,7 @@
 import { Box, Collapse, Paper, Typography } from "@mui/material"
 import { Field } from "react-signal-forms"
 import { FieldInfo } from "./FieldInfo"
-import { useFieldSignals } from "./SignalForm"
+import { useField } from "./SignalForm"
 
 interface InputContainerProps {
   field: Field
@@ -13,7 +13,7 @@ export const InputContainer = ({
   field,
   children,
 }: React.PropsWithChildren<InputContainerProps>) => {
-  const { isApplicable } = useFieldSignals(field)
+  const { isApplicable } = useField(field)
 
   return (
     <>
