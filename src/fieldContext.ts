@@ -2,6 +2,7 @@ import {
   ExpandFieldContextProperties,
   FieldContextExtension,
   FieldContextExtensions,
+  FieldExtension,
   PropertyDescriptors,
   SignalFormPlugin,
 } from "@/plugins/types"
@@ -12,9 +13,12 @@ import { Field, isArrayField } from "./fields"
 export type FieldContextCollection<
   TForm = any,
   TPlugins extends SignalFormPlugin[] = [],
-> = {
-  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
-}
+> = unknown extends TForm
+  ? // Fall back to a less specific type if `TForm` is unknown.
+    Record<string, IFieldContext<any, TPlugins>>
+  : {
+      [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
+    }
 
 export type IFieldContext<
   TValue = any,
@@ -83,8 +87,8 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     }
   }
 
-  getExtension = (name: string) => {
-    return this.__extensions[name]
+  getExtension = <TPlugin extends SignalFormPlugin>(name: string) => {
+    return this.__extensions[name] as FieldExtension<TPlugin>
   }
 
   toJSON() {

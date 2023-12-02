@@ -78,6 +78,12 @@ export type ExpandFormContextProperties<T extends SignalFormPlugin[]> = Expand<
   MergeFormContextProperties<T>
 >
 
+/**
+ * Gets the field extension type defined in the given plugin.
+ */
+export type FieldExtension<TPlugin extends SignalFormPlugin> =
+  TPlugin extends SignalFormPlugin<infer R, any, any> ? R : never
+
 interface PropertyDescriptor<T> {
   get?(): T
   set?(v: T): void
