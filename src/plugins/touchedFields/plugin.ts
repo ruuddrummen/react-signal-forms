@@ -21,28 +21,11 @@ export const touchedFieldsPlugin = createPlugin(PLUGIN_NAME, {
       },
     }
   },
-  createFormProperties({ extensions, fields }) {
+  createFormProperties({ extensions }) {
     return {
       touchAll: {
         get: () => () => {
-          extensions.forEach((e) => (e.touchedSignal.value = true))
-
-          fields.forEach((field) => {
-            if (isArrayFieldContext(field)) {
-              // TODO simplify.
-              field.arrayItems.peek().forEach((item) =>
-                Object.values(
-                  item.fields as FieldContextCollection<FormValues>
-                ).forEach((arrayField) => {
-                  const extension = (arrayField as FieldContext).getExtension<
-                    typeof touchedFieldsPlugin
-                  >(PLUGIN_NAME)
-
-                  extension.touchedSignal.value = true
-                })
-              )
-            }
-          })
+          extensions.forEach((ext) => ext.touch())
         },
       },
     }
@@ -54,6 +37,7 @@ function createFieldExtension(
   formContext: IFormContext<any>
 ): {
   touchedSignal: Signal<boolean>
+  touch: () => void
 } {
   const fieldContext = formContext.fields[field.name] as FieldContext
   const touchedSignal = signal(false)
@@ -62,7 +46,26 @@ function createFieldExtension(
     touchedSignal.value = true
   })
 
+  const touch = () => {
+    touchedSignal.value = true
+
+    if (isArrayFieldContext(fieldContext)) {
+      fieldContext.arrayItems.peek().forEach((item) =>
+        Object.values(
+          item.fields as FieldContextCollection<FormValues>
+        ).forEach((arrayField) => {
+          const extension = (arrayField as FieldContext).getExtension<
+            typeof touchedFieldsPlugin
+          >(PLUGIN_NAME)
+
+          extension.touchedSignal.value = true
+        })
+      )
+    }
+  }
+
   return {
     touchedSignal,
+    touch,
   }
 }
