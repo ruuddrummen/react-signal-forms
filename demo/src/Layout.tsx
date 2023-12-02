@@ -32,6 +32,7 @@ export const GridDivider = () => (
     <Divider />
   </Grid>
 )
+
 export const P = ({
   children,
   color,
