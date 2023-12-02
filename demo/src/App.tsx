@@ -15,9 +15,9 @@ import {
 } from "@mui/material"
 import { signal } from "@preact/signals-react"
 import React from "react"
-import "./App.css"
-import { DemoForm } from "./DemoForm"
 import { clearStorage } from "./FormComponents"
+import { ArrayFieldDemoForm } from "./examples/ArrayFieldDemo"
+import { BasicsDemoForm } from "./examples/BasicsDemoForm"
 import { ThemeSelector, useTheme } from "./themes"
 
 const formKey = signal(1)
@@ -29,8 +29,12 @@ export const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header />
-      <Container className="App" maxWidth="lg">
-        <DemoForm key={formKey.value} />
+      <Container className="App" maxWidth="lg" key={formKey.value}>
+        <Stack spacing={2} marginBottom="20vh">
+          <BasicsDemoForm />
+
+          <ArrayFieldDemoForm />
+        </Stack>
       </Container>
       <StickyElementFix />
     </ThemeProvider>

@@ -36,7 +36,7 @@ npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the form](/demo/src/DemoForm.tsx).
+If you want to explore the demo code, a good place to start would be [the basics example](/demo/src/examples/BasicsDemoForm.tsx#L74).
 
 ## Your first form
 

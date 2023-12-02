@@ -5,6 +5,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 import { Box, Button, Collapse, Grid, Link, Stack } from "@mui/material"
 import {
+  FormFooter,
   FormState,
   SignalForm,
   SubmitBackdrop,
@@ -12,16 +13,53 @@ import {
   TextInput,
   useLocalStorageStore,
 } from "demo/FormComponents"
-import { FormFooter } from "demo/FormComponents/FormFooter"
 import { Header, P, Span } from "demo/Layout"
-import { FC, memo } from "react"
+import { memo } from "react"
+import { signalForm } from "react-signal-forms"
 import {
   ArrayItem,
   ArrayItemDescriptor,
   useArrayField,
 } from "react-signal-forms/arrays"
+import { applicableIf, required } from "react-signal-forms/rules"
 import TransitionGroup from "react-transition-group/TransitionGroup"
-import { fields } from "./config"
+
+type DemoData = {
+  arrayField: Array<{
+    booleanField: boolean
+    textField: string
+  }>
+}
+
+const fields = signalForm<DemoData>().withFields((field) => ({
+  ...field("arrayField").asArray({
+    fields: (field) => ({
+      ...field("booleanField", "Toggle"),
+
+      ...field("textField", "Text", {
+        rules: [
+          applicableIf(({ fields }) => fields.booleanField.value === true),
+          required(),
+        ],
+      }),
+    }),
+
+    defaultValue: [
+      {
+        booleanField: true,
+        textField: "Item 1",
+      },
+      {
+        booleanField: true,
+        textField: "Item 2",
+      },
+      {
+        booleanField: false,
+        textField: "",
+      },
+    ],
+  }),
+}))
 
 export const ArrayFieldDemoForm = () => {
   const { getValues, setValues } = useLocalStorageStore("array-field")
@@ -77,7 +115,7 @@ const ArrayFieldDemo = () => {
         {items.map((item) => (
           // ⚠ Make sure to set the `key` prop to `item.id`.
           <Collapse key={item.id}>
-            <DemoArrayItem key={item.id} item={item} />
+            <DemoArrayItem item={item} />
           </Collapse>
         ))}
       </TransitionGroup>
@@ -99,29 +137,31 @@ const ArrayFieldDemo = () => {
  * Check out the React docs to read more about memo:
  * https://react.dev/reference/react/memo.
  */
-const DemoArrayItem: FC<{ item: ArrayItemDescriptor }> = memo(({ item }) => {
-  const arrayFields = fields.arrayField.fields
+const DemoArrayItem: React.FC<{ item: ArrayItemDescriptor }> = memo(
+  ({ item }) => {
+    const arrayFields = fields.arrayField.fields
 
-  return (
-    <ArrayItem item={item}>
-      <Grid container spacing={2} paddingTop={2}>
-        <Grid item container xs={11} spacing={2}>
-          <Grid item md={6} xs={12}>
-            <Switch field={arrayFields.booleanField} />
+    return (
+      <ArrayItem item={item}>
+        <Grid container spacing={2} paddingTop={2}>
+          <Grid item container xs={11} spacing={2}>
+            <Grid item md={6} xs={12}>
+              <Switch field={arrayFields.booleanField} />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextInput field={arrayFields.textField} />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <TextInput field={arrayFields.textField} />
+          <Grid item xs={1}>
+            <RemoveItemButton onClick={item.remove} />
           </Grid>
         </Grid>
-        <Grid item xs={1}>
-          <RemoveItemButton onClick={item.remove} />
-        </Grid>
-      </Grid>
-    </ArrayItem>
-  )
-})
+      </ArrayItem>
+    )
+  }
+)
 
-const AddItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
+const AddItemButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   <Button
     onClick={onClick}
     sx={{
@@ -132,7 +172,7 @@ const AddItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
   </Button>
 )
 
-const RemoveItemButton: FC<{ onClick: () => void }> = ({ onClick }) => (
+const RemoveItemButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   <Button
     onClick={onClick}
     color="error"
