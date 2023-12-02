@@ -115,7 +115,7 @@ const ArrayFieldDemo = () => {
         {items.map((item) => (
           // ⚠ Make sure to set the `key` prop to `item.id`.
           <Collapse key={item.id}>
-            <DemoArrayItem key={item.id} item={item} />
+            <DemoArrayItem item={item} />
           </Collapse>
         ))}
       </TransitionGroup>
