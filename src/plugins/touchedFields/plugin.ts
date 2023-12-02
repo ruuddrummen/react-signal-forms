@@ -1,8 +1,6 @@
 import { isArrayFieldContext } from "@/arrays/fieldContext"
-import { FieldContextCollection } from "@/fieldContext"
 import { Field, FieldContext, IFormContext } from "@/index"
 import { createPlugin } from "@/plugins/create"
-import { FormValues } from "@/types"
 import { Signal, signal } from "@preact/signals-react"
 
 const PLUGIN_NAME = "touched"
@@ -51,9 +49,7 @@ function createFieldExtension(
 
     if (isArrayFieldContext(fieldContext)) {
       fieldContext.arrayItems.peek().forEach((item) =>
-        Object.values(
-          item.fields as FieldContextCollection<FormValues>
-        ).forEach((arrayField) => {
+        Object.values(item.fields).forEach((arrayField) => {
           const extension = (arrayField as FieldContext).getExtension<
             typeof touchedFieldsPlugin
           >(PLUGIN_NAME)

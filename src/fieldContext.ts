@@ -13,9 +13,12 @@ import { Field, isArrayField } from "./fields"
 export type FieldContextCollection<
   TForm = any,
   TPlugins extends SignalFormPlugin[] = [],
-> = {
-  [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
-}
+> = unknown extends TForm
+  ? // Fall back to a less specific type if `TForm` is unknown.
+    Record<string, IFieldContext<any, TPlugins>>
+  : {
+      [Key in KeyOf<TForm>]: IFieldContext<TForm[Key], TPlugins>
+    }
 
 export type IFieldContext<
   TValue = any,

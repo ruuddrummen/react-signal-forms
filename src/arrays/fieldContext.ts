@@ -116,15 +116,20 @@ export function createContextForArrayFieldItem<
 >(
   id: any,
   field: ArrayFieldBase<TValue>,
-  itemValue: ArrayItemType<TValue>
+  initialValues: ArrayItemType<TValue>
 ): ArrayFieldItemContext<TValue> {
+  const fields = KeysOf(field.fields).reduce((contextItems, key) => {
+    contextItems[key] = new FieldContext(
+      field.fields[key],
+      initialValues?.[key]
+    )
+
+    return contextItems
+  }, {} as FieldContextCollection)
+
   return {
     id,
-    fields: KeysOf(field.fields).reduce((contextItems, key) => {
-      contextItems[key] = new FieldContext(field.fields[key], itemValue?.[key])
-
-      return contextItems
-    }, {} as FieldContextCollection),
+    fields: fields as FieldContextCollection<ArrayItemType<TValue>>,
   }
 }
 
