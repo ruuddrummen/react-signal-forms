@@ -1,5 +1,5 @@
 import { IFormContextLike } from "@/formContext"
-import { Field, FieldRule, IFieldContext, IFormContext } from "@/index"
+import { Field, FieldRule, IFieldContext } from "@/index"
 import { FormValues } from "@/types"
 import { KeyOf } from "@/utils"
 
@@ -103,20 +103,26 @@ export type RuleArguments<
   TArgs,
   TForm = FormValues,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  TParentForm extends IFormContextLike = any,
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
-  ? (context: RuleContext<TForm, TKey>) => ReturnType
+  ? (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
   : TArgs
 
-export type FieldRuleFunction<TArgs> = <TForm, TKey extends KeyOf<TForm>>(
-  args: RuleArguments<TArgs, TForm, TKey>
-) => FieldRule<TForm, TKey>
+export type FieldRuleFunction<TArgs> = <
+  TForm,
+  TKey extends KeyOf<TForm>,
+  TParentForm extends IFormContextLike,
+>(
+  args: RuleArguments<TArgs, TForm, TKey, TParentForm>
+) => FieldRule<TForm, TKey, TParentForm>
 
 export type RuleContext<
   TForm = FormValues,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  TParent extends IFormContextLike = any,
 > = {
   value: TForm[TKey]
-  form: IFormContext<TForm>
+  form: IFormContextLike<TForm, TParent>
 }

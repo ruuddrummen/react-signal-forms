@@ -5,11 +5,7 @@ import {
 } from "@/fieldContext"
 
 import { ArrayFieldBase, ArrayItemType, Field } from "@/fields"
-import {
-  IFormContextLike,
-  ParentFormContext,
-  addFieldExtensions,
-} from "@/formContext"
+import { IFormContextLike, addFieldExtensions } from "@/formContext"
 import { SignalFormPlugin } from "@/plugins/types"
 import { FormValues } from "@/types"
 import { KeysOf, forEachKeyOf } from "@/utils"
@@ -17,19 +13,19 @@ import { Signal, computed, signal } from "@preact/signals-react"
 
 export type IArrayFieldContext<
   TValue extends FormValues[] = FormValues[],
-  TParents extends IFormContextLike[] = any,
+  TParent extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
 > = IFieldContext<TValue, TPlugins> & {
-  arrayItems: Signal<ArrayFieldItemContext<TValue, TParents, TPlugins>[]>
+  arrayItems: Signal<ArrayFieldItemContext<TValue, TParent, TPlugins>[]>
   addItem: () => void
   removeItem: (id: number) => void
 }
 
 export type ArrayFieldItemContext<
   TValue = FormValues[],
-  TParents extends IFormContextLike[] = any,
+  TParent extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
-> = IFormContextLike<ArrayItemType<TValue>, TParents, TPlugins> & {
+> = IFormContextLike<ArrayItemType<TValue>, TParent, TPlugins> & {
   id: any
 }
 
@@ -126,13 +122,13 @@ export function createContextForArrayField<
 
 export function createContextForArrayFieldItem<
   TValue extends FormValues[] = FormValues[],
-  TParents extends IFormContextLike[] = any,
+  TParent extends IFormContextLike = any,
 >(
   id: any,
   field: ArrayFieldBase<TValue>,
-  parent: ParentFormContext<TParents>,
+  parent: TParent,
   initialValues: ArrayItemType<TValue>
-): ArrayFieldItemContext<TValue, TParents> {
+): ArrayFieldItemContext<TValue, TParent> {
   const fields = KeysOf(field.fields).reduce((contextItems, key) => {
     contextItems[key] = new FieldContext(
       field.fields[key],

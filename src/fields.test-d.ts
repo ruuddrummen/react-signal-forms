@@ -1,8 +1,9 @@
-import { FieldRule, IFormContext, SelectField, signalForm } from "@/index"
+import { FieldRule, SelectField, signalForm } from "@/index"
 import { RuleContext } from "@/plugins"
 import { required, validIf } from "@/rules"
 import { describe, expect, expectTypeOf, test } from "vitest"
 import { ArrayFieldBase, Field, FieldCollection, TextField } from "./fields"
+import { IFormContextLike } from "./formContext"
 
 interface ITestData {
   hiddenField: string
@@ -49,7 +50,9 @@ describe("Test field builder and collection types", () => {
               RuleContext<ITestData, "selectField">
             >()
             expectTypeOf(context.value).toBeString()
-            expectTypeOf(context.form).toEqualTypeOf<IFormContext<ITestData>>()
+            expectTypeOf(context.form).toEqualTypeOf<
+              IFormContextLike<ITestData>
+            >()
 
             return {
               validIf: true,

@@ -1,3 +1,4 @@
+import { IFormContextLike } from "./formContext"
 import { FormValues } from "./types"
 import { KeyOf } from "./utils"
 
@@ -27,13 +28,15 @@ export type Field<
   TForm = any,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
   TFieldBase extends FieldBase<TForm[TKey]> = FieldBase<TForm[TKey]>,
+  TParentForm extends IFormContextLike = any,
 > = TFieldBase & {
-  rules?: Array<FieldRule<TForm, TKey>>
+  rules?: Array<FieldRule<TForm, TKey, TParentForm>>
 }
 
 export interface FieldRule<
   TForm = FormValues,
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
+  _ParentForm extends IFormContextLike = any,
 > {
   plugin: string
 }
@@ -139,17 +142,20 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
 
 // #region Field builder types
 
-type FieldBuilder<TForm> = {
+type FieldBuilder<TForm, TParentForm extends IFormContextLike = any> = {
   <TKey extends KeyOf<TForm>>(
     name: TKey,
-    properties?: Omit<Field<TForm, TKey, FieldBase<TForm[TKey]>>, "name">
+    properties?: Omit<
+      Field<TForm, TKey, FieldBase<TForm[TKey]>, TParentForm>,
+      "name"
+    >
   ): FieldDescriptor<TForm, TKey, "name">
 
   <TKey extends KeyOf<TForm>>(
     name: TKey,
     label: string,
     properties?: Omit<
-      Field<TForm, TKey, FieldBase<TForm[TKey]>>,
+      Field<TForm, TKey, FieldBase<TForm[TKey]>, TParentForm>,
       "name" | "label"
     >
   ): FieldDescriptor<TForm, TKey, "name" | "label">
@@ -174,7 +180,7 @@ type FieldDescriptor<
       Field<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>,
       "type" | "name" | "label" | "fields"
     > & {
-      fields: ArrayFieldBuilder<TForm[TKey]>
+      fields: ArrayFieldBuilder<TForm, TKey>
     }
   ) => FieldItem<TForm, TKey, ArrayFieldBase<AsArrayValueType<TForm[TKey]>>>
 
@@ -208,9 +214,9 @@ export type ArrayItemType<TArray> = TArray extends Array<infer TItem>
   ? TItem
   : never
 
-type ArrayFieldBuilder<TArray> = (
-  field: FieldBuilder<ArrayItemType<TArray>>
-) => FieldCollection<ArrayItemType<TArray>>
+type ArrayFieldBuilder<TForm, TKey extends KeyOf<TForm>> = (
+  field: FieldBuilder<ArrayItemType<TForm[TKey]>, IFormContextLike<TForm>>
+) => FieldCollection<ArrayItemType<TForm[TKey]>>
 
 export function isArrayField<TValue>(
   field: FieldBase<TValue>

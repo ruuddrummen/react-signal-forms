@@ -33,21 +33,21 @@ export const useFormContext = () => useContext(ReactFormContext)
 
 export type IFormContextLike<
   TForm = FormValues,
-  TParents extends IFormContextLike[] = any,
+  TParentForm extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
 > = {
   // TODO: Add parent form context here or in array form context.
   fields: FieldContextCollection<TForm, TPlugins>
-  parent: ParentFormContext<TParents>
+  parent: TParentForm
 } & ExpandFormContextProperties<TPlugins>
 
-export type ParentFormContext<TParents extends IFormContextLike[]> =
-  TParents extends [first: infer FirstParent, ...rest: any] ? FirstParent : null
+// export type ParentFormContext<TParents extends IFormContextLike[]> =
+//   TParents extends [first: infer FirstParent, ...rest: any] ? FirstParent : null
 
 export type IFormContext<
   TForm = FormValues,
   TPlugins extends SignalFormPlugin[] = [],
-> = IFormContextLike<TForm, [], TPlugins> & {
+> = IFormContextLike<TForm, any, TPlugins> & {
   fieldSpecifications: FieldCollection<TForm>
   plugins: Array<SignalFormPlugin>
   isSubmitting: boolean
