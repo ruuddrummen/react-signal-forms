@@ -1,4 +1,4 @@
-import { Divider, Grid, Typography } from "@mui/material"
+import { Divider, Grid, Link, Typography } from "@mui/material"
 import React, { PropsWithChildren } from "react"
 
 export const Header = ({
@@ -17,7 +17,9 @@ export const Header = ({
         id={id}
       />
     )}
-    <Typography variant="h4">{children}</Typography>
+    <Link href={"#" + id} underline="none" color="inherit">
+      <Typography variant="h4">{children}</Typography>
+    </Link>
   </>
 )
 

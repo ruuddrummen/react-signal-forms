@@ -29,7 +29,7 @@ npm i react-signal-forms
 
 ## Exploring the demo
 
-For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/), or run it yourself by cloning the repository and running:
+For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/) of react-signal-forms with Material UI, or run it yourself by cloning the repository and running:
 
 ```
 npm run ci
@@ -151,13 +151,99 @@ A simple example to illustrate what this means for performance: if field A is on
 
 ## Plugins
 
-All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins can be added or replaced to fulfill on specialized requirements.
+All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
-If you have specific needs for solving more irregular or complex scenarios, you have some options:
+> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
 
-- Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
-- Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
+### Creating field rules
 
-## Array forms
+Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
 
-Currently in development in [#61](https://github.com/ruuddrummen/react-signal-forms/issues/61).
+### Creating plugins
+
+Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`readonlyRules` plugin](/src/plugins/readonlyRules/), which is one of the simpler plugins.
+
+## Array fields
+
+The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with `...field("yourArrayField").asArray(...)`.
+
+For example:
+
+```ts
+type ExampleData = {
+  arrayField: Array<{
+    booleanField: boolean
+    textField: string
+  }>
+}
+
+const fields = signalForm<ExampleData>().withFields((field) => ({
+  ...field("arrayField").asArray({
+    fields: (field) => ({
+      ...field("booleanField", "Toggle field"),
+      ...field("textField", "Text field"),
+    }),
+  }),
+}))
+```
+
+The array field itself and all fields in an array field support the same features and plugins as other fields. Note that field rules in an array form also have access to the parent form.
+
+For example:
+
+```ts
+...field("textFieldInArray", "Text field in array", {
+  rules: [
+    applicableIf(
+      ({ form }) => form.parent.fields.fieldInParent.value === "some value"
+    )
+  ]
+})
+```
+
+Adding array fields to your form can then be done with the `useArrayField()` hook and the `<ArrayItem />` component. The hook provides a description of the items in the array, which can then be mapped to the `ArrayItem` component.
+
+For example:
+
+```tsx
+const YourForm = () => (
+  <SignalForm fields={yourFields}>
+    {/* ... */}
+    <YourArrayField />
+    {/* ... */}
+  </SignalForm>
+)
+
+const YourArrayField = () => {
+  const { items, itemFields, add } = useArrayField(yourFields.arrayField)
+  //             ^ can also be accessed with `yourFields.arrayField.fields`.
+
+  return (
+    <>
+      {items.map((item) => (
+        <YourLayout key={item.id}>
+          {/*       ^ make sure to set `key` to `item.id` */}
+
+          <ArrayItem item={item}>
+            <TextInput field={itemFields.textField}>
+
+            {/* Other layout and input components */}
+
+            <Button onClick={item.remove}>Remove item</Button>
+          </ArrayItem>
+        </YourLayout>
+      ))}
+
+      <Button onClick={add}>Add item</Button>
+    </>
+  )
+}
+```
+
+The demo includes [an example for array fields](https://ruuddrummen.github.io/react-signal-forms/#array-fields), and you can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
+
+> ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component, and you can also find it used in the demo.
+
+## Nested forms
+
+> Planned.
