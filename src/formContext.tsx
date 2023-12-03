@@ -93,7 +93,7 @@ class FormContext implements IFormContext {
   fields: FieldContextCollection<any>
   fieldSpecifications: FieldCollection<any>
   plugins: Array<SignalFormPlugin>
-  parent: null = null
+  parent: undefined = undefined
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value

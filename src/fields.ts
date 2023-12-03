@@ -28,7 +28,7 @@ export type Field<
   TForm = any,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
   TFieldBase extends FieldBase<TForm[TKey]> = FieldBase<TForm[TKey]>,
-  TParentForm extends IFormContextLike | null = null,
+  TParentForm extends IFormContextLike | never = never,
 > = TFieldBase & {
   rules?: Array<FieldRule<TForm, TKey, TParentForm>>
 }
@@ -36,7 +36,7 @@ export type Field<
 export interface FieldRule<
   TForm = FormValues,
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
-  _ParentForm extends IFormContextLike | null = null,
+  _ParentForm extends IFormContextLike | never = never,
 > {
   pluginName: string
 }
@@ -142,7 +142,10 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
 
 // #region Field builder types
 
-type FieldBuilder<TForm, TParentForm extends IFormContextLike | null = null> = {
+type FieldBuilder<
+  TForm,
+  TParentForm extends IFormContextLike | never = never,
+> = {
   <TKey extends KeyOf<TForm>>(
     name: TKey,
     properties?: Omit<
@@ -215,7 +218,10 @@ export type ArrayItemType<TArray> = TArray extends Array<infer TItem>
   : never
 
 type ArrayFieldBuilder<TForm, TKey extends KeyOf<TForm>> = (
-  field: FieldBuilder<ArrayItemType<TForm[TKey]>, IFormContextLike<TForm>>
+  field: FieldBuilder<
+    ArrayItemType<TForm[TKey]>,
+    IFormContextLike<TForm, never> // TODO support recursive nesting, parent set to `never` for now.
+  >
 ) => FieldCollection<ArrayItemType<TForm[TKey]>>
 
 export function isArrayField<TValue>(
