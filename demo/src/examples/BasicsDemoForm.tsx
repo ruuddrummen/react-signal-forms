@@ -132,7 +132,9 @@ const fields = signalForm<DemoData>().withFields((field) => ({
   }),
   ...field("makeFieldReadonly", "Make the next field readonly"),
   ...field("canBeReadOnly", "Can be readonly", {
-    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
+    rules: [
+      readonlyIf(({ form }) => form.fields.makeFieldReadonly.value === true),
+    ],
   }),
 
   // Combining rules.
