@@ -1,4 +1,4 @@
-import { createFieldRule } from "../createRule"
+import { createFieldRule } from "@/plugins"
 import { PLUGIN_NAME } from "./plugin"
 
 export const readonly = createFieldRule<void, boolean>(PLUGIN_NAME, () => true)

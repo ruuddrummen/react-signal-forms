@@ -38,14 +38,14 @@ export class ArrayFieldContext<TValue extends FormValues[]>
   lastItemId = 0
 
   constructor(
-    formContext: IFormContextLike,
+    parentForm: IFormContextLike,
     field: Field<any, any, ArrayFieldBase<TValue>>,
     initialValue: TValue | undefined,
     plugins: SignalFormPlugin[]
   ) {
     super(field, initialValue)
 
-    this.__parentForm = formContext
+    this.__parentForm = parentForm
     this.__plugins = plugins
 
     this.arrayItems = signal(

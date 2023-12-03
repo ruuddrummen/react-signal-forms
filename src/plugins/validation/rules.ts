@@ -1,5 +1,4 @@
-import { RuleArguments, RuleContext } from "@/plugins"
-import { createFieldRule } from "../createRule"
+import { RuleArguments, RuleContext, createFieldRule } from "@/plugins"
 import { PLUGIN_NAME, ValidationTestResult } from "./plugin"
 
 /**
