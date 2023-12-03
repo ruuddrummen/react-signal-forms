@@ -42,7 +42,7 @@ const fields = signalForm<DemoData>().withFields((field) => ({
 
       ...field("textField", "Text", {
         rules: [
-          applicableIf(({ fields }) => fields.booleanField.value === true),
+          applicableIf(({ form }) => form.fields.booleanField.value === true),
           requiredIf(
             ({ form }) =>
               form.parent.fields.makeFieldsInArrayRequired.value === true
