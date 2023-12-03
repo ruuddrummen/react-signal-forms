@@ -1,7 +1,6 @@
-import { FieldRule, IFormContext } from "@/index"
 import { createPlugin } from "@/plugins/createPlugin"
-import { KeyOf } from "@/utils"
 import { computed } from "@preact/signals-react"
+import { FieldRuleInternal } from "../types"
 
 export const PLUGIN_NAME = "readonly"
 
@@ -9,10 +8,11 @@ export const readonlyRulesPlugin = createPlugin(PLUGIN_NAME, {
   createFieldExtension(field, formContext) {
     return {
       readonlySignal: computed(() => {
-        const rules = (field.rules?.filter((r) => r.plugin === PLUGIN_NAME) ??
-          []) as ReadonlyFieldRule<any, any>[]
+        const rules = (field.rules?.filter(
+          (r) => r.pluginName === PLUGIN_NAME
+        ) ?? []) as FieldRuleInternal<boolean>[]
 
-        return rules.some((r) => r.test(formContext))
+        return rules.some((r) => r.execute(field, formContext))
       }),
     }
   },
@@ -24,8 +24,3 @@ export const readonlyRulesPlugin = createPlugin(PLUGIN_NAME, {
     }
   },
 })
-
-export interface ReadonlyFieldRule<TForm, TKey extends KeyOf<TForm>>
-  extends FieldRule<TForm, TKey> {
-  test: (context: IFormContext<TForm>) => boolean
-}

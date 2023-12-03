@@ -65,7 +65,7 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
  * A helper function for creating validation rules.
  *
  * @param execute Executes the rule. Should return `null` if the field is valid,
- * or an error message if it is not. See docs on {@link createFieldRule} for
+ * or an error message if it is not. See docs on {@linkcode createFieldRule} for
  * details on how to work with the `TArgs` argument.
  *
  * @returns A validation rule.

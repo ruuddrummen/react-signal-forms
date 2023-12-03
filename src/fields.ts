@@ -38,7 +38,7 @@ export interface FieldRule<
   _Key extends KeyOf<TForm> = KeyOf<TForm>,
   _ParentForm extends IFormContextLike | null = null,
 > {
-  plugin: string
+  pluginName: string
 }
 
 export type FieldCollection<TForm = any> = {

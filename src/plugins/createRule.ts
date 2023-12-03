@@ -1,11 +1,17 @@
-import { FieldRule } from ".."
-import { FieldRuleFunction, RuleArguments, RuleContext } from "./types"
+import {
+  FieldRuleFunction,
+  FieldRuleInternal,
+  RuleArguments,
+  RuleContext,
+} from "./types"
 
 /**
  * Creates a field rule function which can be used in the `createFields` field
- * builders to specify rules on fields.
+ * builders to specify rules on fields. In your plugin you can find and run the
+ * rule by asserting the rule type to {@linkcode FieldRuleInternal<TResult>}
+ * with the `pluginName` property and running the `execute` method on it.
  *
- * @param execute Executes the rule. With given {@link RuleContext} and the
+ * @param execute Executes the rule. With given {@linkcode RuleContext} and the
  * input arguments of type `TArgs` this method should return the result of the
  * rule with type `TResult`.
  *
@@ -34,13 +40,13 @@ export function createFieldRule<TArgs, TResult>(
 ): FieldRuleFunction<TArgs> {
   const ruleFn = (args: RuleArguments<TArgs>) =>
     ({
-      plugin: pluginName,
-      execute: (context) => execute(context, args),
+      pluginName,
+      execute: (field, formContext) => {
+        const value = formContext.fields[field.name].value
+
+        return execute({ form: formContext, value }, args)
+      },
     }) as FieldRuleInternal<TResult>
 
   return ruleFn as FieldRuleFunction<TArgs>
-}
-
-interface FieldRuleInternal<TResult = unknown> extends FieldRule {
-  execute: (context: RuleContext) => TResult
 }

@@ -1,5 +1,6 @@
+import { Field, FieldRule } from "@/fields"
 import { IFormContextLike } from "@/formContext"
-import { Field, FieldRule, IFieldContext } from "@/index"
+import { IFieldContext } from "@/index"
 import { FormValues } from "@/types"
 import { KeyOf } from "@/utils"
 
@@ -125,4 +126,11 @@ export type RuleContext<
 > = {
   value: TForm[TKey]
   form: IFormContextLike<TForm, TParent>
+}
+
+/**
+ * The internal type for field rules which can be used by plugins to run them.
+ */
+export interface FieldRuleInternal<TResult> extends FieldRule {
+  execute: (field: Field, formContext: IFormContextLike) => TResult
 }
