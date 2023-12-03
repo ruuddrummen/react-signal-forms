@@ -120,7 +120,7 @@ const fields = signalForm<DemoData>().withFields((field) => ({
   ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
     rules: [
-      applicableIf(({ fields }) => fields.showSecretField.value === true),
+      applicableIf(({ form }) => form.fields.showSecretField.value === true),
     ],
   }),
 
@@ -132,7 +132,9 @@ const fields = signalForm<DemoData>().withFields((field) => ({
   }),
   ...field("makeFieldReadonly", "Make the next field readonly"),
   ...field("canBeReadOnly", "Can be readonly", {
-    rules: [readonlyIf((form) => form.fields.makeFieldReadonly.value === true)],
+    rules: [
+      readonlyIf(({ form }) => form.fields.makeFieldReadonly.value === true),
+    ],
   }),
 
   // Combining rules.
@@ -141,7 +143,7 @@ const fields = signalForm<DemoData>().withFields((field) => ({
   ...field("complicatedField", "Only validated if applicable", {
     rules: [
       applicableIf(
-        ({ fields }) => fields.makeComplicatedFieldApplicable.value === true
+        ({ form }) => form.fields.makeComplicatedFieldApplicable.value === true
       ),
       required(),
       minLength(5),

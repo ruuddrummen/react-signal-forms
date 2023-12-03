@@ -21,10 +21,12 @@ import {
   ArrayItemDescriptor,
   useArrayField,
 } from "react-signal-forms/arrays"
-import { applicableIf, required } from "react-signal-forms/rules"
+import { applicableIf, requiredIf } from "react-signal-forms/rules"
 import TransitionGroup from "react-transition-group/TransitionGroup"
 
 type DemoData = {
+  makeFieldsInArrayRequired: boolean
+
   arrayField: Array<{
     booleanField: boolean
     textField: string
@@ -32,14 +34,19 @@ type DemoData = {
 }
 
 const fields = signalForm<DemoData>().withFields((field) => ({
+  ...field("makeFieldsInArrayRequired", "Make text fields in array required"),
+
   ...field("arrayField").asArray({
     fields: (field) => ({
       ...field("booleanField", "Toggle"),
 
       ...field("textField", "Text", {
         rules: [
-          applicableIf(({ fields }) => fields.booleanField.value === true),
-          required(),
+          applicableIf(({ form }) => form.fields.booleanField.value === true),
+          requiredIf(
+            ({ form }) =>
+              form.parent.fields.makeFieldsInArrayRequired.value === true
+          ),
         ],
       }),
     }),
@@ -111,6 +118,8 @@ const ArrayFieldDemo = () => {
 
   return (
     <Stack gap={2}>
+      <Switch field={fields.makeFieldsInArrayRequired} />
+
       <TransitionGroup>
         {items.map((item) => (
           // ⚠ Make sure to set the `key` prop to `item.id`.

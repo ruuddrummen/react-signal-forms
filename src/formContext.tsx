@@ -23,6 +23,7 @@ const ReactFormContext = createContext<IFormContext>({
   plugins: [],
   fields: {},
   isSubmitting: false,
+  parent: null,
   peekValues: noop,
   setValues: noop,
   submit: noop,
@@ -32,16 +33,17 @@ export const useFormContext = () => useContext(ReactFormContext)
 
 export type IFormContextLike<
   TForm = FormValues,
+  TParentForm extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
 > = {
-  // TODO: Add parent form context here or in array form context.
   fields: FieldContextCollection<TForm, TPlugins>
+  parent: TParentForm
 } & ExpandFormContextProperties<TPlugins>
 
 export type IFormContext<
   TForm = FormValues,
   TPlugins extends SignalFormPlugin[] = [],
-> = IFormContextLike<TForm, TPlugins> & {
+> = IFormContextLike<TForm, any, TPlugins> & {
   fieldSpecifications: FieldCollection<TForm>
   plugins: Array<SignalFormPlugin>
   isSubmitting: boolean
@@ -91,6 +93,7 @@ class FormContext implements IFormContext {
   fields: FieldContextCollection<any>
   fieldSpecifications: FieldCollection<any>
   plugins: Array<SignalFormPlugin>
+  parent: undefined = undefined
 
   get isSubmitting() {
     return this.__isSubmittingSignal.value
@@ -115,6 +118,7 @@ class FormContext implements IFormContext {
 
         prev[key] = isArrayField(field)
           ? new ArrayFieldContext(
+              this,
               field,
               fieldInitialValues as FormValues[],
               plugins

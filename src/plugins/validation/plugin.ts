@@ -1,11 +1,11 @@
 import { isArrayFieldContext } from "@/arrays/fieldContext"
 import { isArrayField } from "@/fields"
 import { Field, FieldRule, IFormContext } from "@/index"
-import { RuleContext } from "@/plugins"
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 import { FormValues } from "@/types"
-import { KeyOf, arrayEquals } from "@/utils"
+import { arrayEquals } from "@/utils"
 import { Signal, computed, signal } from "@preact/signals-react"
+import { FieldRuleInternal } from "../types"
 
 export const PLUGIN_NAME = "validation"
 
@@ -76,9 +76,7 @@ function createFieldExtension(
   let previousErrors: string[] = []
 
   const validationResults = computed(() => {
-    const results = validationRules.map((r) =>
-      r.execute({ value: fieldContext.value, form: formContext })
-    )
+    const results = validationRules.map((r) => r.execute(field, formContext))
 
     if (isArrayFieldContext(fieldContext)) {
       const allItemsAreValid = fieldContext.arrayItems.value.every((item) =>
@@ -135,20 +133,11 @@ function getErrorsFromResults(results: ValidationTestResult[]) {
   }, [])
 }
 
-function isValidationRule(rule: FieldRule): rule is ValidationFieldRule {
-  return rule.plugin === PLUGIN_NAME
+function isValidationRule(
+  rule: FieldRule
+): rule is FieldRuleInternal<ValidationTestResult> {
+  return rule.pluginName === PLUGIN_NAME
 }
-
-export interface ValidationFieldRule<
-  TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>,
-> extends FieldRule<TForm, TKey> {
-  execute: ValidationTest<TForm, TKey>
-}
-
-type ValidationTest<TForm, TKey extends KeyOf<TForm>> = (
-  context: RuleContext<TForm, TKey>
-) => ValidationTestResult
 
 /**
  * Describes a validation result, which is an error message if

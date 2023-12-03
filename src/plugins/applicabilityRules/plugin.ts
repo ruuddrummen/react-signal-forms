@@ -1,8 +1,9 @@
 import { Field, FieldRule, IFormContext } from "@/index"
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 import { alwaysTrueSignal } from "@/signals"
 import { KeyOf } from "@/utils"
 import { Signal, computed } from "@preact/signals-react"
+import { FieldRuleInternal } from "../types"
 
 export const PLUGIN_NAME = "applicability"
 
@@ -36,7 +37,7 @@ function createApplicabilitySignal(
   if (rules.length > 0) {
     const isApplicableSignal = computed(() => {
       console.log(`(${field.name}) Checking applicability rule`)
-      return rules.every((r) => r.execute(formContext))
+      return rules.every((r) => r.execute(field, formContext))
     })
 
     isApplicableSignal.subscribe((value) => {
@@ -54,13 +55,8 @@ function createApplicabilitySignal(
   }
 }
 
-export interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
-  extends FieldRule<TForm, TKey> {
-  execute: (context: IFormContext<TForm>) => boolean
-}
-
 function isApplicabilityRule<TForm, TKey extends KeyOf<TForm>>(
   rule: FieldRule<TForm, TKey>
-): rule is ApplicabilityFieldRule<TForm, TKey> {
-  return rule.plugin === PLUGIN_NAME
+): rule is FieldRuleInternal<boolean> {
+  return rule.pluginName === PLUGIN_NAME
 }

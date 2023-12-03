@@ -4,7 +4,8 @@ import { readonlyRulesPlugin } from "./readonlyRules/plugin"
 import { touchedFieldsPlugin } from "./touchedFields/plugin"
 import { validationRulesPlugin } from "./validation/plugin"
 
-export { createPlugin } from "./create"
+export { createFieldRule } from "./createFieldRule"
+export { createPlugin } from "./createPlugin"
 
 export const defaultPlugins = [
   validationRulesPlugin,

@@ -1,9 +1,5 @@
-import { FieldRuleFunction, RuleArguments, RuleContext } from "@/plugins"
-import {
-  PLUGIN_NAME,
-  ValidationFieldRule,
-  ValidationTestResult,
-} from "./plugin"
+import { RuleArguments, RuleContext, createFieldRule } from "@/plugins"
+import { PLUGIN_NAME, ValidationTestResult } from "./plugin"
 
 /**
  * Requires the field to have a value.
@@ -16,7 +12,7 @@ export const required = createValidationRule((context) => ({
 }))
 
 /**
- * Requires the field to have a value if the given test succeeds.
+ * Requires the field to have a value if the given test passes.
  */
 export const requiredIf = createValidationRule<() => boolean>(
   (context, test) => {
@@ -65,32 +61,22 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
 )
 
 /**
- * Creates a validation rule function which can be used in the
- * `createFields` field builders.
- * @param execute Executes the rule. Should return `null` if the
- * field is valid, or an error message if it is not.
- * @template TArgs The type of the arguments when using the rule.
- * Can be `void`, `T` or `() => T` for any `T`. Default is `void`.
+ * A helper function for creating validation rules.
  *
- * If set to `void`, the rule can be used without arguments, such as `required()`.
+ * @param execute Executes the rule. Should return `null` if the field is valid,
+ * or an error message if it is not. See docs on {@linkcode createFieldRule} for
+ * details on how to work with the `TArgs` argument.
  *
- * If set to `T` it can be used as `rule(args: T)`, such as `minLength(6)`.
- *
- * If set to `() => T` it can be used as `rule(ruleContext => T)`,
- * where `ruleContext` describes form and field states. For example: `requiredIf(context => boolean)`.
- * @returns A validation rule function.
+ * @returns A validation rule.
  */
-export function createValidationRule<TArgs = void>(
+export function createValidationRule<TArgs>(
   execute: (
     context: RuleContext,
     args: RuleArguments<TArgs>
   ) => ValidationTestResult
-): FieldRuleFunction<TArgs> {
-  const result = (args: RuleArguments<TArgs>) =>
-    ({
-      plugin: PLUGIN_NAME,
-      execute: (context) => execute(context as any, args as any),
-    }) as ValidationFieldRule
-
-  return result as FieldRuleFunction<TArgs>
+) {
+  return createFieldRule<TArgs, ValidationTestResult>(
+    PLUGIN_NAME,
+    (context, args) => execute(context, args)
+  )
 }
