@@ -158,6 +158,44 @@ If you have specific needs for solving more irregular or complex scenarios, you 
 - Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
 - Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
 
-## Array forms
+## Array fields
 
-Currently in development in [#61](https://github.com/ruuddrummen/react-signal-forms/issues/61).
+Implementing a form with one or more arrays of items are supported by array fields. You can create the specifications for an array field with the `...field("arrayField").asArray(...)` method.
+
+An example:
+
+```ts
+type DemoData = {
+  arrayField: Array<{
+    booleanField: boolean
+    textField: string
+  }>
+}
+
+const fields = signalForm<DemoData>().withFields((field) => ({
+  ...field("arrayField").asArray({
+    fields: (field) => ({
+      ...field("booleanField", "Toggle field"),
+      ...field("textField", "Text field"),
+    }),
+  }),
+}))
+```
+
+The array field itself and all fields in an array field support the same features and plugins as other fields. Note that field rules in an array form also have access to the parent form.
+
+Example:
+
+```ts
+...field("textField", "Text field", {
+  rules: [
+    requiredIf(
+      ({ form }) => form.parent.fields.fieldInParent.value === "some value"
+    )
+  ]
+})
+```
+
+## Nested forms
+
+> Planned.
