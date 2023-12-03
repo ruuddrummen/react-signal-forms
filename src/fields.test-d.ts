@@ -47,11 +47,11 @@ describe("Test field builder and collection types", () => {
           required(),
           validIf((context) => {
             expectTypeOf(context).toEqualTypeOf<
-              RuleContext<ITestData, "selectField">
+              RuleContext<ITestData, "selectField", never>
             >()
             expectTypeOf(context.value).toBeString()
             expectTypeOf(context.form).toEqualTypeOf<
-              IFormContextLike<ITestData>
+              IFormContextLike<ITestData, never>
             >()
 
             return {
