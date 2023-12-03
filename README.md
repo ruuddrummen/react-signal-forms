@@ -223,6 +223,7 @@ const YourArrayField = () => {
       {items.map((item) => (
         <YourLayout key={item.id}>
           {/*       ^ make sure to set `key` to `item.id` */}
+
           <ArrayItem item={item}>
             <TextInput field={itemFields.textField}>
 
@@ -239,7 +240,9 @@ const YourArrayField = () => {
 }
 ```
 
-The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx), which includes advice regarding performance when adding and removing items in the array.
+The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
+
+> ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component. This is also included in the demo.
 
 ## Nested forms
 
