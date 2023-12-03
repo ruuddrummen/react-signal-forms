@@ -1,5 +1,5 @@
 import { FieldRule, IFormContext } from "@/index"
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 import { KeyOf } from "@/utils"
 import { computed } from "@preact/signals-react"
 

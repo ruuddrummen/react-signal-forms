@@ -1,6 +1,6 @@
 import { isArrayFieldContext } from "@/arrays/fieldContext"
 import { Field, FieldContext, IFormContext } from "@/index"
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 import { Signal, signal } from "@preact/signals-react"
 
 const PLUGIN_NAME = "touched"

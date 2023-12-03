@@ -1,6 +1,7 @@
 import { Field, FieldRule, IFormContext } from "@/index"
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 import { alwaysTrueSignal } from "@/signals"
+import { FormValues } from "@/types"
 import { KeyOf } from "@/utils"
 import { Signal, computed } from "@preact/signals-react"
 
@@ -54,8 +55,10 @@ function createApplicabilitySignal(
   }
 }
 
-export interface ApplicabilityFieldRule<TForm, TKey extends KeyOf<TForm>>
-  extends FieldRule<TForm, TKey> {
+export interface ApplicabilityFieldRule<
+  TForm = FormValues,
+  TKey extends KeyOf<TForm> = KeyOf<TForm>,
+> extends FieldRule<TForm, TKey> {
   execute: (context: IFormContext<TForm>) => boolean
 }
 

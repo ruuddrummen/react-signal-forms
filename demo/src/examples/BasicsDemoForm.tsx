@@ -20,6 +20,7 @@ import React from "react"
 import { SelectField, signalForm } from "react-signal-forms"
 import {
   applicableIf,
+  applicableIf2,
   minLength,
   mustBeEqualToField,
   readonly,
@@ -120,7 +121,7 @@ const fields = signalForm<DemoData>().withFields((field) => ({
   ...field("secret", "Value is cleared when not applicable", {
     defaultValue: "Default value",
     rules: [
-      applicableIf(({ fields }) => fields.showSecretField.value === true),
+      applicableIf2(({ form }) => form.fields.showSecretField.value === true),
     ],
   }),
 

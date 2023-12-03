@@ -1,4 +1,5 @@
 import { FieldRuleFunction, RuleArguments, RuleContext } from "@/plugins"
+import { createFieldRule } from "../createRule"
 import {
   PLUGIN_NAME,
   ValidationFieldRule,
@@ -94,3 +95,16 @@ export function createValidationRule<TArgs = void>(
 
   return result as FieldRuleFunction<TArgs>
 }
+
+export const requiredIf2 = createFieldRule<() => boolean, ValidationTestResult>(
+  PLUGIN_NAME,
+  (context, test) => {
+    const isRequired = test(context)
+    const hasValue = context.value != null && context.value !== ""
+
+    return {
+      setRequiredFlag: isRequired,
+      errorMessage: !isRequired || hasValue || "This field is required",
+    }
+  }
+)

@@ -1,4 +1,4 @@
-import { createPlugin } from "@/plugins/create"
+import { createPlugin } from "@/plugins/createPlugin"
 
 const PLUGIN_NAME = "diffChanges"
 
