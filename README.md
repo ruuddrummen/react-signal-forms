@@ -201,7 +201,7 @@ For example:
 })
 ```
 
-Adding array fields to your form can then be done with the `useArrayField()` hook and the `ArrayItem` component. The hook provides a description of the items in the array, which can then be mapped to the `ArrayItem` component.
+Adding array fields to your form can then be done with the `useArrayField()` hook and the `<ArrayItem />` component. The hook provides a description of the items in the array, which can then be mapped to the `ArrayItem` component.
 
 For example:
 
@@ -240,9 +240,9 @@ const YourArrayField = () => {
 }
 ```
 
-The demo includes [an example for array fields](https://ruuddrummen.github.io/react-signal-forms/#array-fields). You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
+The demo includes [an example for array fields](https://ruuddrummen.github.io/react-signal-forms/#array-fields), and you can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
 
-> ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component. This is also included in the demo.
+> ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component, and you can also find it used in the demo.
 
 ## Nested forms
 
