@@ -130,5 +130,5 @@ function useScrollToHash() {
         }
       }, 50)
     }
-  })
+  }, [])
 }
