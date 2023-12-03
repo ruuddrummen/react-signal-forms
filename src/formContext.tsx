@@ -40,9 +40,6 @@ export type IFormContextLike<
   parent: TParentForm
 } & ExpandFormContextProperties<TPlugins>
 
-// export type ParentFormContext<TParents extends IFormContextLike[]> =
-//   TParents extends [first: infer FirstParent, ...rest: any] ? FirstParent : null
-
 export type IFormContext<
   TForm = FormValues,
   TPlugins extends SignalFormPlugin[] = [],

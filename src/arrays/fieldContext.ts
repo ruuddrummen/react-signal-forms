@@ -13,19 +13,19 @@ import { Signal, computed, signal } from "@preact/signals-react"
 
 export type IArrayFieldContext<
   TValue extends FormValues[] = FormValues[],
-  TParent extends IFormContextLike = any,
+  TParentForm extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
 > = IFieldContext<TValue, TPlugins> & {
-  arrayItems: Signal<ArrayFieldItemContext<TValue, TParent, TPlugins>[]>
+  arrayItems: Signal<ArrayFieldItemContext<TValue, TParentForm, TPlugins>[]>
   addItem: () => void
   removeItem: (id: number) => void
 }
 
 export type ArrayFieldItemContext<
   TValue = FormValues[],
-  TParent extends IFormContextLike = any,
+  TParentForm extends IFormContextLike = any,
   TPlugins extends SignalFormPlugin[] = [],
-> = IFormContextLike<ArrayItemType<TValue>, TParent, TPlugins> & {
+> = IFormContextLike<ArrayItemType<TValue>, TParentForm, TPlugins> & {
   id: any
 }
 
@@ -98,7 +98,7 @@ export function createContextForArrayField<
   TValue extends FormValues[] = FormValues[],
 >(
   field: ArrayFieldBase<TValue>,
-  form: IFormContextLike,
+  parentForm: IFormContextLike,
   createItemId: () => number,
   initialValues?: FormValues[]
 ): ArrayFieldItemContext<TValue>[] {
@@ -112,7 +112,7 @@ export function createContextForArrayField<
     createContextForArrayFieldItem<TValue>(
       createItemId(),
       field,
-      form,
+      parentForm,
       itemValue as ArrayItemType<TValue>
     )
   )
@@ -122,13 +122,13 @@ export function createContextForArrayField<
 
 export function createContextForArrayFieldItem<
   TValue extends FormValues[] = FormValues[],
-  TParent extends IFormContextLike = any,
+  TParentForm extends IFormContextLike = any,
 >(
   id: any,
   field: ArrayFieldBase<TValue>,
-  parent: TParent,
+  parentForm: TParentForm,
   initialValues: ArrayItemType<TValue>
-): ArrayFieldItemContext<TValue, TParent> {
+): ArrayFieldItemContext<TValue, TParentForm> {
   const fields = KeysOf(field.fields).reduce((contextItems, key) => {
     contextItems[key] = new FieldContext(
       field.fields[key],
@@ -142,7 +142,7 @@ export function createContextForArrayFieldItem<
 
   return {
     id,
-    parent: parent,
+    parent: parentForm,
     fields: fields,
   }
 }

@@ -122,10 +122,10 @@ export type FieldRuleFunction<TArgs> = <
 export type RuleContext<
   TForm = FormValues,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
-  TParent extends IFormContextLike = any,
+  TParentForm extends IFormContextLike = any,
 > = {
   value: TForm[TKey]
-  form: IFormContextLike<TForm, TParent>
+  form: IFormContextLike<TForm, TParentForm>
 }
 
 /**
