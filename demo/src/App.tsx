@@ -14,7 +14,7 @@ import {
   css,
 } from "@mui/material"
 import { signal } from "@preact/signals-react"
-import React from "react"
+import React, { useEffect } from "react"
 import { clearStorage } from "./FormComponents"
 import { ArrayFieldDemoForm } from "./examples/ArrayFieldDemo"
 import { BasicsDemoForm } from "./examples/BasicsDemoForm"
@@ -24,6 +24,8 @@ const formKey = signal(1)
 
 export const App: React.FC = () => {
   const theme = useTheme()
+
+  useScrollToHash()
 
   return (
     <ThemeProvider theme={theme}>
@@ -109,3 +111,24 @@ const StickyElementFix = () => (
     {/* an empty fixed div should fix issues with sticky elements in mobile browsers. */}
   </div>
 )
+
+/**
+ * Yup this is hacky, but it works for now.
+ */
+function useScrollToHash() {
+  useEffect(() => {
+    const hash = window.location.hash
+
+    if (hash != null) {
+      setTimeout(() => {
+        const element = document.querySelector(hash)
+
+        if (element != null) {
+          element.scrollIntoView({
+            behavior: "smooth",
+          })
+        }
+      }, 50)
+    }
+  })
+}

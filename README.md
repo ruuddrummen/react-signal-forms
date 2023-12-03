@@ -29,7 +29,7 @@ npm i react-signal-forms
 
 ## Exploring the demo
 
-For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/), or run it yourself by cloning the repository and running:
+For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/) of react-signal-forms with Material UI, or run it yourself by cloning the repository and running:
 
 ```
 npm run ci
@@ -240,7 +240,7 @@ const YourArrayField = () => {
 }
 ```
 
-The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
+The demo includes [an example for array fields](https://ruuddrummen.github.io/react-signal-forms/#array-fields). You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
 
 > ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component. This is also included in the demo.
 
