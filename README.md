@@ -162,7 +162,7 @@ If you have specific needs for solving more irregular or complex scenarios, you 
 
 Implementing a form with one or more arrays of items are supported by array fields. You can create the specifications for an array field with the `...field("arrayField").asArray(...)` method.
 
-An example:
+For example:
 
 ```ts
 type DemoData = {
@@ -184,7 +184,7 @@ const fields = signalForm<DemoData>().withFields((field) => ({
 
 The array field itself and all fields in an array field support the same features and plugins as other fields. Note that field rules in an array form also have access to the parent form.
 
-Example:
+For example:
 
 ```ts
 ...field("textField", "Text field", {
@@ -195,6 +195,36 @@ Example:
   ]
 })
 ```
+
+Adding array fields to your form can be done with the `useArrayField()` hook and the `ArrayItem` component.
+
+For example:
+
+```tsx
+const YourForm = () => (
+  <SignalForm fields={yourFields}>
+    {/* ... */}
+    <YourArrayField />
+    {/* ... */}
+  </SignalForm>
+)
+
+const YourArrayField = () => {
+  const { items, add } = useArrayField(yourFields.arrayField)
+
+  return (
+    <>
+      {items.map((item) => (
+        <YourLayout key={item.id}>
+          <ArrayItem item={item}>{/* Your layout and inputs */}</ArrayItem>
+        </YourLayout>
+      ))}
+    </>
+  )
+}
+```
+
+The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
 
 ## Nested forms
 
