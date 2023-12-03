@@ -157,7 +157,7 @@ All form features other than the core - e.g. validation and applicability rules 
 
 ### Creating field rules
 
-Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper method. This method can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this method with a [`createValidationRule()`](/src/plugins/validation/rules.ts) function.
+Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
 
 ### Creating plugins
 
@@ -165,19 +165,19 @@ Plugins can be replaced and you can create and plug in your own to better fit yo
 
 ## Array fields
 
-The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with the `...field("arrayField").asArray(...)` method.
+The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with `...field("yourArrayField").asArray(...)`.
 
 For example:
 
 ```ts
-type DemoData = {
+type ExampleData = {
   arrayField: Array<{
     booleanField: boolean
     textField: string
   }>
 }
 
-const fields = signalForm<DemoData>().withFields((field) => ({
+const fields = signalForm<ExampleData>().withFields((field) => ({
   ...field("arrayField").asArray({
     fields: (field) => ({
       ...field("booleanField", "Toggle field"),
@@ -192,7 +192,7 @@ The array field itself and all fields in an array field support the same feature
 For example:
 
 ```ts
-...field("textField", "Text field", {
+...field("textFieldInArray", "Text field in array", {
   rules: [
     applicableIf(
       ({ form }) => form.parent.fields.fieldInParent.value === "some value"
@@ -201,7 +201,7 @@ For example:
 })
 ```
 
-Adding array fields to your form can then be done with the `useArrayField()` hook and the `ArrayItem` component. The hook will pr
+Adding array fields to your form can then be done with the `useArrayField()` hook and the `ArrayItem` component. The hook provides a description of the items in the array, which can then be mapped to the `ArrayItem` component.
 
 For example:
 
@@ -215,7 +215,8 @@ const YourForm = () => (
 )
 
 const YourArrayField = () => {
-  const { items, fields, add } = useArrayField(yourFields.arrayField)
+  const { items, itemFields, add } = useArrayField(yourFields.arrayField)
+  //             ^ can also be accessed with `yourFields.arrayField.fields`.
 
   return (
     <>
@@ -223,7 +224,7 @@ const YourArrayField = () => {
         <YourLayout key={item.id}>
           {/*       ^ make sure to set `key` to `item.id` */}
           <ArrayItem item={item}>
-            <TextInput field={fields.textField}>
+            <TextInput field={itemFields.textField}>
 
             {/* Other layout and input components */}
 

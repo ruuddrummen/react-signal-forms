@@ -27,7 +27,7 @@ export const useArrayField = <TArray extends FormValues[]>(
 
   return {
     items,
-    arrayFields: field.fields,
+    itemFields: field.fields,
     add: () => arrayFieldContext.addItem(),
   }
 }
