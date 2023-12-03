@@ -22,6 +22,7 @@ export const plugins = {
 
 export type {
   FieldRuleFunction,
+  FieldRuleInternal,
   PropertyDescriptors,
   RuleArguments,
   RuleContext,

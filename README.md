@@ -151,16 +151,21 @@ A simple example to illustrate what this means for performance: if field A is on
 
 ## Plugins
 
-All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins can be added or replaced to fulfill on specialized requirements.
+All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
-If you have specific needs for solving more irregular or complex scenarios, you have some options:
+> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
 
-- Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. The validation plugin for instance provides a `createValidationRule` function for this purpose. You can find docs and examples in [validation/rules.ts](/src/plugins/validation/rules.ts).
-- Plugins can be replaced and you can create and plug in your own to fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/create.ts) method. All [native plugins](/src/plugins/) are created using this method, so you can use those as examples to get started on your own.
+### Creating field rules
+
+Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper method. This method can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this method with a [`createValidationRule()`](/src/plugins/validation/rules.ts) function.
+
+### Creating plugins
+
+Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`readonlyRules` plugin](/src/plugins/readonlyRules/), which is one of the simpler plugins.
 
 ## Array fields
 
-Implementing a form with one or more arrays of items are supported by array fields. You can create the specifications for an array field with the `...field("arrayField").asArray(...)` method.
+The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with the `...field("arrayField").asArray(...)` method.
 
 For example:
 
@@ -189,14 +194,14 @@ For example:
 ```ts
 ...field("textField", "Text field", {
   rules: [
-    requiredIf(
+    applicableIf(
       ({ form }) => form.parent.fields.fieldInParent.value === "some value"
     )
   ]
 })
 ```
 
-Adding array fields to your form can be done with the `useArrayField()` hook and the `ArrayItem` component.
+Adding array fields to your form can then be done with the `useArrayField()` hook and the `ArrayItem` component. The hook will pr
 
 For example:
 
@@ -210,21 +215,30 @@ const YourForm = () => (
 )
 
 const YourArrayField = () => {
-  const { items, add } = useArrayField(yourFields.arrayField)
+  const { items, fields, add } = useArrayField(yourFields.arrayField)
 
   return (
     <>
       {items.map((item) => (
         <YourLayout key={item.id}>
-          <ArrayItem item={item}>{/* Your layout and inputs */}</ArrayItem>
+          {/*       ^ make sure to set `key` to `item.id` */}
+          <ArrayItem item={item}>
+            <TextInput field={fields.textField}>
+
+            {/* Other layout and input components */}
+
+            <Button onClick={item.remove}>Remove item</Button>
+          </ArrayItem>
         </YourLayout>
       ))}
+
+      <Button onClick={add}>Add item</Button>
     </>
   )
 }
 ```
 
-The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx).
+The demo includes a full example for array fields with Material UI. You can find the code in [ArrayFieldsDemo](./demo/src/examples/ArrayFieldDemo.tsx), which includes advice regarding performance when adding and removing items in the array.
 
 ## Nested forms
 

@@ -2,6 +2,27 @@ import { RuleArguments, RuleContext, createFieldRule } from "@/plugins"
 import { PLUGIN_NAME, ValidationTestResult } from "./plugin"
 
 /**
+ * A helper function for creating validation rules.
+ *
+ * @param execute Executes the rule. Should return `null` if the field is valid,
+ * or an error message if it is not. See docs on {@linkcode createFieldRule} for
+ * details on how to work with the `TArgs` argument.
+ *
+ * @returns A validation rule.
+ */
+export function createValidationRule<TArgs>(
+  execute: (
+    context: RuleContext,
+    args: RuleArguments<TArgs>
+  ) => ValidationTestResult
+) {
+  return createFieldRule<TArgs, ValidationTestResult>(
+    PLUGIN_NAME,
+    (context, args) => execute(context, args)
+  )
+}
+
+/**
  * Requires the field to have a value.
  */
 export const required = createValidationRule((context) => ({
@@ -59,24 +80,3 @@ export const validIf = createValidationRule<() => ValidIfArgs>(
     return argsResult.validIf || argsResult.errorMessage
   }
 )
-
-/**
- * A helper function for creating validation rules.
- *
- * @param execute Executes the rule. Should return `null` if the field is valid,
- * or an error message if it is not. See docs on {@linkcode createFieldRule} for
- * details on how to work with the `TArgs` argument.
- *
- * @returns A validation rule.
- */
-export function createValidationRule<TArgs>(
-  execute: (
-    context: RuleContext,
-    args: RuleArguments<TArgs>
-  ) => ValidationTestResult
-) {
-  return createFieldRule<TArgs, ValidationTestResult>(
-    PLUGIN_NAME,
-    (context, args) => execute(context, args)
-  )
-}
