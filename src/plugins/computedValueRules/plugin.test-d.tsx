@@ -29,10 +29,25 @@ describe("computed value plugin", () => {
       <SignalForm fields={fields}>{children}</SignalForm>
     )
 
-    const { result } = renderHook(() => useField(fields.doubleValueField), {
-      wrapper,
-    })
+    const { result: fieldContext } = renderHook(
+      () => ({
+        numberField: useField(fields.numberField),
+        doubleValueField: useField(fields.doubleValueField),
+      }),
+      {
+        wrapper,
+      }
+    )
 
-    expect(result.current.peekValue()).toBe(6)
+    expect(
+      fieldContext.current.doubleValueField.peekValue(),
+      "computation should run on initial values"
+    ).toBe(6)
+
+    fieldContext.current.numberField.setValue(4)
+    expect(
+      fieldContext.current.doubleValueField.peekValue(),
+      "computation should run after dependency is updated"
+    ).toBe(8)
   })
 })
