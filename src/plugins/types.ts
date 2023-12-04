@@ -108,8 +108,12 @@ export type RuleArguments<
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
-  ? (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
+  ? FieldValueType extends ReturnType
+    ? (context: RuleContext<TForm, TKey, TParentForm>) => TForm[TKey]
+    : (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
   : TArgs
+
+export type FieldValueType = "fieldvalue"
 
 export type FieldRuleFunction<TArgs> = <
   TForm,
