@@ -108,8 +108,22 @@ export type RuleArguments<
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
-  ? (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
+  ? RuleCallbackArgument<TForm, TKey, TParentForm, ReturnType>
   : TArgs
+
+type RuleCallbackArgument<
+  TForm,
+  TKey extends KeyOf<TForm>,
+  TParentForm extends IFormContextLike,
+  ReturnType,
+> = FieldValueType extends ReturnType
+  ? (context: RuleContext<TForm, TKey, TParentForm>) => TForm[TKey]
+  : (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
+
+/**
+ * A token to refer to the field value type in `TArgs`.
+ */
+export type FieldValueType = "fieldvalue"
 
 export type FieldRuleFunction<TArgs> = <
   TForm,
