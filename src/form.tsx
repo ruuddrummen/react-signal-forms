@@ -13,9 +13,9 @@ import { FormValues } from "./types"
 
 interface SignalsFormProps {
   fields: FieldCollection
-  children: React.ReactNode
   initialValues?: FormValues
   onSubmit?: (values: FormValues) => Promise<void>
+  children?: React.ReactNode
 }
 
 interface SignalsFormInnerProps extends SignalsFormProps {

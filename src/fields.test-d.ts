@@ -1,6 +1,6 @@
 import { FieldRule, SelectField, signalForm } from "@/index"
 import { RuleContext } from "@/plugins"
-import { required, validIf } from "@/rules"
+import { applicableIf, required, requiredIf, validIf } from "@/rules"
 import { describe, expect, expectTypeOf, test } from "vitest"
 import { ArrayFieldBase, Field, FieldCollection, TextField } from "./fields"
 import { IFormContextLike } from "./formContext"
@@ -128,5 +128,32 @@ describe("Test field builder and collection types", () => {
     expectTypeOf(fields.arrayField.fields.textFieldInArray.rules).toEqualTypeOf<
       FieldRule<IArrayFieldData, "textFieldInArray">[] | undefined
     >()
+  })
+
+  test("Rule composition", () => {
+    type DemoFields = {
+      makeAllFieldsRequired: boolean
+      textField1: string
+      textField2: string
+    }
+
+    const composedRules: FieldRule<DemoFields>[] = [
+      requiredIf(
+        ({ form }) => form.fields.makeAllFieldsRequired.value === true
+      ),
+      applicableIf(
+        ({ form }) => form.fields.makeAllFieldsRequired.value === true
+      ),
+    ]
+
+    signalForm<DemoFields>().withFields((field) => ({
+      ...field("makeAllFieldsRequired"),
+      ...field("textField1", "Text field 1", {
+        rules: composedRules,
+      }),
+      ...field("textField2", "Text field 2", {
+        rules: composedRules,
+      }),
+    }))
   })
 })

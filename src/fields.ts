@@ -28,15 +28,15 @@ export type Field<
   TForm = any,
   TKey extends KeyOf<TForm> = KeyOf<TForm>,
   TFieldBase extends FieldBase<TForm[TKey]> = FieldBase<TForm[TKey]>,
-  TParentForm extends IFormContextLike | never = never,
+  TParentForm extends IFormContextLike = never,
 > = TFieldBase & {
   rules?: Array<FieldRule<TForm, TKey, TParentForm>>
 }
 
 export interface FieldRule<
   TForm = FormValues,
-  _Key extends KeyOf<TForm> = KeyOf<TForm>,
-  _ParentForm extends IFormContextLike | never = never,
+  _Key extends KeyOf<TForm> = never,
+  _ParentForm extends IFormContextLike = never,
 > {
   pluginName: string
 }
@@ -142,10 +142,7 @@ function createFieldDescriptor<TForm, TKey extends KeyOf<TForm>>(
 
 // #region Field builder types
 
-type FieldBuilder<
-  TForm,
-  TParentForm extends IFormContextLike | never = never,
-> = {
+type FieldBuilder<TForm, TParentForm extends IFormContextLike = never> = {
   <TKey extends KeyOf<TForm>>(
     name: TKey,
     properties?: Omit<
@@ -167,7 +164,7 @@ type FieldBuilder<
 type FieldDescriptor<
   TForm,
   TKey extends KeyOf<TForm>,
-  TExcept extends string | never,
+  TExcept extends string,
 > = {
   [name in TKey]: Field<TForm, TKey, FieldBase<TForm[TKey]>>
 } & {
