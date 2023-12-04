@@ -1,7 +1,6 @@
 import { FieldRule } from "@/index"
+import { FieldRuleInternal, createPlugin } from "@/plugins"
 import { effect } from "@preact/signals-react"
-import { createPlugin } from "../createPlugin"
-import { FieldRuleInternal } from "../types"
 
 export const PLUGIN_NAME = "computedValues"
 
@@ -15,9 +14,9 @@ export const computedValueRulesPlugin = createPlugin(PLUGIN_NAME, {
 
     effect(() => {
       const results = rules.map((rule) => rule.execute(field, formContext))
-      const value = results[-1]
+      const value = results[results.length - 1]
 
-      formContext.fields[field.name].value = value
+      formContext.fields[field.name].setValue(value)
     })
 
     return {}

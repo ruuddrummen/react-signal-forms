@@ -30,6 +30,10 @@ import {
  * requiredIf(context => context.form.fields.otherField.value === "some value")
  * ```
  *
+ * `T` can also be a token:
+ * - Use `() => FieldValueType` to describe a function which returns the field
+ *   value type.
+ *
  * @template TResult The return type of the rule.
  *
  * @returns A rule ready to be used in field builders.
