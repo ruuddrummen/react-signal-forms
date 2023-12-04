@@ -1,6 +1,7 @@
 import { FieldRule } from "@/index"
-import { FieldRuleInternal, createPlugin } from "@/plugins"
+import { FieldRuleInternal } from "@/plugins"
 import { effect } from "@preact/signals-react"
+import { createPlugin } from "../createPlugin"
 
 export const PLUGIN_NAME = "computedValues"
 
