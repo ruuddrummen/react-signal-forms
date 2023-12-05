@@ -146,7 +146,7 @@ export interface FieldRuleInternal<TResult> extends FieldRule {
  *   { prop: () => _something_ as FieldValueType }
  *   ```
  */
-export type FieldValueType = "token:field-value-type"
+export class FieldValueType {}
 
 type ReplaceTokensInObject<TProperties, TFieldValue> = {
   [key in keyof TProperties]: ReplaceTokens<TProperties[key], TFieldValue>
