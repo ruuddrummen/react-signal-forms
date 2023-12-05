@@ -49,16 +49,10 @@ type MergeFieldContextProperties<
   ...rest: infer R,
 ]
   ? R extends SignalFormPlugin[]
-    ? ReplaceTokens<TProperties, TFieldValue> &
+    ? ReplaceTokensInObject<TProperties, TFieldValue> &
         MergeFieldContextProperties<R, TFieldValue>
     : never
   : {}
-
-type ReplaceTokens<TProperties, TFieldValue> = {
-  [key in keyof TProperties]: FieldValueType extends TProperties[key]
-    ? TFieldValue
-    : TProperties[key]
-}
 
 /**
  * Recursively merges the types of the third type parameters, which
@@ -114,22 +108,15 @@ export type PropertyDescriptors<T> = {
 export type RuleArguments<
   TArgs,
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  Key extends KeyOf<TForm> = KeyOf<TForm>,
   TParentForm extends IFormContextLike = any,
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
-  ? RuleCallbackArgument<TForm, TKey, TParentForm, ReturnType>
-  : TArgs
-
-type RuleCallbackArgument<
-  TForm,
-  TKey extends KeyOf<TForm>,
-  TParentForm extends IFormContextLike,
-  ReturnType,
-> = FieldValueType extends ReturnType
-  ? (context: RuleContext<TForm, TKey, TParentForm>) => TForm[TKey]
-  : (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
+  ? (
+      context: RuleContext<TForm, Key, TParentForm>
+    ) => ReplaceTokens<ReturnType, TForm[Key]>
+  : ReplaceTokens<TArgs, TForm[Key]>
 
 export type FieldRuleFunction<TArgs> = <
   TForm,
@@ -164,3 +151,9 @@ export interface FieldRuleInternal<TResult> extends FieldRule {
  *   ```
  */
 export type FieldValueType = "token:field-value-type"
+
+type ReplaceTokensInObject<TProperties, TFieldValue> = {
+  [key in keyof TProperties]: ReplaceTokens<TProperties[key], TFieldValue>
+}
+
+type ReplaceTokens<T, TFieldValue> = FieldValueType extends T ? TFieldValue : T
