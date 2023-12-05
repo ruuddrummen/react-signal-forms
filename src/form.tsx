@@ -62,7 +62,7 @@ export function configureSignalForm<
 
       const fieldContext = formContext.fields[field.name]
       return fieldContext as IFieldContext &
-        ExpandFieldContextProperties<TPlugins, unknown>
+        ExpandFieldContextProperties<TPlugins, TValue>
     },
 
     useForm() {
