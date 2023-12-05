@@ -1,7 +1,7 @@
 import { configureSignalForm, signalForm } from "@/index"
 import { renderHook } from "@testing-library/react"
 import React, { PropsWithChildren } from "react"
-import { describe, expect, test } from "vitest"
+import { describe, expect, expectTypeOf, test } from "vitest"
 import { initialValuePlugin } from "./plugin"
 
 describe("initial value plugin", () => {
@@ -9,11 +9,15 @@ describe("initial value plugin", () => {
 
   type TestData = {
     textField: string
+    numberField: number
   }
 
   const fields = signalForm<TestData>().withFields((field) => ({
     ...field("textField", "Text field", {
       defaultValue: "default value",
+    }),
+    ...field("numberField", "Number field", {
+      defaultValue: 3,
     }),
   }))
 
@@ -25,16 +29,30 @@ describe("initial value plugin", () => {
     const { result: fieldContext } = renderHook(
       () => ({
         textField: useField(fields.textField),
+        numberField: useField(fields.numberField),
       }),
       {
         wrapper,
       }
     )
 
+    expectTypeOf(
+      fieldContext.current.textField.initialValue
+    ).toEqualTypeOf<string>()
+
+    expectTypeOf(
+      fieldContext.current.numberField.initialValue
+    ).toEqualTypeOf<number>()
+
     expect(
       fieldContext.current.textField.initialValue,
       "initial value should be default value"
     ).toBe("default value")
+
+    expect(
+      fieldContext.current.numberField.initialValue,
+      "initial value should be default value"
+    ).toBe(3)
   })
 
   test("with initial value", () => {

@@ -157,8 +157,10 @@ export interface FieldRuleInternal<TResult> extends FieldRule {
 
 /**
  * A token to refer to the field value type. Currently supports:
- * - `TArgs` with `() => FieldValueType`
- * - Property descriptors in `createPlugin.createFieldProperties`. Example: `{
- *   prop: () => _something_ as FieldValueType }`
+ * - `TArgs` in `createFieldRule` with `() => FieldValueType`
+ * - Property descriptors in `createPlugin.createFieldProperties`. Example:
+ *   ```
+ *   { prop: () => _something_ as FieldValueType }
+ *   ```
  */
 export type FieldValueType = "token:field-value-type"
