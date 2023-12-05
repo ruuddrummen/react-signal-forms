@@ -29,7 +29,7 @@ export type IFieldContext<
   setValue(value: TValue | null): void
   peekValue(): TValue
   handleBlur(event: React.FocusEvent<HTMLElement, Element>): void
-} & ExpandFieldContextProperties<TPlugins>
+} & ExpandFieldContextProperties<TPlugins, TValue>
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   protected __field: Field

@@ -41,14 +41,24 @@ export interface SignalFormPlugin<
  * Recursively merges the types of the second type parameters, which
  * describes the field context properties.
  **/
-type MergeFieldContextProperties<T extends SignalFormPlugin[]> = T extends [
-  firstItem: SignalFormPlugin<any, infer X, any>,
+type MergeFieldContextProperties<
+  T extends SignalFormPlugin[],
+  TFieldValue,
+> = T extends [
+  firstItem: SignalFormPlugin<any, infer TProperties, any>,
   ...rest: infer R,
 ]
   ? R extends SignalFormPlugin[]
-    ? X & MergeFieldContextProperties<R>
+    ? ReplaceTokens<TProperties, TFieldValue> &
+        MergeFieldContextProperties<R, TFieldValue>
     : never
   : {}
+
+type ReplaceTokens<TProperties, TFieldValue> = {
+  [key in keyof TProperties]: FieldValueType extends TProperties[key]
+    ? TFieldValue
+    : TProperties[key]
+}
 
 /**
  * Recursively merges the types of the third type parameters, which
@@ -68,9 +78,10 @@ type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 /**
  * Expands all field properties defined in the given plugins.
  */
-export type ExpandFieldContextProperties<T extends SignalFormPlugin[]> = Expand<
-  MergeFieldContextProperties<T>
->
+export type ExpandFieldContextProperties<
+  TPlugin extends SignalFormPlugin[],
+  TFieldValue,
+> = Expand<MergeFieldContextProperties<TPlugin, TFieldValue>>
 
 /**
  * Expands all form properties defined in the given plugins.
@@ -120,11 +131,6 @@ type RuleCallbackArgument<
   ? (context: RuleContext<TForm, TKey, TParentForm>) => TForm[TKey]
   : (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
 
-/**
- * A token to refer to the field value type in `TArgs`.
- */
-export type FieldValueType = "fieldvalue"
-
 export type FieldRuleFunction<TArgs> = <
   TForm,
   TKey extends KeyOf<TForm>,
@@ -148,3 +154,11 @@ export type RuleContext<
 export interface FieldRuleInternal<TResult> extends FieldRule {
   execute: (field: Field, formContext: IFormContextLike) => TResult
 }
+
+/**
+ * A token to refer to the field value type. Currently supports:
+ * - `TArgs` with `() => FieldValueType`
+ * - Property descriptors in `createPlugin.createFieldProperties`. Example: `{
+ *   prop: () => _something_ as FieldValueType }`
+ */
+export type FieldValueType = "token:field-value-type"

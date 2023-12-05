@@ -33,7 +33,7 @@ describe("initial value plugin", () => {
 
     expect(
       fieldContext.current.textField.initialValue,
-      "computation should run on initial values"
+      "initial value should be default value"
     ).toBe("default value")
   })
 
@@ -60,7 +60,7 @@ describe("initial value plugin", () => {
 
     expect(
       fieldContext.current.textField.initialValue,
-      "computation should run on initial values"
+      "initial value should be initial value"
     ).toBe("initial value")
   })
 })
