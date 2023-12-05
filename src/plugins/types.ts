@@ -41,16 +41,12 @@ export interface SignalFormPlugin<
  * Recursively merges the types of the second type parameters, which
  * describes the field context properties.
  **/
-type MergeFieldContextProperties<
-  T extends SignalFormPlugin[],
-  TFieldValue,
-> = T extends [
+type MergeFieldContextProperties<T extends SignalFormPlugin[]> = T extends [
   firstItem: SignalFormPlugin<any, infer TProperties, any>,
   ...rest: infer R,
 ]
   ? R extends SignalFormPlugin[]
-    ? ReplaceTokensInObject<TProperties, TFieldValue> &
-        MergeFieldContextProperties<R, TFieldValue>
+    ? TProperties & MergeFieldContextProperties<R>
     : never
   : {}
 
@@ -75,7 +71,7 @@ type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 export type ExpandFieldContextProperties<
   TPlugin extends SignalFormPlugin[],
   TFieldValue,
-> = Expand<MergeFieldContextProperties<TPlugin, TFieldValue>>
+> = ReplaceTokensInObject<MergeFieldContextProperties<TPlugin>, TFieldValue>
 
 /**
  * Expands all form properties defined in the given plugins.
