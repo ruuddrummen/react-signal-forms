@@ -61,6 +61,7 @@ describe("initial value plugin", () => {
         fields={fields}
         initialValues={{
           textField: "initial value",
+          numberField: 6,
         }}
       >
         {children}
@@ -70,15 +71,29 @@ describe("initial value plugin", () => {
     const { result: fieldContext } = renderHook(
       () => ({
         textField: useField(fields.textField),
+        numberField: useField(fields.numberField),
       }),
       {
         wrapper,
       }
     )
 
+    expectTypeOf(
+      fieldContext.current.textField.initialValue
+    ).toEqualTypeOf<string>()
+
+    expectTypeOf(
+      fieldContext.current.numberField.initialValue
+    ).toEqualTypeOf<number>()
+
     expect(
       fieldContext.current.textField.initialValue,
       "initial value should be initial value"
     ).toBe("initial value")
+
+    expect(
+      fieldContext.current.numberField.initialValue,
+      "initial value should be initial value"
+    ).toBe(6)
   })
 })
