@@ -42,11 +42,11 @@ export interface SignalFormPlugin<
  * describes the field context properties.
  **/
 type MergeFieldContextProperties<T extends SignalFormPlugin[]> = T extends [
-  firstItem: SignalFormPlugin<any, infer X, any>,
+  firstItem: SignalFormPlugin<any, infer TProperties, any>,
   ...rest: infer R,
 ]
   ? R extends SignalFormPlugin[]
-    ? X & MergeFieldContextProperties<R>
+    ? TProperties & MergeFieldContextProperties<R>
     : never
   : {}
 
@@ -68,9 +68,10 @@ type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
 /**
  * Expands all field properties defined in the given plugins.
  */
-export type ExpandFieldContextProperties<T extends SignalFormPlugin[]> = Expand<
-  MergeFieldContextProperties<T>
->
+export type ExpandFieldContextProperties<
+  TPlugin extends SignalFormPlugin[],
+  TFieldValue,
+> = ReplaceTokensInObject<MergeFieldContextProperties<TPlugin>, TFieldValue>
 
 /**
  * Expands all form properties defined in the given plugins.
@@ -103,27 +104,15 @@ export type PropertyDescriptors<T> = {
 export type RuleArguments<
   TArgs,
   TForm = FormValues,
-  TKey extends KeyOf<TForm> = KeyOf<TForm>,
+  Key extends KeyOf<TForm> = KeyOf<TForm>,
   TParentForm extends IFormContextLike = any,
 > = void extends TArgs
   ? void
   : TArgs extends () => infer ReturnType
-  ? RuleCallbackArgument<TForm, TKey, TParentForm, ReturnType>
-  : TArgs
-
-type RuleCallbackArgument<
-  TForm,
-  TKey extends KeyOf<TForm>,
-  TParentForm extends IFormContextLike,
-  ReturnType,
-> = FieldValueType extends ReturnType
-  ? (context: RuleContext<TForm, TKey, TParentForm>) => TForm[TKey]
-  : (context: RuleContext<TForm, TKey, TParentForm>) => ReturnType
-
-/**
- * A token to refer to the field value type in `TArgs`.
- */
-export type FieldValueType = "fieldvalue"
+  ? (
+      context: RuleContext<TForm, Key, TParentForm>
+    ) => ReplaceTokens<ReturnType, TForm[Key]>
+  : ReplaceTokens<TArgs, TForm[Key]>
 
 export type FieldRuleFunction<TArgs> = <
   TForm,
@@ -148,3 +137,19 @@ export type RuleContext<
 export interface FieldRuleInternal<TResult> extends FieldRule {
   execute: (field: Field, formContext: IFormContextLike) => TResult
 }
+
+/**
+ * A token to refer to the field value type. Currently supports:
+ * - `TArgs` in `createFieldRule` with `() => FieldValueType`
+ * - Property descriptors in `createPlugin.createFieldProperties`. Example:
+ *   ```
+ *   { prop: () => _something_ as FieldValueType }
+ *   ```
+ */
+export class FieldValueType {}
+
+type ReplaceTokensInObject<TProperties, TFieldValue> = {
+  [key in keyof TProperties]: ReplaceTokens<TProperties[key], TFieldValue>
+}
+
+type ReplaceTokens<T, TFieldValue> = FieldValueType extends T ? TFieldValue : T

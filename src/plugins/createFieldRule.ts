@@ -23,12 +23,10 @@ import {
  *
  * - If set to `T` it can be used as `rule(args: T)`, such as `minLength(6)`.
  *
- * - If set to `() => T` it can be used as `rule(fn: RuleContext => T)`, such
- *   as:
- *
- * ```
- * requiredIf(context => context.form.fields.otherField.value === "some value")
- * ```
+ * - If set to `() => T` it can be used as `rule(fn: RuleContext => T)`, such as:
+ *   ```
+ *   requiredIf(context => context.form.fields.otherField.value === "some value")
+ *   ```
  *
  * `T` can also be a token:
  * - Use `() => FieldValueType` to describe a function which returns the field

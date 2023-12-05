@@ -161,7 +161,7 @@ Custom rules can be added to existing plugins. If it fits your needs, than this 
 
 ### Creating plugins
 
-Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`readonlyRules` plugin](/src/plugins/readonlyRules/), which is one of the simpler plugins.
+Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
 
 ## Array fields
 

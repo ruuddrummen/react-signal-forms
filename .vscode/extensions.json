@@ -4,6 +4,7 @@
     "planbcoding.vscode-react-refactor",
     "wix.vscode-import-cost",
     "dbaeumer.vscode-eslint",
-    "stkb.rewrap"
+    "stkb.rewrap",
+    "orta.vscode-twoslash-queries"
   ]
 }
