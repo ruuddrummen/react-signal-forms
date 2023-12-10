@@ -1,4 +1,4 @@
-# React Signal Forms &middot; [![npm][npm-badge]][npm] [![build][build-badge]][build] [![github-pages][github-pages-badge]][github-pages]
+# React Signal Forms &middot; [![npm][npm-badge]][npm] [![build][build-badge]][build] [![github-pages][github-pages-badge]][github-pages] <!-- omit from toc -->
 
 [npm-badge]: https://img.shields.io/npm/v/react-signal-forms?style=flat-square&color=blue
 [npm]: https://www.npmjs.com/package/react-signal-forms
@@ -20,6 +20,18 @@ A forms library which aims to provide a high performance modular experience by l
 - Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
 - Bring your own UI libraries and components.
 - All strongly typed with TypeScript.
+
+## README <!-- omit from toc -->
+
+- [Getting started](#getting-started)
+- [Exploring the demo](#exploring-the-demo)
+- [Your first form](#your-first-form)
+- [Rules and signals](#rules-and-signals)
+- [Plugins](#plugins)
+  - [Creating field rules](#creating-field-rules)
+  - [Creating plugins](#creating-plugins)
+- [Array fields](#array-fields)
+- [Nested forms](#nested-forms)
 
 ## Getting started
 
