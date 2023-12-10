@@ -5,6 +5,7 @@
     "wix.vscode-import-cost",
     "dbaeumer.vscode-eslint",
     "stkb.rewrap",
-    "orta.vscode-twoslash-queries"
+    "orta.vscode-twoslash-queries",
+    "yzhang.markdown-all-in-one"
   ]
 }

@@ -1,4 +1,4 @@
-# React Signal Forms &middot; [![npm][npm-badge]][npm] [![build][build-badge]][build] [![github-pages][github-pages-badge]][github-pages]
+# React Signal Forms &middot; [![npm][npm-badge]][npm] [![build][build-badge]][build] [![github-pages][github-pages-badge]][github-pages] <!-- omit from toc -->
 
 [npm-badge]: https://img.shields.io/npm/v/react-signal-forms?style=flat-square&color=blue
 [npm]: https://www.npmjs.com/package/react-signal-forms
@@ -7,11 +7,11 @@
 [github-pages-badge]: https://img.shields.io/github/deployments/ruuddrummen/react-signal-forms/github-pages?label=demo&style=flat-square
 [github-pages]: https://ruuddrummen.github.io/react-signal-forms/
 
-> ⚠️ This library is still new, so everything is still subject to change. You can follow its development in the [project](https://github.com/users/ruuddrummen/projects/1) and [releases](https://github.com/ruuddrummen/react-signal-forms/releases). The docs will be updated as development progresses.
+> ⚠️ **DISCLAIMER.** The API is not yet stable, i.e. any version may introduce breaking changes.
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin model](#plugins).
+- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin API](#plugin-api).
   - Pick and choose from the built-in plugins that fit your needs.
   - Plug in your own.
 - Add built-in context aware and typesafe rules to your fields or create your own.
@@ -20,6 +20,18 @@ A forms library which aims to provide a high performance modular experience by l
 - Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
 - Bring your own UI libraries and components.
 - All strongly typed with TypeScript.
+
+## Table of contents <!-- omit from toc -->
+
+- [Getting started](#getting-started)
+- [Exploring the demo](#exploring-the-demo)
+- [Your first form](#your-first-form)
+- [Rules and signals](#rules-and-signals)
+- [Plugin API](#plugin-api)
+  - [`createPlugin()`](#createplugin)
+  - [`createFieldRule()`](#createfieldrule)
+- [Array fields](#array-fields)
+- [Nested forms](#nested-forms)
 
 ## Getting started
 
@@ -142,30 +154,32 @@ const MyForm = () => {
 
 ## Rules and signals
 
-All internal state management is done with signals. An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. The results of these rules are in turn also saved in (computed) signals.
+All internal state management is done with [signals](https://preactjs.com/blog/introducing-signals/). An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
 
 A simple example to illustrate what this means for performance: if field A is only applicable if field B has a specific value, then:
 
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
-## Plugins
+## Plugin API
 
-All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+Form features such as validation, applicability rules, and others are implemented as plugins with the plugin and field rule API's. The goal behind this concept is to keep feature implementations separate and simple, and to make adding features easier.
+
+In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
 > ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
 
-### Creating field rules
+### `createPlugin()`
 
-Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
+Plugins can be replaced and you can create and plug in your own to better fit your requirements. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
 
-### Creating plugins
+### `createFieldRule()`
 
-Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
 
 ## Array fields
 
-The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with `...field("yourArrayField").asArray(...)`.
+The implementation of forms with one or more arrays of items is supported by array fields. You can create specifications for an array field with `...field("yourArrayField").asArray(...)`.
 
 For example:
 
