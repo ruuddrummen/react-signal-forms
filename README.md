@@ -152,7 +152,7 @@ export const SubmitButton = () => {
 }
 ```
 
-> ℹ️ `peekValues` enables access to all form values without subscribing to any signals, which would trigger re-renders.
+> ℹ️ `peekValues()` reads all form values without subscribing to any signals, which would trigger re-renders on any value update.
 
 You are now set to compose your form:
 
