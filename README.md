@@ -37,24 +37,24 @@ A forms library which aims to provide a high performance modular experience by l
 
 ## Getting started
 
-```
+```sh
 npm i react-signal-forms
 ```
 
 ## Exploring the demo
 
-For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/) of react-signal-forms with Material UI, or run it yourself by cloning the repository and running:
+For a quick first look you can check out [the demo](https://ruuddrummen.github.io/react-signal-forms/) with Material UI, or run it yourself by cloning the repository and running:
 
-```
+```sh
 npm run ci
 npm run demo
 ```
 
-If you want to explore the demo code, a good place to start would be [the basics example](/demo/src/examples/BasicsDemoForm.tsx#L74).
+If you want to explore the code, a good place to start would be [the basics example](/demo/src/examples/BasicsDemoForm.tsx#L74).
 
 ## Your first form
 
-Start by initializing your form component and hooks, including the plugins you want to use:
+Start by initializing your form component and hooks with the plugins you want to use:
 
 ```tsx
 // Add plugins, built-in or your own.
