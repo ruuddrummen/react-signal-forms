@@ -104,7 +104,7 @@ const fields = signalForm<ExampleData>().withFields((field) => {
 })
 ```
 
-Add the `useField` hook to your inputs:
+Access field context in your input components with `useField()`:
 
 ```tsx
 interface TextInputProps {
@@ -136,7 +136,7 @@ export const TextInput = ({ field }: TextInputProps) => {
 }
 ```
 
-Add form components such as a submit button:
+Access form context in components such as a submit button with `useForm()`:
 
 ```tsx
 export const SubmitButton = () => {
@@ -151,6 +151,8 @@ export const SubmitButton = () => {
   return <a onClick={() => submit(peekValues())}>Submit</a>
 }
 ```
+
+> ℹ️ `peekValues` enables access to all form values without subscribing to any signals, which would trigger re-renders.
 
 You are now set to compose your form:
 
