@@ -54,7 +54,7 @@ If you want to explore the demo code, a good place to start would be [the basics
 
 ## Your first form
 
-Start by initializing your form component and field hook, including the plugins you want to use:
+Start by initializing your form component and hooks, including the plugins you want to use:
 
 ```tsx
 // Add plugins, built-in or your own.
