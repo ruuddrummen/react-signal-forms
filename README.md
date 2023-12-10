@@ -69,15 +69,15 @@ export const { SignalForm, useForm, useField } = createSignalForm(
 Create field specifications for your forms:
 
 ```tsx
-interface IYourData {
+interface ExampleData {
   justText: string
   aFieldWithRules: string
   aSelectField: string
 }
 
-const fields = signalForm<IYourData>().withFields((field) => {
+const fields = signalForm<ExampleData>().withFields((field) => {
   //                      ^ All specifications and rules will be strongly
-  //                        typed based on your data interface.
+  //                        typed based on your data interface or type.
 
   ...field("justText", "Just a text field"),
 
@@ -94,8 +94,8 @@ const fields = signalForm<IYourData>().withFields((field) => {
   })
 
   ...field("aSelectField", "Select field").as<SelectField>({
-    //          Plug in any field type you need, ^
-    //          built-in or your own.
+    //       Plug in any field type you need, ^
+    //       built-in or your own.
     options: [
       /* ...items */
     ]
@@ -111,7 +111,7 @@ interface TextInputProps {
   field: TextField // only accepts string fields.
 }
 
-const TextInput = ({ field }: TextInputProps) => {
+export const TextInput = ({ field }: TextInputProps) => {
   const {
     value,
     setValue,
@@ -136,6 +136,22 @@ const TextInput = ({ field }: TextInputProps) => {
 }
 ```
 
+Add form components such as a submit button:
+
+```tsx
+export const SubmitButton = () => {
+  const {
+    submit,
+    isSubmitting,
+    peekValues,
+    isValid,
+    // ...
+  } = useForm()
+
+  return <a onClick={() => submit(peekValues())}>Submit</a>
+}
+```
+
 You are now set to compose your form:
 
 ```tsx
@@ -149,6 +165,7 @@ const MyForm = () => {
       <TextInput field={fields.justText} />
       <TextInput field={fields.aFieldWithRules} />
       <SelectInput field={fields.aSelectField} />
+      <SubmitButton />
     </SignalForm>
   )
 }
@@ -169,7 +186,7 @@ A simple example to illustrate what this means for performance: if field A is on
 
 The library comes with some built-in field types which add additional configuration options, such as the `SelectField` shown in [Your first form](#your-first-form). You can also create and configure any field type you need. An example:
 
-```ts
+```tsx
 type Address = {
   country: string
   postalCode: string
