@@ -11,7 +11,7 @@
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin API](#plugin-api).
+- Easy to use, easy to extend. Built from the ground with a DX friendly [plugin API](#plugin-api).
   - Pick and choose from the built-in plugins that fit your needs.
   - Plug in your own.
 - Add built-in context aware and typesafe rules to your fields or create your own.
@@ -27,11 +27,13 @@ A forms library which aims to provide a high performance modular experience by l
 - [Exploring the demo](#exploring-the-demo)
 - [Your first form](#your-first-form)
 - [How it works: signals and field rules](#how-it-works-signals-and-field-rules)
+- [Features](#features)
+  - [Field types](#field-types)
+  - [Array fields](#array-fields)
+  - [Nested forms](#nested-forms)
 - [Plugin API](#plugin-api)
   - [`createPlugin()`](#createplugin)
   - [`createFieldRule()`](#createfieldrule)
-- [Array fields](#array-fields)
-- [Nested forms](#nested-forms)
 
 ## Getting started
 
@@ -52,7 +54,7 @@ If you want to explore the demo code, a good place to start would be [the basics
 
 ## Your first form
 
-Start by initializing your form component and field hook, including the plugins you want to use:
+Start by initializing your form component and hooks, including the plugins you want to use:
 
 ```tsx
 // Add plugins, built-in or your own.
@@ -67,15 +69,15 @@ export const { SignalForm, useForm, useField } = createSignalForm(
 Create field specifications for your forms:
 
 ```tsx
-interface IYourData {
+interface ExampleData {
   justText: string
   aFieldWithRules: string
   aSelectField: string
 }
 
-const fields = signalForm<IYourData>().withFields((field) => {
+const fields = signalForm<ExampleData>().withFields((field) => {
   //                      ^ All specifications and rules will be strongly
-  //                        typed based on your data interface.
+  //                        typed based on your data interface or type.
 
   ...field("justText", "Just a text field"),
 
@@ -92,8 +94,8 @@ const fields = signalForm<IYourData>().withFields((field) => {
   })
 
   ...field("aSelectField", "Select field").as<SelectField>({
-    //          Plug in any field type you need, ^
-    //          built-in or your own.
+    //       Plug in any field type you need, ^
+    //       built-in or your own.
     options: [
       /* ...items */
     ]
@@ -102,14 +104,14 @@ const fields = signalForm<IYourData>().withFields((field) => {
 })
 ```
 
-Add the `useField` hook to your inputs:
+Access field context in your input components with `useField()`:
 
 ```tsx
 interface TextInputProps {
   field: TextField // only accepts string fields.
 }
 
-const TextInput = ({ field }: TextInputProps) => {
+export const TextInput = ({ field }: TextInputProps) => {
   const {
     value,
     setValue,
@@ -134,6 +136,24 @@ const TextInput = ({ field }: TextInputProps) => {
 }
 ```
 
+Access form context in components such as a submit button with `useForm()`:
+
+```tsx
+export const SubmitButton = () => {
+  const {
+    submit,
+    isSubmitting,
+    peekValues,
+    isValid,
+    // ...
+  } = useForm()
+
+  return <a onClick={() => submit(peekValues())}>Submit</a>
+}
+```
+
+> ℹ️ `peekValues()` reads all form values without subscribing to any signals, which would trigger re-renders on any value update.
+
 You are now set to compose your form:
 
 ```tsx
@@ -147,6 +167,7 @@ const MyForm = () => {
       <TextInput field={fields.justText} />
       <TextInput field={fields.aFieldWithRules} />
       <SelectInput field={fields.aSelectField} />
+      <SubmitButton />
     </SignalForm>
   )
 }
@@ -161,26 +182,38 @@ A simple example to illustrate what this means for performance: if field A is on
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
-## Plugin API
+## Features
 
-Form features such as validation and applicability rules are implemented as plugins with the plugin and field rule API's. The goal behind this concept is:
+### Field types
 
-- to keep feature implementations separate and simple, and
-- to make adding features easier, both in the library and in projects using the library.
+The library comes with some built-in field types which add additional configuration options, such as the `SelectField` shown in [Your first form](#your-first-form). You can also create and configure any field type you need. An example:
 
-In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+```tsx
+type Address = {
+  country: string
+  postalCode: string
+  number: string
+  // ...
+}
 
-> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
+interface AddressField extends FieldBase<Address> {
+  countryFilter: string
+  // ...
+}
 
-### `createPlugin()`
+const fields = signalForm<ExampleData>().fields((field) => ({
+  ...field("address", "Address").as<AddressField>({
+    countryFilter: "NL",
+    // ...
+  }),
+}))
 
-Plugins can be replaced and you can create and plug in your own to better fit your requirements. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+const AddressInputComponent = (props: { field: AddressField }) => {
+  // Access your address field properties here...
+}
+```
 
-### `createFieldRule()`
-
-Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
-
-## Array fields
+### Array fields
 
 The implementation of forms with one or more arrays of items is supported by array fields. You can create specifications for an array field with `...field("yourArrayField").asArray(...)`.
 
@@ -261,6 +294,25 @@ The demo includes [an example for array fields](https://ruuddrummen.github.io/re
 
 > ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component, and you can also find it used in the demo.
 
-## Nested forms
+### Nested forms
 
 > Planned.
+
+## Plugin API
+
+Form features such as validation and applicability rules are implemented as plugins with the plugin and field rule API's. The goal behind this concept is:
+
+- to keep feature implementations separate and simple, and
+- to make adding features easier, both in the library and in projects using the library.
+
+In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+
+> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
+
+### `createPlugin()`
+
+Plugins can be replaced and you can create and plug in your own to better fit your requirements. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+
+### `createFieldRule()`
+
+Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).

@@ -5,6 +5,7 @@ export { signalForm } from "./fields"
 export type {
   BooleanField,
   Field,
+  FieldBase,
   FieldCollection,
   FieldRule,
   NumberField,
