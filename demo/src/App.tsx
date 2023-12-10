@@ -119,14 +119,12 @@ function useScrollToHash() {
   useEffect(() => {
     const hash = window.location.hash
 
-    if (hash != null) {
+    if (hash != null && hash !== "") {
       setTimeout(() => {
         const element = document.querySelector(hash)
 
         if (element != null) {
-          element.scrollIntoView({
-            behavior: "smooth",
-          })
+          element.scrollIntoView()
         }
       }, 50)
     }

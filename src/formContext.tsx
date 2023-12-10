@@ -82,8 +82,6 @@ function createFormContext(
     initialValues
   )
 
-  console.log("(Form) Created field signals", formContext)
-
   return formContext
 }
 

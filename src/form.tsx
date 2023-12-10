@@ -87,8 +87,6 @@ const SignalForm: React.FC<SignalsFormInnerProps> = ({
     initialValues
   )
 
-  console.log("Rendering SignalForm")
-
   return (
     <ContextProvider value={formContext.current}>{children}</ContextProvider>
   )

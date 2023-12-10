@@ -6,12 +6,10 @@ export function useLocalStorageStore(name: string) {
       const values = JSON.parse(
         localStorage.getItem(itemName) ?? "{}"
       ) as Record<string, unknown>
-      console.log("Loaded values from localStorage", values)
       return values
     },
 
     setValues: async (values: Record<string, unknown>) => {
-      console.log("Saving values to localStorage", values)
       await sleep(1000)
       localStorage.setItem(itemName, JSON.stringify(values))
     },

@@ -63,8 +63,6 @@ describe("Test field builder and collection types", () => {
       }),
     }))
 
-    console.log("fields:", fields)
-
     expect(fields.textField.name).toBe("textField")
     expect(fields.selectField.name).toBe("selectField")
 
@@ -112,9 +110,6 @@ describe("Test field builder and collection types", () => {
         rules: [required()],
       }),
     }))
-
-    console.log("fields:", fields)
-    console.log("arrayField:", fields.arrayField)
 
     expectTypeOf(fields.arrayField).toEqualTypeOf<
       Field<IArrayFormData, "arrayField", ArrayFieldBase<IArrayFieldData[]>>
