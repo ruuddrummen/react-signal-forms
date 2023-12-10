@@ -11,7 +11,7 @@
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin API](#plugin-api).
+- Easy to use, easy to extend. Built from the ground with a DX friendly [plugin API](#plugin-api).
   - Pick and choose from the built-in plugins that fit your needs.
   - Plug in your own.
 - Add built-in context aware and typesafe rules to your fields or create your own.
