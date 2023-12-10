@@ -204,8 +204,8 @@ interface AddressField extends FieldBase<Address> {
 const fields = signalForm<ExampleData>().fields((field) => ({
   ...field("address", "Address").as<AddressField>({
     countryFilter: "NL",
+    // ...
   }),
-  // ...
 }))
 
 const AddressInputComponent = (props: { field: AddressField }) => {
