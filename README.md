@@ -7,7 +7,7 @@
 [github-pages-badge]: https://img.shields.io/github/deployments/ruuddrummen/react-signal-forms/github-pages?label=demo&style=flat-square
 [github-pages]: https://ruuddrummen.github.io/react-signal-forms/
 
-> ⚠️ This library is still new, so everything is still subject to change. You can follow its development in the [project](https://github.com/users/ruuddrummen/projects/1) and [releases](https://github.com/ruuddrummen/react-signal-forms/releases). The docs will be updated as development progresses.
+> ⚠️ **DISCLAIMER.** The API is not yet stable, i.e. any version may introduce breaking changes.
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
@@ -21,7 +21,7 @@ A forms library which aims to provide a high performance modular experience by l
 - Bring your own UI libraries and components.
 - All strongly typed with TypeScript.
 
-## README <!-- omit from toc -->
+## Table of contents <!-- omit from toc -->
 
 - [Getting started](#getting-started)
 - [Exploring the demo](#exploring-the-demo)
@@ -154,7 +154,7 @@ const MyForm = () => {
 
 ## Rules and signals
 
-All internal state management is done with signals. An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. The results of these rules are in turn also saved in (computed) signals.
+All internal state management is done with [signals](https://preactjs.com/blog/introducing-signals/). An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
 
 A simple example to illustrate what this means for performance: if field A is only applicable if field B has a specific value, then:
 
