@@ -177,7 +177,7 @@ Plugins can be replaced and you can create and plug in your own to better fit yo
 
 ## Array fields
 
-The implementation of forms with one or more arrays of items is supported by array fields. You can create the specifications for an array field with `...field("yourArrayField").asArray(...)`.
+The implementation of forms with one or more arrays of items is supported by array fields. You can create specifications for an array field with `...field("yourArrayField").asArray(...)`.
 
 For example:
 
