@@ -16,7 +16,7 @@ A forms library which aims to provide a high performance modular experience by l
   - Plug in your own.
 - Add built-in context aware and typesafe rules to your fields or create your own.
   - Like `required()`, `requiredIf(...)`, `applicableIf(...)`, `computed(...)`, etc.
-- Only calculates and renders what is necessary [without you needing to think about it](#rules-and-signals).
+- Only calculates and renders what is necessary [without you needing to think about it](#how-it-works-signals-and-field-rules).
 - Field and rule specifications are separated from presentation, so UI components don't get clogged with configuration and business rules.
 - Bring your own UI libraries and components.
 - All strongly typed with TypeScript.
@@ -26,7 +26,7 @@ A forms library which aims to provide a high performance modular experience by l
 - [Getting started](#getting-started)
 - [Exploring the demo](#exploring-the-demo)
 - [Your first form](#your-first-form)
-- [Rules and signals](#rules-and-signals)
+- [How it works: signals and field rules](#how-it-works-signals-and-field-rules)
 - [Plugin API](#plugin-api)
   - [`createPlugin()`](#createplugin)
   - [`createFieldRule()`](#createfieldrule)
@@ -152,11 +152,11 @@ const MyForm = () => {
 }
 ```
 
-## Rules and signals
+## How it works: signals and field rules
 
-All internal state management is done with [signals](https://preactjs.com/blog/introducing-signals/). An advantage of this approach is that rules automatically subscribe to the state they need, and are only re-evaluated when state used in the rules are updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
+All internal state management is handled with [signals](https://preactjs.com/blog/introducing-signals/). Field rules are executed in computed signals, which by definition subscribe exactly to the signals they reference, and nothing more. An advantage of this approach is that rules automatically subscribe to the state that they reference, and are only re-evaluated when state used in the rule is updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
 
-A simple example to illustrate what this means for performance: if field A is only applicable if field B has a specific value, then:
+A simple example to illustrate what this means for performance: if field A is only applicable when field B has a specific value, then:
 
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
