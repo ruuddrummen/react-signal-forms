@@ -11,7 +11,7 @@
 
 A forms library which aims to provide a high performance modular experience by leveraging signals with [@preact/signals-react](https://github.com/preactjs/signals).
 
-- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin model](#plugins).
+- Easy to use, easy to extend. Built from the ground with an DX friendly [plugin API](#plugin-api).
   - Pick and choose from the built-in plugins that fit your needs.
   - Plug in your own.
 - Add built-in context aware and typesafe rules to your fields or create your own.
@@ -27,9 +27,9 @@ A forms library which aims to provide a high performance modular experience by l
 - [Exploring the demo](#exploring-the-demo)
 - [Your first form](#your-first-form)
 - [Rules and signals](#rules-and-signals)
-- [Plugins](#plugins)
-  - [Creating field rules](#creating-field-rules)
-  - [Creating plugins](#creating-plugins)
+- [Plugin API](#plugin-api)
+  - [`createPlugin()`](#createplugin)
+  - [`createFieldRule()`](#createfieldrule)
 - [Array fields](#array-fields)
 - [Nested forms](#nested-forms)
 
@@ -161,21 +161,21 @@ A simple example to illustrate what this means for performance: if field A is on
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
-## Plugins
+## Plugin API
 
-Form features such as validation, applicability rules, and others are implemented as plugins with the plugin and field rule API's. The goal behind this concept is to keep feature implementations separate and simple, and make adding features easier.
+Form features such as validation, applicability rules, and others are implemented as plugins with the plugin and field rule API's. The goal behind this concept is to keep feature implementations separate and simple, and to make adding features easier.
 
 In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
 > ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
 
-### Creating field rules
+### `createPlugin()`
 
-Custom rules can be added to existing plugins. If it fits your needs, than this is the easier option. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
+Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
 
-### Creating plugins
+### `createFieldRule()`
 
-Plugins can be replaced and you can create and plug in your own to better fit your needs. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) and [`createFieldRule()`](/src/plugins/createFieldRule.ts) methods. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
 
 ## Array fields
 
