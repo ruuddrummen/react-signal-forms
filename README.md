@@ -154,7 +154,7 @@ const MyForm = () => {
 
 ## How it works: signals and field rules
 
-All internal state management is handled with [signals](https://preactjs.com/blog/introducing-signals/). Field rules are executed in computed signals, which by definition subscribe exactly to the signals they reference, and nothing more. An advantage of this approach is that rules automatically subscribe to the state that they reference, and are only re-evaluated when state used in the rule is updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
+All internal state management is handled with [signals](https://preactjs.com/blog/introducing-signals/). Field rules are executed in computed signals, which by definition subscribe to the signals they reference, and nothing more. An advantage of this approach is that rules automatically subscribe to the state that they reference, and are only re-evaluated when state used in the rule is updated. Even larger and more complex forms should still perform well without requiring manual optimizations.
 
 A simple example to illustrate what this means for performance: if field A is only applicable when field B has a specific value, then:
 
@@ -163,7 +163,10 @@ A simple example to illustrate what this means for performance: if field A is on
 
 ## Plugin API
 
-Form features such as validation, applicability rules, and others are implemented as plugins with the plugin and field rule API's. The goal behind this concept is to keep feature implementations separate and simple, and to make adding features easier.
+Form features such as validation and applicability rules are implemented as plugins with the plugin and field rule API's. The goal behind this concept is:
+
+- to keep feature implementations separate and simple, and
+- to make adding features easier, both in the library and in projects using the library.
 
 In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
