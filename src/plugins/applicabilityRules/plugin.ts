@@ -36,13 +36,11 @@ function createApplicabilitySignal(
 
   if (rules.length > 0) {
     const isApplicableSignal = computed(() => {
-      console.log(`(${field.name}) Checking applicability rule`)
       return rules.every((r) => r.execute(field, formContext))
     })
 
     isApplicableSignal.subscribe((value) => {
       if (!value) {
-        console.log(`(${field.name}) Clearing field value`)
         fieldContext.setValue(undefined)
       } else if (fieldContext.peekValue() === undefined) {
         fieldContext.setValue(field.defaultValue ?? null)
