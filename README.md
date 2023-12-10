@@ -27,11 +27,13 @@ A forms library which aims to provide a high performance modular experience by l
 - [Exploring the demo](#exploring-the-demo)
 - [Your first form](#your-first-form)
 - [How it works: signals and field rules](#how-it-works-signals-and-field-rules)
+- [Features](#features)
+  - [Field types](#field-types)
+  - [Array fields](#array-fields)
+  - [Nested forms](#nested-forms)
 - [Plugin API](#plugin-api)
   - [`createPlugin()`](#createplugin)
   - [`createFieldRule()`](#createfieldrule)
-- [Array fields](#array-fields)
-- [Nested forms](#nested-forms)
 
 ## Getting started
 
@@ -161,26 +163,38 @@ A simple example to illustrate what this means for performance: if field A is on
 - The applicability rule is only evaluated when the value of field B is updated. Updates on any other field do not trigger the evaluation of the rule.
 - Field A is only re-rendered when the result of the applicability rule changes, i.e. from `true` to `false` or vice versa.
 
-## Plugin API
+## Features
 
-Form features such as validation and applicability rules are implemented as plugins with the plugin and field rule API's. The goal behind this concept is:
+### Field types
 
-- to keep feature implementations separate and simple, and
-- to make adding features easier, both in the library and in projects using the library.
+The library comes with some built-in field types which add additional configuration options, such as the `SelectField` shown in [Your first form](#your-first-form). You can also create and configure any field type you need. An example:
 
-In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+```ts
+type Address = {
+  country: string
+  postalCode: string
+  number: string
+  // ...
+}
 
-> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
+interface AddressField extends FieldBase<Address> {
+  countryFilter: string
+  // ...
+}
 
-### `createPlugin()`
+const fields = signalForm<ExampleData>().fields((field) => ({
+  ...field("address", "Address").as<AddressField>({
+    countryFilter: "NL",
+  }),
+  // ...
+}))
 
-Plugins can be replaced and you can create and plug in your own to better fit your requirements. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+const AddressInputComponent = (props: { field: AddressField }) => {
+  // Access your address field properties here...
+}
+```
 
-### `createFieldRule()`
-
-Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
-
-## Array fields
+### Array fields
 
 The implementation of forms with one or more arrays of items is supported by array fields. You can create specifications for an array field with `...field("yourArrayField").asArray(...)`.
 
@@ -261,6 +275,25 @@ The demo includes [an example for array fields](https://ruuddrummen.github.io/re
 
 > ℹ️ For better performance when adding and removing items, wrap your array items in [`React.memo()`](https://react.dev/reference/react/memo). In the example above this could be done on the `<YourLayout />` component, and you can also find it used in the demo.
 
-## Nested forms
+### Nested forms
 
 > Planned.
+
+## Plugin API
+
+Form features such as validation and applicability rules are implemented as plugins with the plugin and field rule API's. The goal behind this concept is:
+
+- to keep feature implementations separate and simple, and
+- to make adding features easier, both in the library and in projects using the library.
+
+In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+
+> ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
+
+### `createPlugin()`
+
+Plugins can be replaced and you can create and plug in your own to better fit your requirements. To do this you can use the [`createPlugin()`](/src/plugins/createPlugin.ts) method. To get started you can have a look at the [`initialValue`](/src/plugins/initialValue/) and [`readonlyRules`](/src/plugins/readonlyRules/) plugins, which are some of the simpler ones.
+
+### `createFieldRule()`
+
+Field rules can be added to any plugin using them. In general, rules can be created with the [`createFieldRule()`](/src/plugins/createFieldRule.ts) helper function. This function can be used as is, or it can be wrapped for specific plugins. For example, the validation plugin has wrapped this function in [`createValidationRule()`](/src/plugins/validation/rules.ts).
