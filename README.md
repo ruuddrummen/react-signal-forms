@@ -163,7 +163,9 @@ A simple example to illustrate what this means for performance: if field A is on
 
 ## Plugins
 
-All form features other than the core - e.g. validation and applicability rules - are implemented as plugins. The goal behind this concept is to make the form implementation both scalable and extensible. In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
+Form features such as validation, applicability rules, and others are implemented as plugins with the plugin and field rule API's. The goal behind this concept is to keep feature implementations separate and simple, and make adding features easier.
+
+In most simpler cases, the native plugins should be enough to get you going. If necessary though, plugins and rules can be added or replaced to fulfill on specialized requirements.
 
 > ℹ️ All [native plugins](/src/plugins/) use the methods described below, so you can use those as examples.
 
