@@ -2,8 +2,7 @@
 
 import DataArrayIcon from "@mui/icons-material/DataArray"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
-import WarningAmberIcon from "@mui/icons-material/WarningAmber"
-import { Box, Button, Collapse, Grid, Link, Stack } from "@mui/material"
+import { Box, Button, Collapse, Grid, Stack } from "@mui/material"
 import {
   FormFooter,
   FormState,
@@ -13,7 +12,7 @@ import {
   TextInput,
   useLocalStorageStore,
 } from "demo/FormComponents"
-import { Header, P, Span } from "demo/Layout"
+import { Header } from "demo/Layout"
 import { memo } from "react"
 import { signalForm } from "react-signal-forms"
 import {
@@ -77,19 +76,6 @@ export const ArrayFieldDemoForm = () => {
         <Header id="array-fields">
           <DataArrayIcon /> Array fields
         </Header>
-
-        <P>
-          <Span color="warning.main">
-            <WarningAmberIcon />
-          </Span>{" "}
-          This feature is in development. Expect changes to DX, extended context
-          awareness to field rules, and render optimizations. Progress is
-          tracked in{" "}
-          <Link href="https://github.com/ruuddrummen/react-signal-forms/issues/61">
-            #61
-          </Link>
-          .
-        </P>
       </Box>
 
       <SignalForm

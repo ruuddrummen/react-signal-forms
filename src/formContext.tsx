@@ -86,64 +86,85 @@ function createFormContext(
 }
 
 class FormContext implements IFormContext {
-  private __isSubmittingSignal: Signal<boolean>
-  private __onSubmit: ((values: FormValues) => Promise<void>) | undefined
+  private isSubmittingSignal: Signal<boolean>
+  private onSubmit: ((values: FormValues) => Promise<void>) | undefined
   fields: FieldContextCollection<any>
   fieldSpecifications: FieldCollection<any>
   plugins: Array<SignalFormPlugin>
-  parent: undefined = undefined
 
-  get isSubmitting() {
-    return this.__isSubmittingSignal.value
-  }
+  /**
+   * The root form context does not have a parent.
+   */
+  parent: undefined = undefined
 
   constructor(
     fields: FieldCollection,
-    plugins: Array<SignalFormPlugin<any, any, any>>,
+    plugins: Array<SignalFormPlugin>,
     onSubmit?: (values: FormValues) => Promise<void>,
     initialValues?: FormValues
   ) {
     this.fieldSpecifications = fields
     this.plugins = plugins
-    this.__isSubmittingSignal = signal(false)
-    this.__onSubmit = onSubmit
+    this.isSubmittingSignal = signal(false)
+    this.onSubmit = onSubmit
 
-    this.fields = Object.keys(fields).reduce<FieldContextCollection>(
-      (prev, key) => {
-        const field = fields[key]
-
-        const fieldInitialValues = initialValues?.[key]
-
-        prev[key] = isArrayField(field)
-          ? new ArrayFieldContext(
-              this,
-              field,
-              fieldInitialValues as FormValues[],
-              plugins
-            )
-          : new FieldContext(fields[key], fieldInitialValues)
-
-        return prev
-      },
-      {}
+    this.fields = this.createFieldContextCollection(
+      fields,
+      initialValues,
+      plugins
     )
 
+    this.initializeFieldExtensions(fields, plugins)
+    this.initializeFormExtensions(plugins, fields)
+  }
+
+  private createFieldContextCollection(
+    fields: FieldCollection,
+    initialValues: FormValues | undefined,
+    plugins: SignalFormPlugin[]
+  ) {
+    return Object.keys(fields).reduce<FieldContextCollection>((prev, key) => {
+      const field = fields[key]
+      const initialValue = initialValues?.[key]
+
+      prev[key] = isArrayField(field)
+        ? new ArrayFieldContext(
+            this,
+            field,
+            initialValue as FormValues[],
+            plugins
+          )
+        : new FieldContext(fields[key], initialValue)
+
+      return prev
+    }, {})
+  }
+
+  private initializeFieldExtensions(
+    fields: FieldCollection,
+    plugins: SignalFormPlugin[]
+  ) {
     forEachKeyOf(fields, (key) => {
       const field = fields[key]
 
       addFieldExtensions(this, field, plugins)
     })
+  }
 
-    plugins.forEach((ext) => {
-      if (typeof ext.createFormProperties !== "function") {
+  private initializeFormExtensions(
+    plugins: SignalFormPlugin[],
+    fields: FieldCollection
+  ) {
+    plugins.forEach((plugin) => {
+      if (typeof plugin.createFormProperties !== "function") {
         return
       }
-      const fieldSignals = Object.keys(fields).map((key) => this.fields[key])
-      const fieldExtensions = fieldSignals.map((field) =>
-        (field as FieldContext).getExtension(ext.name)
+      const fieldContext = Object.keys(fields).map((key) => this.fields[key])
+      const fieldExtensions = fieldContext.map((field) =>
+        (field as FieldContext).getExtension(plugin.name)
       )
-      const formContextProperties = ext.createFormProperties({
-        fields: fieldSignals,
+      const formContextProperties = plugin.createFormProperties({
+        fields: fieldContext,
         extensions: fieldExtensions,
       })
 
@@ -171,13 +192,20 @@ class FormContext implements IFormContext {
   }
 
   submit = async (values: FormValues): Promise<void> => {
-    if (this.__onSubmit == null) {
+    if (this.onSubmit == null) {
       throw new Error("Missing value for SignalForm.onSubmit prop.")
     }
 
-    this.__isSubmittingSignal.value = true
-    await this.__onSubmit(values)
-    this.__isSubmittingSignal.value = false
+    this.isSubmittingSignal.value = true
+    try {
+      await this.onSubmit(values)
+    } finally {
+      this.isSubmittingSignal.value = false
+    }
+  }
+
+  get isSubmitting() {
+    return this.isSubmittingSignal.value
   }
 
   addProperties = <TContext,>(
