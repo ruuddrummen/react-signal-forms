@@ -16,6 +16,7 @@ import {
 import { signal } from "@preact/signals-react"
 import React, { useEffect } from "react"
 import { clearStorage } from "./FormComponents"
+import { GridDivider } from "./Layout"
 import { ArrayFieldDemoForm } from "./examples/ArrayFieldDemo"
 import { BasicsDemoForm } from "./examples/BasicsDemoForm"
 import { ThemeSelector, useTheme } from "./themes"
@@ -34,7 +35,7 @@ export const App: React.FC = () => {
       <Container className="App" maxWidth="lg" key={formKey.value}>
         <Stack spacing={2} marginBottom="20vh">
           <BasicsDemoForm />
-
+          <GridDivider />
           <ArrayFieldDemoForm />
         </Stack>
       </Container>
