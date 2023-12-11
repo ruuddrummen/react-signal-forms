@@ -32,47 +32,47 @@ export type IFieldContext<
 } & ExpandFieldContextProperties<TPlugins, TValue>
 
 export class FieldContext<TValue = any> implements IFieldContext<TValue> {
-  protected __field: Field
-  protected __valueSignal: Signal<TValue>
-  private __extensions: FieldContextExtensions
+  protected field: Field
+  protected valueSignal: Signal<TValue>
+  private extensions: FieldContextExtensions
 
-  private __blurEffects: Array<
+  private blurEffects: Array<
     (event: React.FocusEvent<HTMLElement, Element>) => void
   > = []
 
   constructor(field: Field, initialValue?: TValue) {
-    this.__field = field
-    this.__extensions = {}
-    this.__valueSignal = signal(initialValue ?? field.defaultValue ?? null)
+    this.field = field
+    this.extensions = {}
+    this.valueSignal = signal(initialValue ?? field.defaultValue ?? null)
   }
 
   get name() {
-    return this.__field.name
+    return this.field.name
   }
 
   get value() {
-    return this.__valueSignal.value
+    return this.valueSignal.value
   }
 
   addBlurEffect = (
     effect: (event: React.FocusEvent<HTMLElement, Element>) => void
   ) => {
-    this.__blurEffects.push(effect)
+    this.blurEffects.push(effect)
   }
 
   peekValue = () => {
-    return this.__valueSignal.peek()
+    return this.valueSignal.peek()
   }
 
   setValue = (value: TValue) => {
     // TODO: handle computed array field values, which cannot be set.
-    if (!isArrayField(this.__field)) {
-      this.__valueSignal.value = value
+    if (!isArrayField(this.field)) {
+      this.valueSignal.value = value
     }
   }
 
   handleBlur = (event: React.FocusEvent<HTMLElement, Element>) => {
-    this.__blurEffects.forEach((effect) => effect(event))
+    this.blurEffects.forEach((effect) => effect(event))
   }
 
   addExtension = <TExtension extends FieldContextExtension, TContext>(
@@ -80,7 +80,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
     fieldExtension: TExtension,
     fieldContextProperties: PropertyDescriptors<TContext> | undefined
   ) => {
-    this.__extensions[name] = fieldExtension
+    this.extensions[name] = fieldExtension
 
     if (fieldContextProperties != null) {
       Object.defineProperties(this, fieldContextProperties)
@@ -88,7 +88,7 @@ export class FieldContext<TValue = any> implements IFieldContext<TValue> {
   }
 
   getExtension = <TPlugin extends SignalFormPlugin>(name: string) => {
-    return this.__extensions[name] as FieldExtension<TPlugin>
+    return this.extensions[name] as FieldExtension<TPlugin>
   }
 
   toJSON() {

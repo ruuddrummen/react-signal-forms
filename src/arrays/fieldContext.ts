@@ -33,9 +33,9 @@ export class ArrayFieldContext<TValue extends FormValues[]>
   extends FieldContext<TValue>
   implements IArrayFieldContext<TValue>
 {
-  __parentForm: IFormContextLike
-  protected __plugins: SignalFormPlugin[]
-  lastItemId = 0
+  protected plugins: SignalFormPlugin[]
+  private lastItemId = 0
+  parentForm: IFormContextLike
 
   constructor(
     parentForm: IFormContextLike,
@@ -45,19 +45,19 @@ export class ArrayFieldContext<TValue extends FormValues[]>
   ) {
     super(field, initialValue)
 
-    this.__parentForm = parentForm
-    this.__plugins = plugins
+    this.parentForm = parentForm
+    this.plugins = plugins
 
     this.arrayItems = signal(
       createContextForArrayField(
         field,
-        this.__parentForm,
+        this.parentForm,
         this.createItemId,
         initialValue as FormValues[]
       )
     )
 
-    this.__valueSignal = computed<TValue>(() => {
+    this.valueSignal = computed<TValue>(() => {
       return this.arrayItems.value.map((item) => {
         return KeysOf(item.fields).reduce((itemValues, key) => {
           itemValues[key] = item.fields[key].value
@@ -71,15 +71,15 @@ export class ArrayFieldContext<TValue extends FormValues[]>
   addItem = () => {
     const newItem = createContextForArrayFieldItem<TValue>(
       this.createItemId(),
-      this.__field as ArrayFieldBase<TValue>,
-      this.__parentForm,
-      this.__field.defaultValue as ArrayItemType<TValue>
+      this.field as ArrayFieldBase<TValue>,
+      this.parentForm,
+      this.field.defaultValue as ArrayItemType<TValue>
     )
 
     addFieldExtensionsToArrayItems(
-      this.__field as ArrayFieldBase,
+      this.field as ArrayFieldBase,
       [newItem],
-      this.__plugins
+      this.plugins
     )
 
     this.arrayItems.value = [...this.arrayItems.value, newItem]
